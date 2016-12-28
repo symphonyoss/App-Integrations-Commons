@@ -16,64 +16,63 @@
 
 package org.symphonyoss.integration.logging;
 
-
-import static com.symphony.atlas.config.SymphonyAtlas.ACCOUNT;
-import static com.symphony.atlas.config.SymphonyAtlas.SECRET;
-import static com.symphony.atlas.config.SymphonyAtlas.SYMPHONY_URL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 import com.symphony.security.clientsdk.client.Auth;
 import com.symphony.security.clientsdk.client.AuthProvider;
-import com.symphony.security.clientsdk.client.ClientIdentifierFilter;
-import com.symphony.security.clientsdk.client.SymphonyClient;
-import com.symphony.security.clientsdk.client.SymphonyClientConfig;
 import com.symphony.security.clientsdk.client.impl.SymphonyClientFactory;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.symphonyoss.integration.model.yaml.CloudLogging;
+import org.symphonyoss.integration.model.yaml.ConnectionInfo;
+import org.symphonyoss.integration.model.yaml.IntegrationProperties;
 
-import java.util.Properties;
-import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
 /**
- * Unit test for {@link IntegrationBridgeCloudLoggerFactory}
+ * Unit test for {@link IntegrationBridgeKeyProvider}
  *
  * Created by cmarcondes on 12/7/16.
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(
-    {IntegrationBridgeCloudLoggerFactory.class, SymphonyClientFactory.class, Executors.class})
-@PowerMockIgnore({"javax.management.*"})
-public class IntegrationBridgeCloudLoggerFactoryTest {
+@RunWith(MockitoJUnitRunner.class)
+public class IntegrationBridgeKeyProviderTest {
+
+  @Spy
+  private IntegrationProperties properties = new IntegrationProperties();
+
+  @Mock
+  private ExecutorService executorForAuthentication;
+
+  @Mock
+  private AuthProvider authProvider;
 
   private FutureTask future;
 
+  @InjectMocks
+  private IntegrationBridgeKeyProvider provider = new IntegrationBridgeKeyProvider();
+
   /**
-   * Mocks the constructor of {@link IBProperties}, the getClient method of {@link
-   * SymphonyClientFactory}
+   * Mocks the getClient method of {@link SymphonyClientFactory}
    * and the method submit of {@link ExecutorService}
    * @throws Exception
    */
   @Before
   public void setup() throws Exception {
-    mockIBProperties();
-    mockClientFactory();
+    mockProperties();
     future = mockThreadExecutor();
   }
 
@@ -92,7 +91,6 @@ public class IntegrationBridgeCloudLoggerFactoryTest {
    */
   @Test
   public void test() throws Exception {
-    AuthProvider authProviderMocked = mock(AuthProvider.class);
     Auth authMocked = mock(Auth.class);
 
     /*
@@ -104,54 +102,39 @@ public class IntegrationBridgeCloudLoggerFactoryTest {
         .thenReturn(null)
         .thenReturn("45123138714312");
 
-    when(authProviderMocked.getSymphonyAuth()).thenReturn(authMocked);
+    when(authProvider.getSymphonyAuth()).thenReturn(authMocked);
 
-    whenNew(AuthProvider.class).withAnyArguments().thenReturn(authProviderMocked);
-
-    IntegrationBridgeCloudLoggerFactory instace = new IntegrationBridgeCloudLoggerFactory();
-
-    assertTrue(StringUtils.isEmpty(instace.getSessionKey()));
-    assertTrue(StringUtils.isEmpty(instace.getSessionKey()));
-    assertTrue(StringUtils.isEmpty(instace.getSessionKey()));
+    assertTrue(StringUtils.isEmpty(provider.getSessionKey()));
+    assertTrue(StringUtils.isEmpty(provider.getSessionKey()));
+    assertTrue(StringUtils.isEmpty(provider.getSessionKey()));
     verify(future, times(2)).isDone();
-    assertEquals("45123138714312", instace.getSessionKey());
-
+    assertEquals("45123138714312", provider.getSessionKey());
   }
 
   private FutureTask mockThreadExecutor() {
-    ExecutorService executorMocked = mock(AbstractExecutorService.class);
-
     FutureTask future = mock(FutureTask.class);
 
     //returns false for the first call and true the next.
 
     when(future.isDone()).thenReturn(false).thenReturn(true);
 
-    when(executorMocked.submit(any(Runnable.class))).thenReturn(future);
+    when(executorForAuthentication.submit(any(Runnable.class))).thenReturn(future);
 
-    mockStatic(Executors.class);
-    when(Executors.newSingleThreadExecutor()).thenReturn(executorMocked);
     return future;
   }
 
-  private void mockClientFactory() {
-    mockStatic(SymphonyClientFactory.class);
-    when(SymphonyClientFactory.getClient(any(ClientIdentifierFilter.class), any
-        (SymphonyClientConfig.class))).thenReturn(mock(SymphonyClient.class));
+  private void mockProperties() throws Exception {
+    ConnectionInfo pod = new ConnectionInfo();
+    pod.setHost("nexus.symphony.com");
+    pod.setPort("443");
+
+    properties.setPod(pod);
+
+    CloudLogging cloudLogging = new CloudLogging();
+    cloudLogging.setAccount("cloudlogger");
+    cloudLogging.setSecret("/uM9z6JeaGIA85JN9vtrPYVYzeyMArgxZNNGGkrXqCE=");
+
+    properties.setCloudLogging(cloudLogging);
   }
-
-  private void mockIBProperties() throws Exception {
-    IBProperties ibProperties = mock(IBProperties.class);
-
-    Properties properties = new Properties();
-    properties.put(SECRET, "/uM9z6JeaGIA85JN9vtrPYVYzeyMArgxZNNGGkrXqCE=");
-    properties.put(ACCOUNT, "cloudlogger");
-    properties.put(SYMPHONY_URL, "https://nexus.symphony.com:443");
-
-    when(ibProperties.getProperties()).thenReturn(properties);
-
-    whenNew(IBProperties.class).withAnyArguments().thenReturn(ibProperties);
-  }
-
 
 }

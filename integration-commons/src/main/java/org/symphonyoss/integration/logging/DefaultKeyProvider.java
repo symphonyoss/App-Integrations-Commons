@@ -14,17 +14,29 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration.model;
+package org.symphonyoss.integration.logging;
+
+import com.symphony.logging.ISymphonyOnPremKeyProvider;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
- * Possible states for an application once it's processed.
- * Created by rsanchez on 18/10/16.
+ * Default implementation to session key provider.
+ * Created by rsanchez on 28/12/16.
  */
-public enum ApplicationState {
+public class DefaultKeyProvider implements ISymphonyOnPremKeyProvider {
 
-  PROVISIONED,
-  REMOVED,
-  FAILED,
-  SKIPPED
 
+  @Override
+  public String getSessionKey() {
+    return StringUtils.EMPTY;
+  }
+
+  @Override
+  public String getSessionName() {
+    return StringUtils.EMPTY;
+  }
+
+  @Override
+  public void reAuth() {}
 }

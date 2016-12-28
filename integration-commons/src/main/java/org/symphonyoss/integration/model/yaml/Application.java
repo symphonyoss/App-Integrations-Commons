@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration.model;
+package org.symphonyoss.integration.model.yaml;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import static org.symphonyoss.integration.model.yaml.ApplicationState.UNKNOWN;
 
 import java.util.List;
 import java.util.Set;
@@ -30,9 +30,7 @@ import java.util.Set;
  */
 public class Application {
 
-  private String id;
-
-  private String type;
+  private String component;
 
   private String name;
 
@@ -40,11 +38,7 @@ public class Application {
 
   private String context;
 
-  private String domain;
-
   private String publisher;
-
-  private String avatar;
 
   private boolean enabled;
 
@@ -52,25 +46,18 @@ public class Application {
 
   private ApplicationState state;
 
-  @JsonProperty("allowed_origins")
   private List<AllowedOrigin> allowedOrigins;
+
+  private Keystore keystore;
 
   private WhiteList whiteList = new WhiteList();
 
-  public String getId() {
-    return id;
+  public String getComponent() {
+    return component;
   }
 
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
+  public void setComponent(String component) {
+    this.component = component;
   }
 
   public String getName() {
@@ -95,14 +82,6 @@ public class Application {
 
   public void setContext(String context) {
     this.context = context;
-  }
-
-  public String getDomain() {
-    return domain;
-  }
-
-  public void setDomain(String domain) {
-    this.domain = domain;
   }
 
   public String getPublisher() {
@@ -130,6 +109,10 @@ public class Application {
   }
 
   public ApplicationState getState() {
+    if (state == null) {
+      return UNKNOWN;
+    }
+
     return state;
   }
 
@@ -137,29 +120,21 @@ public class Application {
     this.state = state;
   }
 
-  public String getAvatar() {
-    return avatar;
-  }
-
-  public void setAvatar(String avatar) {
-    this.avatar = avatar;
-  }
-
   public List<AllowedOrigin> getAllowedOrigins() {
     return allowedOrigins;
   }
 
-  public void setAllowedOrigins(List<AllowedOrigin> allowedOrigins) {
+  public void setAllowedOrigins(
+      List<AllowedOrigin> allowedOrigins) {
     this.allowedOrigins = allowedOrigins;
-    whiteList.populateWhiteList(allowedOrigins);
   }
 
-  /**
-   * Added new origins to the whitelist
-   * @param origins Allowed origins
-   */
-  public void addOriginToWhiteList(String... origins) {
-    whiteList.addOriginToWhiteList(origins);
+  public Keystore getKeystore() {
+    return keystore;
+  }
+
+  public void setKeystore(Keystore keystore) {
+    this.keystore = keystore;
   }
 
   /**
@@ -167,23 +142,6 @@ public class Application {
    * @return Application whitelist
    */
   public Set<String> getWhiteList() {
-    return whiteList.getWhiteList();
-  }
-
-  @Override
-  public String toString() {
-    return "Application{" +
-        "id='" + id + '\'' +
-        ", type='" + type + '\'' +
-        ", name='" + name + '\'' +
-        ", description='" + description + '\'' +
-        ", context='" + context + '\'' +
-        ", domain='" + domain + '\'' +
-        ", publisher='" + publisher + '\'' +
-        ", avatar='" + avatar + '\'' +
-        ", enabled=" + enabled +
-        ", visible=" + visible +
-        ", state=" + state +
-        '}';
+    return whiteList.getWhiteList(allowedOrigins);
   }
 }

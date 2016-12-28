@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration.model;
+package org.symphonyoss.integration.model.yaml;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -36,17 +36,15 @@ public class WhiteListTest {
   @Test
   public void testEmptyWhiteList() {
     WhiteList whiteList = new WhiteList();
-    whiteList.populateWhiteList(null);
 
-    Set<String> result = whiteList.getWhiteList();
+    Set<String> result = whiteList.getWhiteList(null);
 
     assertNotNull(result);
     assertTrue(result.isEmpty());
 
     whiteList = new WhiteList();
-    whiteList.populateWhiteList(Collections.EMPTY_LIST);
 
-    Set<String> emptyWhiteList = whiteList.getWhiteList();
+    Set<String> emptyWhiteList = whiteList.getWhiteList(Collections.EMPTY_LIST);
 
     assertNotNull(emptyWhiteList);
     assertTrue(emptyWhiteList.isEmpty());
@@ -67,9 +65,8 @@ public class WhiteListTest {
     originList.add(origin2);
 
     WhiteList whiteList = new WhiteList();
-    whiteList.populateWhiteList(originList);
 
-    Set<String> integrationWhiteList = whiteList.getWhiteList();
+    Set<String> integrationWhiteList = whiteList.getWhiteList(originList);
     assertNotNull(integrationWhiteList);
     assertEquals(4, integrationWhiteList.size());
 
@@ -79,19 +76,4 @@ public class WhiteListTest {
     assertTrue(integrationWhiteList.contains("107.23.104.1"));
   }
 
-  @Test
-  public void testAddOriginToWhiteList() {
-    WhiteList whiteList = new WhiteList();
-    whiteList.addOriginToWhiteList("squid-104-1.sc1.uc-inf.net", "165.254.226.119",
-        "107.23.104.0/31");
-
-    Set<String> integrationWhiteList = whiteList.getWhiteList();
-    assertNotNull(integrationWhiteList);
-    assertEquals(4, integrationWhiteList.size());
-
-    assertTrue(integrationWhiteList.contains("squid-104-1.sc1.uc-inf.net"));
-    assertTrue(integrationWhiteList.contains("165.254.226.119"));
-    assertTrue(integrationWhiteList.contains("107.23.104.0"));
-    assertTrue(integrationWhiteList.contains("107.23.104.1"));
-  }
 }

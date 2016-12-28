@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration.model;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package org.symphonyoss.integration.model.yaml;
 
 /**
  * Represent connection info structure to external services, like the POD itself, Agent and Key
@@ -24,13 +22,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by Milton Quilzini on 15/11/16.
  */
 public class ConnectionInfo {
-  @JsonProperty("host")
+
   private String host;
 
-  @JsonProperty("port")
   private String port;
 
-  @JsonProperty("auth_port")
   private String authPort;
 
   public String getHost() {
@@ -55,5 +51,14 @@ public class ConnectionInfo {
 
   public void setAuthPort(String authPort) {
     this.authPort = authPort;
+  }
+
+  @Override
+  public String toString() {
+    return "ConnectionInfo{" +
+        "host='" + host + '\'' +
+        ", port='" + port + '\'' +
+        ", authPort='" + authPort + '\'' +
+        '}';
   }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration.model;
+package org.symphonyoss.integration.model.yaml;
 
 import org.apache.commons.lang3.StringUtils;
 import org.symphonyoss.integration.utils.IpAddressUtils;
@@ -29,16 +29,14 @@ import java.util.Set;
  */
 public class WhiteList {
 
-  private Set<String> whiteList = new HashSet<>();
-
   /**
-   * Populate the whitelist based on the allowed origins.
+   * Retrieves the whitelist based on the allowed origins configured on YAML file.
    * @param allowedOrigins Allowed origins
    */
-  public void populateWhiteList(List<AllowedOrigin> allowedOrigins) {
-    if (allowedOrigins != null) {
-      this.whiteList = new HashSet<>(allowedOrigins.size());
+  public Set<String> getWhiteList(List<AllowedOrigin> allowedOrigins) {
+    final Set<String> whiteList = new HashSet<>();
 
+    if (allowedOrigins != null) {
       for (AllowedOrigin origin : allowedOrigins) {
         String host = origin.getHost();
         String address = origin.getAddress();
@@ -52,29 +50,8 @@ public class WhiteList {
         }
       }
     }
-  }
 
-  /**
-   * Added new origins to the whitelist
-   * @param origins Allowed origins
-   */
-  public void addOriginToWhiteList(String... origins) {
-    if (origins != null) {
-      for (String origin : origins) {
-        if (IpAddressUtils.isIpRange(origin)) {
-          whiteList.addAll(IpAddressUtils.getIpRange(origin));
-        } else {
-          whiteList.add(origin);
-        }
-      }
-    }
-  }
-
-  /**
-   * Get the whitelist based on YAML file settings.
-   * @return Global whitelist
-   */
-  public Set<String> getWhiteList() {
     return whiteList;
   }
+
 }

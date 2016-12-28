@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration.model;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package org.symphonyoss.integration.model.yaml;
 
 import java.util.List;
 import java.util.Set;
@@ -31,7 +29,6 @@ public class IntegrationBridge {
 
   private String domain;
 
-  @JsonProperty("allowed_origins")
   private List<AllowedOrigin> allowedOrigins;
 
   private WhiteList whiteList = new WhiteList();
@@ -58,7 +55,6 @@ public class IntegrationBridge {
 
   public void setAllowedOrigins(List<AllowedOrigin> allowedOrigins) {
     this.allowedOrigins = allowedOrigins;
-    whiteList.populateWhiteList(allowedOrigins);
   }
 
   /**
@@ -66,6 +62,6 @@ public class IntegrationBridge {
    * @return Global whitelist
    */
   public Set<String> getWhiteList() {
-    return whiteList.getWhiteList();
+    return whiteList.getWhiteList(allowedOrigins);
   }
 }

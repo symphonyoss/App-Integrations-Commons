@@ -22,7 +22,7 @@ package org.symphonyoss.integration.exception.bootstrap;
  * Possible reasons:
  * - File cannot be opened/read (file permissions)
  * - Keystore password is wrong
- * - Keystore file format defined on atlas is wrong
+ * - Keystore file format is wrong
  *
  * Created by cmarcondes on 10/26/16.
  */

@@ -16,30 +16,22 @@
 
 package org.symphonyoss.integration.model;
 
+import org.symphonyoss.integration.model.yaml.Keystore;
+
 /**
- * Represents an origin allowed to communicate with Integration Bridge.
- * Created by rsanchez on 10/11/16.
+ * Default application keystore.
+ * Created by rsanchez on 27/12/16.
  */
-public class AllowedOrigin {
+public class DefaultAppKeystore extends Keystore {
 
-  private String host;
+  private String user;
 
-  private String address;
-
-  public String getHost() {
-    return host;
+  public DefaultAppKeystore(String user) {
+    this.user = user;
   }
 
-  public void setHost(String host) {
-    this.host = host;
-  }
-
-  public String getAddress() {
-    return address;
-  }
-
-  public void setAddress(String address) {
-    this.address = address;
+  public String getFile() {
+    return user + DEFAULT_KEYSTORE_TYPE_SUFFIX;
   }
 
 }

@@ -14,19 +14,30 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration;
+package org.symphonyoss.integration.model.yaml;
 
 /**
- * Created by rsanchez on 03/06/16.
+ * Created by rsanchez on 23/12/16.
  */
-public class IntegrationAtlasException extends RuntimeException {
+public class CloudLogging {
 
-  public IntegrationAtlasException(String message, Throwable cause) {
-    super(message, cause);
+  private String account;
+
+  private String secret;
+
+  public String getAccount() {
+    return account;
   }
 
-  public IntegrationAtlasException(String message) {
-    super(message);
+  public void setAccount(String account) {
+    this.account = account;
   }
 
+  public String getSecret() {
+    return secret;
+  }
+
+  public void setSecret(String secret) {
+    this.secret = secret;
+  }
 }
