@@ -28,6 +28,8 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.symphonyoss.integration.utils.WebHookConfigurationUtils.LAST_POSTED_DATE;
 
@@ -39,6 +41,7 @@ import com.symphony.api.pod.model.V1Configuration;
 import com.symphony.atlas.AtlasException;
 import com.symphony.atlas.IAtlas;
 
+import com.codahale.metrics.Timer;
 import com.google.common.cache.LoadingCache;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,6 +77,7 @@ import org.symphonyoss.integration.webhook.exception.StreamTypeNotFoundException
 import org.symphonyoss.integration.webhook.exception.WebHookDisabledException;
 import org.symphonyoss.integration.webhook.exception.WebHookParseException;
 import org.symphonyoss.integration.webhook.exception.WebHookUnavailableException;
+import org.symphonyoss.integration.webhook.metrics.ParserMetricsController;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -142,6 +146,12 @@ public class WebHookIntegrationTest {
   @Mock
   private LoadingCache<String, IntegrationFlags.ValueEnum> configuratorFlagsCache;
 
+  @Mock
+  private ParserMetricsController metricsController;
+
+  @Mock
+  private Timer.Context context;
+
   @InjectMocks
   private WebHookIntegration mockWHI = new MockWebHookIntegration();
 
@@ -181,6 +191,8 @@ public class WebHookIntegrationTest {
     doAnswer(new GetStreamsAnswer()).when(streamService)
         .getStreams(any(ConfigurationInstance.class));
     doAnswer(new GetStreamsAnswer()).when(streamService).getStreams(any(String.class));
+
+    doReturn(context).when(metricsController).startParserExecution(INTEGRATION_USER);
   }
 
   @Test
@@ -307,6 +319,9 @@ public class WebHookIntegrationTest {
 
     IntegrationHealth integrationHealth = mockWHI.getHealthStatus();
     assertEquals("2016-10-10T14:31:21Z+0000", integrationHealth.getLatestPostTimestamp());
+
+    verify(metricsController, times(1)).startParserExecution(INTEGRATION_USER);
+    verify(metricsController, times(1)).finishParserExecution(context, INTEGRATION_USER, true);
   }
 
   @Test
@@ -341,6 +356,9 @@ public class WebHookIntegrationTest {
 
     IntegrationHealth integrationHealth = mockWHI.getHealthStatus();
     assertNull(integrationHealth.getLatestPostTimestamp());
+
+    verify(metricsController, times(1)).startParserExecution(INTEGRATION_USER);
+    verify(metricsController, times(1)).finishParserExecution(context, INTEGRATION_USER, true);
   }
 
   @Test
@@ -377,6 +395,9 @@ public class WebHookIntegrationTest {
 
     IntegrationHealth integrationHealth = mockWHI.getHealthStatus();
     assertNull(integrationHealth.getLatestPostTimestamp());
+
+    verify(metricsController, times(1)).startParserExecution(INTEGRATION_USER);
+    verify(metricsController, times(1)).finishParserExecution(context, INTEGRATION_USER, true);
   }
 
   @Test(expected = StreamTypeNotFoundException.class)

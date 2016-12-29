@@ -9,18 +9,24 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>integration-webhook</artifactId>
+    <artifactId>integration-metrics</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>org.symphonyoss</groupId>
-            <artifactId>integration-commons</artifactId>
-            <version>${project.version}</version>
+            <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.symphonyoss</groupId>
-            <artifactId>integration-metrics</artifactId>
-            <version>${project.version}</version>
+            <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-servlet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-servlets</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ryantenney.metrics</groupId>
+            <artifactId>metrics-spring</artifactId>
         </dependency>
     </dependencies>
 </project>
