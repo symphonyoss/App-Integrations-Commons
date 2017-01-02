@@ -30,6 +30,8 @@ import java.util.Set;
  */
 public class Application {
 
+  private String id;
+
   private String component;
 
   private String name;
@@ -50,7 +52,19 @@ public class Application {
 
   private Keystore keystore;
 
+  private String url;
+
+  private String avatar;
+
   private WhiteList whiteList = new WhiteList();
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
 
   public String getComponent() {
     return component;
@@ -135,6 +149,22 @@ public class Application {
 
   public void setKeystore(Keystore keystore) {
     this.keystore = keystore;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
+  }
+
+  public String getAvatar() {
+    return avatar;
+  }
+
+  public void setAvatar(String avatar) {
+    this.avatar = avatar;
   }
 
   /**

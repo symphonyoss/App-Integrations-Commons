@@ -17,28 +17,38 @@
 package org.symphonyoss.integration.model.yaml;
 
 /**
- * Holds the information about the cloud logging.
- * Created by rsanchez on 23/12/16.
+ * Holds the information about the CA certificate location.
+ * Created by rsanchez on 18/10/16.
  */
-public class CloudLogging {
+public class Certificate {
 
-  private String account;
+  private String caCertFile;
 
-  private String secret;
+  private String caKeyFile;
 
-  public String getAccount() {
-    return account;
+  private String caCertChainFile;
+
+  public String getCaCertFile() {
+    return caCertFile;
   }
 
-  public void setAccount(String account) {
-    this.account = account;
+  public void setCaCertFile(String caCertFile) {
+    this.caCertFile = caCertFile;
   }
 
-  public String getSecret() {
-    return secret;
+  public String getCaKeyFile() {
+    return caKeyFile;
   }
 
-  public void setSecret(String secret) {
-    this.secret = secret;
+  public void setCaKeyFile(String caKeyFile) {
+    this.caKeyFile = caKeyFile;
+  }
+
+  public String getCaCertChainFile() {
+    return caCertChainFile;
+  }
+
+  public void setCaCertChainFile(String caCertChainFile) {
+    this.caCertChainFile = caCertChainFile;
   }
 }

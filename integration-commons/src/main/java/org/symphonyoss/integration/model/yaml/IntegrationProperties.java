@@ -48,6 +48,8 @@ public class IntegrationProperties {
 
   private IntegrationBridge integrationBridge;
 
+  private Certificate signingCert;
+
   public ConnectionInfo getPod() {
     return pod;
   }
@@ -129,6 +131,14 @@ public class IntegrationProperties {
   public void setIntegrationBridge(
       IntegrationBridge integrationBridge) {
     this.integrationBridge = integrationBridge;
+  }
+
+  public Certificate getSigningCert() {
+    return signingCert;
+  }
+
+  public void setSigningCert(Certificate signingCert) {
+    this.signingCert = signingCert;
   }
 
   /**
