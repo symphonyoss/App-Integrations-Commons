@@ -164,11 +164,11 @@
         <powermock.version>1.6.1</powermock.version>
 
         <!-- RPM properties -->
-        <rpm.deployment.prefix>/opt/symphony/ib/tomcat</rpm.deployment.prefix>
+        <rpm.deployment.prefix>/opt/symphony</rpm.deployment.prefix>
         <rpm.name.prefix>symphony</rpm.name.prefix>
         <rpm.name>integration-bridge</rpm.name>
-        <rpm.deployment.folder>${rpm.deployment.prefix}/webapps</rpm.deployment.folder>
-        <rpm.deployment.user>tomcat</rpm.deployment.user>
+        <rpm.deployment.folder>${rpm.deployment.prefix}/ib</rpm.deployment.folder>
+        <rpm.deployment.user>ibridge</rpm.deployment.user>
         <rpm.deployment.filemode>755</rpm.deployment.filemode>
         <rpm.type>single</rpm.type>
     </properties>
@@ -425,7 +425,7 @@
             <activation>
                 <activeByDefault>false</activeByDefault>
                 <file>
-                    <exists>./src/main/webapp/WEB-INF/web.xml</exists>
+                    <exists>./src/main/resources/application.yml</exists>
                 </file>
                 <property>
                     <name>build.rpm</name>
@@ -443,7 +443,7 @@
                         <executions>
                             <execution>
                                 <id>generate-rpm</id>
-                                <phase>package</phase>
+                                <phase>verify</phase>
                                 <goals>
                                     <goal>rpm</goal>
                                 </goals>
