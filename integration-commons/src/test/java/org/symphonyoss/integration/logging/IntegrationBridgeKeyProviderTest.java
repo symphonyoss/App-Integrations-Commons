@@ -18,7 +18,9 @@ package org.symphonyoss.integration.logging;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -34,14 +36,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.symphonyoss.integration.model.yaml.CloudLogging;
-import org.symphonyoss.integration.model.yaml.ConnectionInfo;
-import org.symphonyoss.integration.model.yaml.IntegrationProperties;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Unit test for {@link IntegrationBridgeKeyProvider}
@@ -51,19 +51,16 @@ import java.util.concurrent.FutureTask;
 @RunWith(MockitoJUnitRunner.class)
 public class IntegrationBridgeKeyProviderTest {
 
-  @Spy
-  private IntegrationProperties properties = new IntegrationProperties();
-
   @Mock
-  private ExecutorService executorForAuthentication;
+  private ScheduledExecutorService executorForAuthentication;
 
   @Mock
   private AuthProvider authProvider;
 
-  private FutureTask future;
+  private ScheduledFuture<?> future;
 
   @InjectMocks
-  private IntegrationBridgeKeyProvider provider = new IntegrationBridgeKeyProvider();
+  private IntegrationBridgeKeyProvider provider;
 
   /**
    * Mocks the getClient method of {@link SymphonyClientFactory}
@@ -72,7 +69,6 @@ public class IntegrationBridgeKeyProviderTest {
    */
   @Before
   public void setup() throws Exception {
-    mockProperties();
     future = mockThreadExecutor();
   }
 
@@ -111,30 +107,17 @@ public class IntegrationBridgeKeyProviderTest {
     assertEquals("45123138714312", provider.getSessionKey());
   }
 
-  private FutureTask mockThreadExecutor() {
-    FutureTask future = mock(FutureTask.class);
+  private ScheduledFuture mockThreadExecutor() {
+    ScheduledFuture<?> future = mock(ScheduledFuture.class);
 
     //returns false for the first call and true the next.
 
-    when(future.isDone()).thenReturn(false).thenReturn(true);
+    doReturn(false).doReturn(true).when(future).isDone();
 
-    when(executorForAuthentication.submit(any(Runnable.class))).thenReturn(future);
+    doReturn(future).when(executorForAuthentication).schedule(any(Runnable.class), eq(10L),
+        eq(TimeUnit.SECONDS));
 
     return future;
-  }
-
-  private void mockProperties() throws Exception {
-    ConnectionInfo pod = new ConnectionInfo();
-    pod.setHost("nexus.symphony.com");
-    pod.setPort("443");
-
-    properties.setPod(pod);
-
-    CloudLogging cloudLogging = new CloudLogging();
-    cloudLogging.setAccount("cloudlogger");
-    cloudLogging.setSecret("/uM9z6JeaGIA85JN9vtrPYVYzeyMArgxZNNGGkrXqCE=");
-
-    properties.setCloudLogging(cloudLogging);
   }
 
 }

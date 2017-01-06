@@ -63,8 +63,6 @@ public abstract class BaseIntegration {
 
   private static final ISymphonyLogger LOG = SymphonyLoggerFactory.getLogger(BaseIntegration.class);
 
-  private static final String CERTS_DIR = "certs";
-
   private static final String APPS_CONTEXT = "apps";
 
   private static final String APP_DEFAULT_PAGE = "controller.html";

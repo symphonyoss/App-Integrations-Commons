@@ -33,7 +33,7 @@ import java.security.cert.CertificateException;
  * Holds mocks for other unit tests.
  * Created by rsanchez on 22/11/16.
  */
-public class CommonIntegrationTest {
+public class MockKeystore {
 
   private static final String APP_TYPE = "jiraWebHookIntegration";
 

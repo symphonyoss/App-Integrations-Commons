@@ -41,12 +41,14 @@ import com.google.common.cache.LoadingCache;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.symphonyoss.integration.IntegrationStatus;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
 import org.symphonyoss.integration.entity.model.User;
@@ -57,7 +59,6 @@ import org.symphonyoss.integration.exception.config.ForbiddenUserException;
 import org.symphonyoss.integration.model.config.StreamType;
 import org.symphonyoss.integration.model.healthcheck.IntegrationFlags;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
-import org.symphonyoss.integration.model.yaml.AllowedOrigin;
 import org.symphonyoss.integration.model.yaml.Application;
 import org.symphonyoss.integration.model.yaml.IntegrationProperties;
 import org.symphonyoss.integration.service.ConfigurationService;
@@ -77,7 +78,6 @@ import java.net.ConnectException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -91,47 +91,48 @@ import javax.ws.rs.ProcessingException;
  * Test class responsible to test the flows in the {@link WebHookIntegration}.
  * Created by rsanchez on 06/05/16.
  */
-@RunWith(MockitoJUnitRunner.class)
-public class WebHookIntegrationTest extends CommonIntegrationTest {
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@EnableConfigurationProperties
+@ContextConfiguration(classes = {IntegrationProperties.class, MockWebHookIntegration.class})
+public class WebHookIntegrationTest extends MockKeystore {
 
   private static final String CONFIGURATION_ID = "57bf581ae4b079de6a1cbbf9";
 
-  private static final String APP_ID = "jira";
-
   private static final String INTEGRATION_USER = "jiraWebHookIntegration";
 
-  @Mock
+  @MockBean
   private IntegrationBridge service;
 
-  @Mock
+  @MockBean
   private StreamService streamService;
 
-  @Mock
+  @MockBean(name = "remoteConfigurationService")
   private ConfigurationService configService;
 
-  @Mock
+  @MockBean
   private AuthenticationProxy authenticationProxy;
 
-  @Mock
+  @MockBean
   private WebHookExceptionHandler exceptionHandler;
 
-  @Mock
+  @MockBean
   private UserService userService;
 
-  @Spy
-  private IntegrationProperties properties = new IntegrationProperties();
+  @Autowired
+  private IntegrationProperties properties;
 
-  @Mock
+  @MockBean
   private ScheduledExecutorService scheduler;
 
-  @Mock
+  @MockBean
   private LoadingCache<String, IntegrationFlags.ValueEnum> configuratorFlagsCache;
 
-  @Mock
+  @MockBean
   private IntegrationUtils utils;
 
-  @InjectMocks
-  private WebHookIntegration mockWHI = new MockWebHookIntegration();
+  @Autowired
+  private MockWebHookIntegration mockWHI;
 
   @Before
   public void setup() {
@@ -513,41 +514,7 @@ public class WebHookIntegrationTest extends CommonIntegrationTest {
   }
 
   @Test
-  public void testWhiteListNullConfig() {
-    mockWHI.onConfigChange(null);
-
-    Set<String> integrationWhiteList = mockWHI.getIntegrationWhiteList();
-    assertNotNull(integrationWhiteList);
-    assertTrue(integrationWhiteList.isEmpty());
-  }
-
-  @Test
-  public void testWhiteListEmptyList() {
-    Set<String> integrationWhiteList = mockWHI.getIntegrationWhiteList();
-    assertNotNull(integrationWhiteList);
-    assertTrue(integrationWhiteList.isEmpty());
-  }
-
-  @Test
   public void testWhiteList() {
-    List<AllowedOrigin> originList = new ArrayList<>();
-
-    AllowedOrigin origin1 = new AllowedOrigin();
-    origin1.setHost("squid-104-1.sc1.uc-inf.net");
-    origin1.setAddress("165.254.226.119");
-
-    AllowedOrigin origin2 = new AllowedOrigin();
-    origin2.setAddress("107.23.104.115");
-
-    originList.add(origin1);
-    originList.add(origin2);
-
-    Application application = new Application();
-    application.setAllowedOrigins(originList);
-    application.setComponent(INTEGRATION_USER);
-
-    properties.setApplications(Collections.singletonMap(APP_ID, application));
-
     Set<String> integrationWhiteList = mockWHI.getIntegrationWhiteList();
     assertNotNull(integrationWhiteList);
     assertEquals(3, integrationWhiteList.size());
@@ -555,6 +522,12 @@ public class WebHookIntegrationTest extends CommonIntegrationTest {
     assertTrue(integrationWhiteList.contains("squid-104-1.sc1.uc-inf.net"));
     assertTrue(integrationWhiteList.contains("165.254.226.119"));
     assertTrue(integrationWhiteList.contains("107.23.104.115"));
+
+    properties.setApplications(Collections.<String, Application>emptyMap());
+
+    integrationWhiteList = mockWHI.getIntegrationWhiteList();
+    assertNotNull(integrationWhiteList);
+    assertTrue(integrationWhiteList.isEmpty());
   }
 
   public static final class SendMessageAnswer implements Answer<V2MessageList> {

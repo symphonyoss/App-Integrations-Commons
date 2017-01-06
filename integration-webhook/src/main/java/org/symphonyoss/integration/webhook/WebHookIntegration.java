@@ -107,9 +107,6 @@ public abstract class WebHookIntegration extends BaseIntegration implements Inte
   @Autowired
   private UserService userService;
 
-  @Autowired
-  private IntegrationProperties properties;
-
   /**
    * Local Configuration kept for faster processing.
    */

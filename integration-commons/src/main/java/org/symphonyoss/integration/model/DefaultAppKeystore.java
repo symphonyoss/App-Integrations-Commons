@@ -30,6 +30,7 @@ public class DefaultAppKeystore extends Keystore {
     this.user = user;
   }
 
+  @Override
   public String getFile() {
     return user + DEFAULT_KEYSTORE_TYPE_SUFFIX;
   }

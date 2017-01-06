@@ -36,9 +36,10 @@ import org.symphonyoss.integration.model.yaml.CloudLogging;
 import org.symphonyoss.integration.model.yaml.IntegrationProperties;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
@@ -52,8 +53,8 @@ public class IntegrationBridgeKeyProvider implements ISymphonyOnPremKeyProvider 
   private static final ISymphonyLogger LOCAL_LOGGER =
       SymphonyLoggerFactory.getLogger(IntegrationBridgeKeyProvider.class);
 
-  public static final String CONFIG_ENABLE_REMOTE = "enableRemote";
-  public static final String CONFIG_LOG_LEVEL = "cloudLoggerLevel";
+  public static final String CONFIG_ENABLE_REMOTE = "symphony.cloud.logging.enableRemote";
+  public static final String CONFIG_LOG_LEVEL = "symphony.cloud.logging.cloudLoggerLevel";
   public static final String CONFIG_HARVESTER_URL = "cloudLogHarvesterURL";
   public static final String SESSION_NAME = "skey";
 
@@ -67,7 +68,7 @@ public class IntegrationBridgeKeyProvider implements ISymphonyOnPremKeyProvider 
 
   private SymphonyClient symphonyClient;
 
-  private ExecutorService executorForAuthentication = Executors.newSingleThreadExecutor();
+  private ScheduledExecutorService executorForAuthentication = Executors.newSingleThreadScheduledExecutor();
 
   private Future<?> authenticationFuture;
 
@@ -158,28 +159,11 @@ public class IntegrationBridgeKeyProvider implements ISymphonyOnPremKeyProvider 
         //This method may be called by multiple threads. Don't start authentication multiple times -
         //only if we haven't run this or if it has already finished then fire a new one
         synchronized (IntegrationBridgeCloudLoggerFactory.class) {
-          if ((authenticationFuture == null) ||
-              ((authenticationFuture != null) && (authenticationFuture.isDone()))) {
-
-            authenticationFuture = executorForAuthentication.submit(new Runnable() {
-              @Override
-              public void run() {
-                try {
-                  //wait a minute before trying - otherwise authentication code
-                  //logs too many exceptions
-                  Thread.sleep(60000);
-                  reAuth();
-                } catch (Exception e) {
-                  //there will be multiple exceptions during pod start up. They do not indicate real
-                  //problems - simply not all components are up and running yet. Hence the log level
-                  //"info" and only exception message, not the full stacktrace
-                }
-              }
-            });
-          }
+          asyncAuthentication();
         }
       }
     } catch (Exception e) {
+      LOCAL_LOGGER.error("Fail to retrieve the cloud logger user session", e);
       return StringUtils.EMPTY;
     }
 
@@ -190,6 +174,26 @@ public class IntegrationBridgeKeyProvider implements ISymphonyOnPremKeyProvider 
     }
 
     return sReturn;
+  }
+
+  /**
+   * Perform the asynchronous authentication. Only one thread should start the authentication.
+   * The authentication will start after 10 seconds.
+   */
+  private void asyncAuthentication() {
+    if ((authenticationFuture == null) || (authenticationFuture.isDone())) {
+
+      authenticationFuture = executorForAuthentication.schedule(new Runnable() {
+        @Override
+        public void run() {
+          try {
+            reAuth();
+          } catch (Exception e) {
+            LOCAL_LOGGER.error("Fail to authenticate the cloud logger user", e);
+          }
+        }
+      }, 10, TimeUnit.SECONDS);
+    }
   }
 
   @Override

@@ -1,0 +1,13 @@
+applications:
+  jira:
+    state: PROVISIONED
+    component: jiraWebHookIntegration
+    name: JIRA
+    publisher: Symphony
+    context: jira
+    enabled: true
+    visible: true
+    allowed_origins:
+      - host: squid-104-1.sc1.uc-inf.net
+        address: 165.254.226.119
+      - address: 107.23.104.115
