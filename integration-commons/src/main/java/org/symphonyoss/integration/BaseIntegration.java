@@ -73,7 +73,7 @@ public abstract class BaseIntegration {
   protected AuthenticationProxy authenticationProxy;
 
   @Autowired
-  private IntegrationProperties properties;
+  protected IntegrationProperties properties;
 
   /**
    * Status of the integration
