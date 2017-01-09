@@ -19,9 +19,8 @@ package org.symphonyoss.integration;
 import static javax.ws.rs.core.MediaType.TEXT_HTML_TYPE;
 import static org.symphonyoss.integration.model.healthcheck.IntegrationFlags.ValueEnum.NOK;
 import static org.symphonyoss.integration.model.healthcheck.IntegrationFlags.ValueEnum.OK;
+import static org.symphonyoss.integration.model.yaml.Keystore.DEFAULT_KEYSTORE_TYPE_SUFFIX;
 
-import com.symphony.atlas.AtlasException;
-import com.symphony.atlas.IAtlas;
 import com.symphony.logging.ISymphonyLogger;
 import com.symphony.logging.SymphonyLoggerFactory;
 
@@ -33,15 +32,16 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
-import org.symphonyoss.integration.exception.bootstrap.CertificateNotFoundException;
 import org.symphonyoss.integration.exception.bootstrap.LoadKeyStoreException;
 import org.symphonyoss.integration.healthcheck.IntegrationHealthManager;
-import org.symphonyoss.integration.model.Application;
-import org.symphonyoss.integration.model.IntegrationBridge;
-import org.symphonyoss.integration.model.IntegrationProperties;
+import org.symphonyoss.integration.model.DefaultAppKeystore;
 import org.symphonyoss.integration.model.healthcheck.IntegrationFlags;
+import org.symphonyoss.integration.model.yaml.Application;
+import org.symphonyoss.integration.model.yaml.IntegrationBridge;
+import org.symphonyoss.integration.model.yaml.IntegrationProperties;
+import org.symphonyoss.integration.model.yaml.Keystore;
+import org.symphonyoss.integration.utils.IntegrationUtils;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -63,27 +63,15 @@ public abstract class BaseIntegration {
 
   private static final ISymphonyLogger LOG = SymphonyLoggerFactory.getLogger(BaseIntegration.class);
 
-  private static final String KEY_STORE_SUFFIX = ".keystore";
-  private static final String KEY_STORE_PASSWORD_SUFFIX = ".keystore.password";
-  private static final String KEY_STORE_TYPE_SUFFIX = ".keystore.type";
-
-  private static final String DEFAULT_KEYSTORE_TYPE = "pkcs12";
-  private static final String DEFAULT_KEYSTORE_TYPE_SUFFIX = ".p12";
-  private static final String DEFAULT_KEYSTORE_PASSWORD = "changeit";
-  private static final String CERTS_DIR = "certs";
-
   private static final String APPS_CONTEXT = "apps";
 
   private static final String APP_DEFAULT_PAGE = "controller.html";
 
   @Autowired
-  protected IntegrationAtlas integrationAtlas;
-
-  @Autowired
   protected AuthenticationProxy authenticationProxy;
 
   @Autowired
-  private IntegrationPropertiesReader propertiesReader;
+  protected IntegrationProperties properties;
 
   /**
    * Status of the integration
@@ -99,6 +87,9 @@ public abstract class BaseIntegration {
    * Cache to 'configurator installed' flag.
    */
   private LoadingCache<String, IntegrationFlags.ValueEnum> configuratorFlagsCache;
+
+  @Autowired
+  protected IntegrationUtils utils;
 
   public BaseIntegration() {
     final ClientConfig configuration = new ClientConfig();
@@ -122,13 +113,7 @@ public abstract class BaseIntegration {
    * @return Application identifier
    */
   public String getApplicationId(String integrationUser) {
-    Application application = propertiesReader.getProperties().getApplication(integrationUser);
-
-    if ((application == null) || (StringUtils.isEmpty(application.getId()))) {
-      return integrationUser;
-    } else {
-      return application.getId();
-    }
+    return properties.getApplicationId(integrationUser);
   }
 
   /**
@@ -136,28 +121,25 @@ public abstract class BaseIntegration {
    * @param integrationUser Integration username
    */
   public void registerUser(String integrationUser) {
-    IAtlas atlas = integrationAtlas.getAtlas();
+    String certsDir = utils.getCertsDirectory();
 
-    String locationProperty = integrationUser + KEY_STORE_SUFFIX;
-    String passwordProperty = integrationUser + KEY_STORE_PASSWORD_SUFFIX;
-    String typeProperty = integrationUser + KEY_STORE_TYPE_SUFFIX;
+    Application application = properties.getApplication(integrationUser);
 
-    String type =
-        atlas.containsKey(typeProperty) ? atlas.get(typeProperty).trim() : DEFAULT_KEYSTORE_TYPE;
-
-    String storeLocation;
-
-    try {
-      String certsDir = atlas.getConfigDir(CERTS_DIR).getAbsolutePath() + File.separator;
-      String locationFile = atlas.containsKey(locationProperty) ? atlas.get(locationProperty).trim()
-          : integrationUser + DEFAULT_KEYSTORE_TYPE_SUFFIX;
-      storeLocation = certsDir + locationFile;
-    } catch (AtlasException e) {
-      throw new CertificateNotFoundException("Certificate folder not found at atlas home", e);
+    Keystore keystoreConfig;
+    if ((application == null) || (application.getKeystore() == null)) {
+      keystoreConfig = new DefaultAppKeystore(integrationUser);
+    } else {
+      keystoreConfig = application.getKeystore();
     }
 
-    String password = atlas.containsKey(passwordProperty) ? atlas.get(passwordProperty).trim()
-        : DEFAULT_KEYSTORE_PASSWORD;
+    String locationFile = keystoreConfig.getFile();
+    if (StringUtils.isBlank(locationFile)) {
+      locationFile = integrationUser + DEFAULT_KEYSTORE_TYPE_SUFFIX;
+    }
+
+    String storeLocation = certsDir + locationFile;
+    String password = keystoreConfig.getPassword();
+    String type = keystoreConfig.getType();
 
     KeyStore keyStore;
     try {
@@ -198,8 +180,6 @@ public abstract class BaseIntegration {
    * @param appType Application type
    */
   public IntegrationFlags.ValueEnum getConfiguratorInstalledFlag(String appType) {
-    IntegrationProperties properties = propertiesReader.getProperties();
-
     Application application = properties.getApplication(appType);
     IntegrationBridge bridge = properties.getIntegrationBridge();
 

@@ -33,7 +33,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.symphonyoss.integration.Integration;
-import org.symphonyoss.integration.IntegrationPropertiesReader;
 import org.symphonyoss.integration.BaseIntegration;
 import org.symphonyoss.integration.exception.config.ForbiddenUserException;
 import org.symphonyoss.integration.exception.authentication.ConnectivityException;
@@ -44,8 +43,8 @@ import org.symphonyoss.integration.entity.model.User;
 import org.symphonyoss.integration.exception.IntegrationRuntimeException;
 import org.symphonyoss.integration.exception.config.IntegrationConfigException;
 import org.symphonyoss.integration.logging.IntegrationBridgeCloudLoggerFactory;
-import org.symphonyoss.integration.model.Application;
-import org.symphonyoss.integration.model.IntegrationProperties;
+import org.symphonyoss.integration.model.yaml.Application;
+import org.symphonyoss.integration.model.yaml.IntegrationProperties;
 import org.symphonyoss.integration.model.config.StreamType;
 import org.symphonyoss.integration.model.healthcheck.IntegrationFlags;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
@@ -108,9 +107,6 @@ public abstract class WebHookIntegration extends BaseIntegration implements Inte
   @Autowired
   private UserService userService;
 
-  @Autowired
-  private IntegrationPropertiesReader propertiesReader;
-
   /**
    * Local Configuration kept for faster processing.
    */
@@ -147,8 +143,7 @@ public abstract class WebHookIntegration extends BaseIntegration implements Inte
     } catch (BootstrapException e) {
       healthManager.certificateInstalled(NOK);
 
-      String message = String.format("%s. Cause: %s", e.getMessage(), e.getCause().getMessage());
-      healthManager.failBootstrap(message);
+      healthManager.failBootstrap(e.getMessage());
       throw e;
     } catch (Exception e) {
       healthManager.failBootstrap(e.getMessage());
@@ -511,7 +506,6 @@ public abstract class WebHookIntegration extends BaseIntegration implements Inte
       return Collections.emptySet();
     }
 
-    IntegrationProperties properties = propertiesReader.getProperties();
     Application application = properties.getApplication(config.getType());
 
     if (application == null) {

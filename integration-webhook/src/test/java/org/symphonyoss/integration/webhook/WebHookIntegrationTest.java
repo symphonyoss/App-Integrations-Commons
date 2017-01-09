@@ -36,38 +36,37 @@ import com.symphony.api.agent.model.V2MessageList;
 import com.symphony.api.pod.client.ApiException;
 import com.symphony.api.pod.model.ConfigurationInstance;
 import com.symphony.api.pod.model.V1Configuration;
-import com.symphony.atlas.AtlasException;
-import com.symphony.atlas.IAtlas;
 
 import com.google.common.cache.LoadingCache;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
-import org.symphonyoss.integration.IntegrationAtlas;
-import org.symphonyoss.integration.IntegrationPropertiesReader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.symphonyoss.integration.IntegrationStatus;
+import org.symphonyoss.integration.MockKeystore;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
 import org.symphonyoss.integration.entity.model.User;
 import org.symphonyoss.integration.exception.bootstrap.CertificateNotFoundException;
 import org.symphonyoss.integration.exception.bootstrap.LoadKeyStoreException;
 import org.symphonyoss.integration.exception.bootstrap.UnexpectedBootstrapException;
 import org.symphonyoss.integration.exception.config.ForbiddenUserException;
-import org.symphonyoss.integration.model.AllowedOrigin;
-import org.symphonyoss.integration.model.Application;
-import org.symphonyoss.integration.model.IntegrationProperties;
 import org.symphonyoss.integration.model.config.StreamType;
 import org.symphonyoss.integration.model.healthcheck.IntegrationFlags;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
+import org.symphonyoss.integration.model.yaml.Application;
+import org.symphonyoss.integration.model.yaml.IntegrationProperties;
 import org.symphonyoss.integration.service.ConfigurationService;
 import org.symphonyoss.integration.service.IntegrationBridge;
 import org.symphonyoss.integration.service.StreamService;
 import org.symphonyoss.integration.service.UserService;
+import org.symphonyoss.integration.utils.IntegrationUtils;
 import org.symphonyoss.integration.utils.WebHookConfigurationUtils;
 import org.symphonyoss.integration.webhook.exception.InvalidStreamTypeException;
 import org.symphonyoss.integration.webhook.exception.StreamTypeNotFoundException;
@@ -75,15 +74,11 @@ import org.symphonyoss.integration.webhook.exception.WebHookDisabledException;
 import org.symphonyoss.integration.webhook.exception.WebHookParseException;
 import org.symphonyoss.integration.webhook.exception.WebHookUnavailableException;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.ConnectException;
-import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -97,55 +92,48 @@ import javax.ws.rs.ProcessingException;
  * Test class responsible to test the flows in the {@link WebHookIntegration}.
  * Created by rsanchez on 06/05/16.
  */
-@RunWith(MockitoJUnitRunner.class)
-public class WebHookIntegrationTest {
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@EnableConfigurationProperties
+@ContextConfiguration(classes = {IntegrationProperties.class, MockWebHookIntegration.class})
+public class WebHookIntegrationTest extends MockKeystore {
 
   private static final String CONFIGURATION_ID = "57bf581ae4b079de6a1cbbf9";
 
   private static final String INTEGRATION_USER = "jiraWebHookIntegration";
 
-  private static final String CERTS_DIR = "certs";
-
-  private static final String DEFAULT_KEYSTORE_TYPE = "pkcs12";
-
-  private static final String DEFAULT_KEYSTORE_PASSWORD = "changeit";
-
-  private static final String DEFAULT_KEYSTORE_TYPE_SUFFIX = ".p12";
-
-  @Mock
+  @MockBean
   private IntegrationBridge service;
 
-  @Mock
+  @MockBean
   private StreamService streamService;
 
-  @Mock
+  @MockBean(name = "remoteConfigurationService")
   private ConfigurationService configService;
 
-  @Mock
+  @MockBean
   private AuthenticationProxy authenticationProxy;
 
-  @Mock
+  @MockBean
   private WebHookExceptionHandler exceptionHandler;
 
-  @Mock
-  private IntegrationAtlas integrationAtlas;
-
-  @Mock
+  @MockBean
   private UserService userService;
 
-  @Mock
-  private IntegrationPropertiesReader propertiesReader;
+  @Autowired
+  private IntegrationProperties properties;
 
-  @Mock
+  @MockBean
   private ScheduledExecutorService scheduler;
 
-  @Mock
+  @MockBean
   private LoadingCache<String, IntegrationFlags.ValueEnum> configuratorFlagsCache;
 
-  @InjectMocks
-  private WebHookIntegration mockWHI = new MockWebHookIntegration();
+  @MockBean
+  private IntegrationUtils utils;
 
-  private IAtlas atlas;
+  @Autowired
+  private MockWebHookIntegration mockWHI;
 
   @Before
   public void setup() {
@@ -161,12 +149,6 @@ public class WebHookIntegrationTest {
     configuration.setEnabled(true);
 
     mockWHI.onConfigChange(configuration);
-
-    IntegrationProperties integrationProperties = new IntegrationProperties();
-    doReturn(integrationProperties).when(propertiesReader).getProperties();
-
-    this.atlas = mock(IAtlas.class);
-    doReturn(atlas).when(integrationAtlas).getAtlas();
 
     doAnswer(new Answer<StreamType>() {
       @Override
@@ -186,6 +168,8 @@ public class WebHookIntegrationTest {
   @Test
   public void testOnCreateRuntimeException() {
     try {
+      doThrow(RuntimeException.class).when(utils).getCertsDirectory();
+
       mockWHI.onConfigChange(null);
       mockWHI.onCreate(INTEGRATION_USER);
     } catch (UnexpectedBootstrapException e) {
@@ -195,9 +179,9 @@ public class WebHookIntegrationTest {
   }
 
   @Test
-  public void testOnCreateCertNotFoundException() throws AtlasException {
+  public void testOnCreateCertNotFoundException() {
     try {
-      doThrow(AtlasException.class).when(atlas).getConfigDir(CERTS_DIR);
+      doThrow(CertificateNotFoundException.class).when(utils).getCertsDirectory();
 
       mockWHI.onConfigChange(null);
       mockWHI.onCreate(INTEGRATION_USER);
@@ -209,9 +193,10 @@ public class WebHookIntegrationTest {
   }
 
   @Test
-  public void testOnCreateLoadKeystoreException() throws AtlasException, IOException {
+  public void testOnCreateLoadKeystoreException() throws IOException {
     try {
-      mockCertDir();
+      String certDir = mockCertDir();
+      doReturn(certDir).when(utils).getCertsDirectory();
 
       mockWHI.onConfigChange(null);
       mockWHI.onCreate(INTEGRATION_USER);
@@ -224,42 +209,15 @@ public class WebHookIntegrationTest {
 
   @Test
   public void testOnCreateCertificateInstalled()
-      throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException,
-      AtlasException {
-    mockCertDir();
-    mockKeystore();
+      throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException {
+    String certDir = mockKeyStore();
+    doReturn(certDir).when(utils).getCertsDirectory();
 
     mockWHI.onCreate(INTEGRATION_USER);
 
     IntegrationHealth health  = mockWHI.getHealthStatus();
     assertEquals(IntegrationStatus.ACTIVE.name(), health.getStatus());
     assertEquals(IntegrationFlags.ValueEnum.OK, health.getFlags().getCertificateInstalled());
-  }
-
-  private void mockCertDir() throws IOException, AtlasException {
-    File tmpDir = new File(System.getProperty("java.io.tmpdir"));
-    TemporaryFolder folder = new TemporaryFolder(tmpDir);
-    folder.create();
-
-    doReturn(folder.getRoot()).when(atlas).getConfigDir(CERTS_DIR);
-  }
-
-  private void mockKeystore()
-      throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException,
-      AtlasException {
-    KeyStore ks = KeyStore.getInstance(DEFAULT_KEYSTORE_TYPE);
-
-    char[] password = DEFAULT_KEYSTORE_PASSWORD.toCharArray();
-    ks.load(null, password);
-
-    // Store away the keystore.
-    String filename = INTEGRATION_USER + DEFAULT_KEYSTORE_TYPE_SUFFIX;
-    String certsDir = atlas.getConfigDir(CERTS_DIR).getAbsolutePath() + File.separator;
-    String storeLocation = certsDir + filename;
-
-    try (FileOutputStream fos = new FileOutputStream(storeLocation)) {
-      ks.store(fos, password);
-    }
   }
 
   @Test
@@ -557,46 +515,7 @@ public class WebHookIntegrationTest {
   }
 
   @Test
-  public void testWhiteListNullConfig() {
-    mockWHI.onConfigChange(null);
-
-    Set<String> integrationWhiteList = mockWHI.getIntegrationWhiteList();
-    assertNotNull(integrationWhiteList);
-    assertTrue(integrationWhiteList.isEmpty());
-  }
-
-  @Test
-  public void testWhiteListEmptyList() {
-    doReturn(new IntegrationProperties()).when(propertiesReader).getProperties();
-
-    Set<String> integrationWhiteList = mockWHI.getIntegrationWhiteList();
-    assertNotNull(integrationWhiteList);
-    assertTrue(integrationWhiteList.isEmpty());
-  }
-
-  @Test
   public void testWhiteList() {
-    List<AllowedOrigin> originList = new ArrayList<>();
-
-    AllowedOrigin origin1 = new AllowedOrigin();
-    origin1.setHost("squid-104-1.sc1.uc-inf.net");
-    origin1.setAddress("165.254.226.119");
-
-    AllowedOrigin origin2 = new AllowedOrigin();
-    origin2.setAddress("107.23.104.115");
-
-    originList.add(origin1);
-    originList.add(origin2);
-
-    Application application = new Application();
-    application.setAllowedOrigins(originList);
-    application.setType(INTEGRATION_USER);
-
-    IntegrationProperties properties = new IntegrationProperties();
-    properties.setApplications(Collections.singletonList(application));
-
-    doReturn(properties).when(propertiesReader).getProperties();
-
     Set<String> integrationWhiteList = mockWHI.getIntegrationWhiteList();
     assertNotNull(integrationWhiteList);
     assertEquals(3, integrationWhiteList.size());
@@ -604,6 +523,12 @@ public class WebHookIntegrationTest {
     assertTrue(integrationWhiteList.contains("squid-104-1.sc1.uc-inf.net"));
     assertTrue(integrationWhiteList.contains("165.254.226.119"));
     assertTrue(integrationWhiteList.contains("107.23.104.115"));
+
+    properties.setApplications(Collections.<String, Application>emptyMap());
+
+    integrationWhiteList = mockWHI.getIntegrationWhiteList();
+    assertNotNull(integrationWhiteList);
+    assertTrue(integrationWhiteList.isEmpty());
   }
 
   public static final class SendMessageAnswer implements Answer<V2MessageList> {

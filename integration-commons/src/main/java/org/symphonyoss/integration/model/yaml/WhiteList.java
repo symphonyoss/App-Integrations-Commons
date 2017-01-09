@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration.model;
+package org.symphonyoss.integration.model.yaml;
 
 import org.apache.commons.lang3.StringUtils;
 import org.symphonyoss.integration.utils.IpAddressUtils;
@@ -29,16 +29,37 @@ import java.util.Set;
  */
 public class WhiteList {
 
-  private Set<String> whiteList = new HashSet<>();
-
   /**
-   * Populate the whitelist based on the allowed origins.
+   * Retrieves the whitelist based on the allowed origins configured on YAML file.
+   *
+   * The whitelist may have the origin host name, IP address or both. The IP address can be a
+   * range using CIDR notation.
+   *
+   * YAML configuration:
+   *
+   * <pre>
+   *  {@code
+   *    allowed_origins:
+   *      - host: squid-104-1.sc1.uc-inf.net
+   *      - address: 192.30.252.40
+   *      - host: ec2-107-23-104-115.compute-1.amazonaws.com
+   *        address: 107.23.104.115
+   *      - address: 192.30.252.0/22
+   *  }
+   * </pre>
+   *
+   * You must include a character '-' for each new entry in the list.
+   *
+   * In this sample, the first entry has only the host name and the second has only the IP address.
+   * The third entry has the IP address and the host name. The last entry has an IP address range
+   * using CIDR notation.
+   *
    * @param allowedOrigins Allowed origins
    */
-  public void populateWhiteList(List<AllowedOrigin> allowedOrigins) {
-    if (allowedOrigins != null) {
-      this.whiteList = new HashSet<>(allowedOrigins.size());
+  public Set<String> getWhiteList(List<AllowedOrigin> allowedOrigins) {
+    final Set<String> whiteList = new HashSet<>();
 
+    if (allowedOrigins != null) {
       for (AllowedOrigin origin : allowedOrigins) {
         String host = origin.getHost();
         String address = origin.getAddress();
@@ -52,29 +73,8 @@ public class WhiteList {
         }
       }
     }
-  }
 
-  /**
-   * Added new origins to the whitelist
-   * @param origins Allowed origins
-   */
-  public void addOriginToWhiteList(String... origins) {
-    if (origins != null) {
-      for (String origin : origins) {
-        if (IpAddressUtils.isIpRange(origin)) {
-          whiteList.addAll(IpAddressUtils.getIpRange(origin));
-        } else {
-          whiteList.add(origin);
-        }
-      }
-    }
-  }
-
-  /**
-   * Get the whitelist based on YAML file settings.
-   * @return Global whitelist
-   */
-  public Set<String> getWhiteList() {
     return whiteList;
   }
+
 }

@@ -14,27 +14,18 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration.exception.bootstrap;
+package org.symphonyoss.integration.model.yaml;
 
 /**
- * Certificate not found:
- *
- * Possible reasons:
- * - Certs folder does not exist or cert files are missing.
- *
- * Created by cmarcondes on 10/26/16.
+ * Possible states for an application once it's processed.
+ * Created by rsanchez on 18/10/16.
  */
-public class CertificateNotFoundException extends BootstrapException {
+public enum ApplicationState {
 
-  public CertificateNotFoundException() {
-    super("Certificate folder not found");
-  }
+  PROVISIONED,
+  REMOVED,
+  FAILED,
+  SKIPPED,
+  UNKNOWN
 
-  public CertificateNotFoundException(String message) {
-    super(message);
-  }
-
-  public CertificateNotFoundException(String message, Exception cause) {
-    super(message, cause);
-  }
 }

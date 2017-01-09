@@ -14,32 +14,29 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration.model;
+package org.symphonyoss.integration.logging;
+
+import com.symphony.logging.ISymphonyOnPremKeyProvider;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
- * Represents an origin allowed to communicate with Integration Bridge.
- * Created by rsanchez on 10/11/16.
+ * Default implementation to session key provider.
+ * Created by rsanchez on 28/12/16.
  */
-public class AllowedOrigin {
+public class DefaultKeyProvider implements ISymphonyOnPremKeyProvider {
 
-  private String host;
 
-  private String address;
-
-  public String getHost() {
-    return host;
+  @Override
+  public String getSessionKey() {
+    return StringUtils.EMPTY;
   }
 
-  public void setHost(String host) {
-    this.host = host;
+  @Override
+  public String getSessionName() {
+    return StringUtils.EMPTY;
   }
 
-  public String getAddress() {
-    return address;
-  }
-
-  public void setAddress(String address) {
-    this.address = address;
-  }
-
+  @Override
+  public void reAuth() {}
 }

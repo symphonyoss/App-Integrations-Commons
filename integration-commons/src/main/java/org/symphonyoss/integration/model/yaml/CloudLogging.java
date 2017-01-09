@@ -14,17 +14,31 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration.model;
+package org.symphonyoss.integration.model.yaml;
 
 /**
- * Possible states for an application once it's processed.
- * Created by rsanchez on 18/10/16.
+ * Holds the information about the cloud logging.
+ * Created by rsanchez on 23/12/16.
  */
-public enum ApplicationState {
+public class CloudLogging {
 
-  PROVISIONED,
-  REMOVED,
-  FAILED,
-  SKIPPED
+  private String account;
 
+  private String secret;
+
+  public String getAccount() {
+    return account;
+  }
+
+  public void setAccount(String account) {
+    this.account = account;
+  }
+
+  public String getSecret() {
+    return secret;
+  }
+
+  public void setSecret(String secret) {
+    this.secret = secret;
+  }
 }

@@ -14,19 +14,25 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration;
+package org.symphonyoss.integration.model;
+
+import org.symphonyoss.integration.model.yaml.Keystore;
 
 /**
- * Created by rsanchez on 03/06/16.
+ * Default application keystore.
+ * Created by rsanchez on 27/12/16.
  */
-public class IntegrationAtlasException extends RuntimeException {
+public class DefaultAppKeystore extends Keystore {
 
-  public IntegrationAtlasException(String message, Throwable cause) {
-    super(message, cause);
+  private String user;
+
+  public DefaultAppKeystore(String user) {
+    this.user = user;
   }
 
-  public IntegrationAtlasException(String message) {
-    super(message);
+  @Override
+  public String getFile() {
+    return user + DEFAULT_KEYSTORE_TYPE_SUFFIX;
   }
 
 }

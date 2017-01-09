@@ -18,6 +18,10 @@
         </dependency>
         <dependency>
             <groupId>com.symphony.sbe.core</groupId>
+            <artifactId>auth-api-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.symphony.sbe.core</groupId>
             <artifactId>pod-api-client</artifactId>
         </dependency>
         <dependency>
@@ -27,14 +31,6 @@
         <dependency>
             <groupId>com.symphony.sbe.core</groupId>
             <artifactId>agent-util</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.symphony.sbe.core</groupId>
-            <artifactId>atlas</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.symphony.sbe.core</groupId>
-            <artifactId>atlas-symphony</artifactId>
         </dependency>
         <dependency>
             <groupId>com.symphony.sbe.core</groupId>
