@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration.webhook;
+package org.symphonyoss.integration;
 
 import org.apache.commons.io.FileUtils;
 

@@ -50,6 +50,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.symphonyoss.integration.IntegrationStatus;
+import org.symphonyoss.integration.MockKeystore;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
 import org.symphonyoss.integration.entity.model.User;
 import org.symphonyoss.integration.exception.bootstrap.CertificateNotFoundException;

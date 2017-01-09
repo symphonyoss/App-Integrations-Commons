@@ -16,6 +16,7 @@
 
 package org.symphonyoss.integration.model.yaml;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -33,6 +34,8 @@ import java.util.Set;
 @Configuration
 @ConfigurationProperties
 public class IntegrationProperties {
+
+  private static final String DEFAULT_HTTPS_PORT = "443";
 
   private ConnectionInfo pod;
 
@@ -154,32 +157,93 @@ public class IntegrationProperties {
   }
 
   public String getSymphonyUrl() {
-    return String.format("https://%s:%s", pod.getHost(), pod.getPort());
+    if ((pod == null) || (StringUtils.isEmpty(pod.getHost()))) {
+      return StringUtils.EMPTY;
+    }
+
+    String port = pod.getPort();
+
+    if (StringUtils.isEmpty(port)) {
+      port = DEFAULT_HTTPS_PORT;
+    }
+
+    return String.format("https://%s:%s", pod.getHost(), port);
   }
 
   public String getPodUrl() {
-    return String.format("https://%s:%s/pod", pod.getHost(), pod.getPort());
+    String symphonyUrl = getSymphonyUrl();
+
+    if (StringUtils.isEmpty(symphonyUrl)) {
+      return StringUtils.EMPTY;
+    }
+
+    return String.format("%s/pod", symphonyUrl);
   }
 
   public String getLoginUrl() {
-    return String.format("https://%s:%s/login", pod.getHost(), pod.getPort());
+    String symphonyUrl = getSymphonyUrl();
+
+    if (StringUtils.isEmpty(symphonyUrl)) {
+      return StringUtils.EMPTY;
+    }
+
+    return String.format("%s/login", symphonyUrl);
   }
 
   public String getSessionManagerAuthUrl() {
-    return String.format("https://%s:%s/sessionauth", podSessionManager.getHost(),
-        podSessionManager.getPort());
+    if ((podSessionManager == null) || (StringUtils.isEmpty(podSessionManager.getHost()))) {
+      return StringUtils.EMPTY;
+    }
+
+    String port = podSessionManager.getPort();
+
+    if (StringUtils.isEmpty(port)) {
+      port = DEFAULT_HTTPS_PORT;
+    }
+
+    return String.format("https://%s:%s/sessionauth", podSessionManager.getHost(), port);
   }
 
   public String getKeyManagerUrl() {
-    return String.format("https://%s:%s/relay", keyManager.getHost(), keyManager.getPort());
+    if ((keyManager == null) || (StringUtils.isEmpty(keyManager.getHost()))) {
+      return StringUtils.EMPTY;
+    }
+
+    String port = keyManager.getPort();
+
+    if (StringUtils.isEmpty(port)) {
+      port = DEFAULT_HTTPS_PORT;
+    }
+
+    return String.format("https://%s:%s/relay", keyManager.getHost(), port);
   }
 
   public String getKeyManagerAuthUrl() {
-    return String.format("https://%s:%s/keyauth", keyManager.getHost(), keyManager.getAuthPort());
+    if ((keyManager == null) || (StringUtils.isEmpty(keyManager.getHost()))) {
+      return StringUtils.EMPTY;
+    }
+
+    String port = keyManager.getAuthPort();
+
+    if (StringUtils.isEmpty(port)) {
+      port = DEFAULT_HTTPS_PORT;
+    }
+
+    return String.format("https://%s:%s/keyauth", keyManager.getHost(), port);
   }
 
   public String getAgentUrl() {
-    return String.format("https://%s:%s/agent", agent.getHost(), agent.getPort());
+    if ((agent == null) || (StringUtils.isEmpty(agent.getHost()))) {
+      return StringUtils.EMPTY;
+    }
+
+    String port = agent.getPort();
+
+    if (StringUtils.isEmpty(port)) {
+      port = DEFAULT_HTTPS_PORT;
+    }
+
+    return String.format("https://%s:%s/agent", agent.getHost(), port);
   }
 
   @Override
