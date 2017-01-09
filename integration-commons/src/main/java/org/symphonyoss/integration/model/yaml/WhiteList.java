@@ -31,6 +31,29 @@ public class WhiteList {
 
   /**
    * Retrieves the whitelist based on the allowed origins configured on YAML file.
+   *
+   * The whitelist may have the origin host name, IP address or both. The IP address can be a
+   * range using CIDR notation.
+   *
+   * YAML configuration:
+   *
+   * <pre>
+   *  {@code
+   *    allowed_origins:
+   *      - host: squid-104-1.sc1.uc-inf.net
+   *      - address: 192.30.252.40
+   *      - host: ec2-107-23-104-115.compute-1.amazonaws.com
+   *        address: 107.23.104.115
+   *      - address: 192.30.252.0/22
+   *  }
+   * </pre>
+   *
+   * You must include a character '-' for each new entry in the list.
+   *
+   * In this sample, the first entry has only the host name and the second has only the IP address.
+   * The third entry has the IP address and the host name. The last entry has an IP address range
+   * using CIDR notation.
+   *
    * @param allowedOrigins Allowed origins
    */
   public Set<String> getWhiteList(List<AllowedOrigin> allowedOrigins) {
