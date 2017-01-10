@@ -16,6 +16,7 @@
 
 package org.symphonyoss.integration.metrics;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -31,16 +32,8 @@ public class IntegrationMetricsController {
   /**
    * Holds the list of controller to be initialized
    */
-  private List<IntegrationController> controllers = new ArrayList<>();
-
-  /**
-   * Register the integration controller. Each integration controller should perform
-   * the self-registration during its own bootstrap.
-   * @param controller Integration controller
-   */
-  public void registerIntegrationController(IntegrationController controller) {
-    this.controllers.add(controller);
-  }
+  @Autowired
+  private List<IntegrationController> controllers;
 
   /**
    * Delegates the metric objects creation to the specific controller.

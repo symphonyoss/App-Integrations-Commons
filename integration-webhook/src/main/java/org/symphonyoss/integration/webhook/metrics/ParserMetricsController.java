@@ -28,13 +28,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.symphonyoss.integration.metrics.IntegrationController;
 import org.symphonyoss.integration.metrics.IntegrationMetricsConstants;
-import org.symphonyoss.integration.metrics.IntegrationMetricsController;
 import org.symphonyoss.integration.metrics.gauge.CounterRatio;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import javax.annotation.PostConstruct;
 
 /**
  * Controller class to monitoring all the metrics related to parser execution.
@@ -60,17 +57,6 @@ public class ParserMetricsController implements IntegrationController {
    * Counters for each parser. Used to monitor the parser wasn't executed successfully
    */
   private ConcurrentMap<String, Counter> parserFailCounters = new ConcurrentHashMap<>();
-
-  /**
-   * Controller class
-   */
-  @Autowired
-  private IntegrationMetricsController controller;
-
-  @PostConstruct
-  public void init() {
-    this.controller.registerIntegrationController(this);
-  }
 
   /**
    * Initializes the metrics for an specific parser. Each parser should monitor the
