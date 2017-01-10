@@ -103,8 +103,10 @@ public class IntegrationProperties {
   }
 
   public Application getApplication(String component) {
-    for (Application application : applications.values()) {
+    for (Map.Entry<String, Application> entry : applications.entrySet()) {
+      Application application = entry.getValue();
       if (component.equals(application.getComponent())) {
+        application.setId(entry.getKey());
         return application;
       }
     }

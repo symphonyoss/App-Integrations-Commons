@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -51,6 +52,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.symphonyoss.integration.IntegrationStatus;
@@ -64,7 +66,6 @@ import org.symphonyoss.integration.exception.config.ForbiddenUserException;
 import org.symphonyoss.integration.model.config.StreamType;
 import org.symphonyoss.integration.model.healthcheck.IntegrationFlags;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
-import org.symphonyoss.integration.model.yaml.Application;
 import org.symphonyoss.integration.model.yaml.IntegrationProperties;
 import org.symphonyoss.integration.service.ConfigurationService;
 import org.symphonyoss.integration.service.IntegrationBridge;
@@ -125,7 +126,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   @MockBean
   private UserService userService;
 
-  @Autowired
+  @SpyBean
   private IntegrationProperties properties;
 
   @MockBean
@@ -546,7 +547,7 @@ public class WebHookIntegrationTest extends MockKeystore {
     assertTrue(integrationWhiteList.contains("165.254.226.119"));
     assertTrue(integrationWhiteList.contains("107.23.104.115"));
 
-    properties.setApplications(Collections.<String, Application>emptyMap());
+    given(properties.getApplication(INTEGRATION_USER)).willReturn(null);
 
     integrationWhiteList = mockWHI.getIntegrationWhiteList();
     assertNotNull(integrationWhiteList);

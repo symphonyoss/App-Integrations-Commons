@@ -35,7 +35,7 @@ import java.security.cert.CertificateException;
  */
 public class MockKeystore {
 
-  private static final String APP_TYPE = "jiraWebHookIntegration";
+  private static final String APP_ID = "jira";
 
   private static final String DEFAULT_KEYSTORE_TYPE = "pkcs12";
 
@@ -59,7 +59,7 @@ public class MockKeystore {
     ks.load(null, password);
 
     // Store away the keystore.
-    String filename = APP_TYPE + DEFAULT_KEYSTORE_TYPE_SUFFIX;
+    String filename = APP_ID + DEFAULT_KEYSTORE_TYPE_SUFFIX;
     String certsDir = mockCertDir();
     String storeLocation = certsDir + filename;
 

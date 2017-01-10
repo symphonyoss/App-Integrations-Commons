@@ -24,15 +24,15 @@ import org.symphonyoss.integration.model.yaml.Keystore;
  */
 public class DefaultAppKeystore extends Keystore {
 
-  private String user;
+  private String appId;
 
-  public DefaultAppKeystore(String user) {
-    this.user = user;
+  public DefaultAppKeystore(String appId) {
+    this.appId = appId;
   }
 
   @Override
   public String getFile() {
-    return user + DEFAULT_KEYSTORE_TYPE_SUFFIX;
+    return appId + DEFAULT_KEYSTORE_TYPE_SUFFIX;
   }
 
 }

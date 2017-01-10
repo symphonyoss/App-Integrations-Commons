@@ -32,6 +32,7 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
+import org.symphonyoss.integration.exception.bootstrap.CertificateNotFoundException;
 import org.symphonyoss.integration.exception.bootstrap.LoadKeyStoreException;
 import org.symphonyoss.integration.healthcheck.IntegrationHealthManager;
 import org.symphonyoss.integration.model.DefaultAppKeystore;
@@ -125,16 +126,20 @@ public abstract class BaseIntegration {
 
     Application application = properties.getApplication(integrationUser);
 
+    if (application == null) {
+      throw new CertificateNotFoundException("Certificate file unknown");
+    }
+
     Keystore keystoreConfig;
-    if ((application == null) || (application.getKeystore() == null)) {
-      keystoreConfig = new DefaultAppKeystore(integrationUser);
+    if (application.getKeystore() == null) {
+      keystoreConfig = new DefaultAppKeystore(application.getId());
     } else {
       keystoreConfig = application.getKeystore();
     }
 
     String locationFile = keystoreConfig.getFile();
     if (StringUtils.isBlank(locationFile)) {
-      locationFile = integrationUser + DEFAULT_KEYSTORE_TYPE_SUFFIX;
+      locationFile = application.getId() + DEFAULT_KEYSTORE_TYPE_SUFFIX;
     }
 
     String storeLocation = certsDir + locationFile;
