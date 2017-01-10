@@ -27,8 +27,6 @@ public class ConnectionInfo {
 
   private String port;
 
-  private String authPort;
-
   public String getHost() {
     return host;
   }
@@ -45,20 +43,12 @@ public class ConnectionInfo {
     this.port = port;
   }
 
-  public String getAuthPort() {
-    return authPort;
-  }
-
-  public void setAuthPort(String authPort) {
-    this.authPort = authPort;
-  }
 
   @Override
   public String toString() {
     return "ConnectionInfo{" +
         "host='" + host + '\'' +
         ", port='" + port + '\'' +
-        ", authPort='" + authPort + '\'' +
         '}';
   }
 }

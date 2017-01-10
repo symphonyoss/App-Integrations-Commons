@@ -45,6 +45,8 @@ public class IntegrationProperties {
 
   private ConnectionInfo keyManager;
 
+  private ConnectionInfo keyManagerAuth;
+
   private CloudLogging cloudLogging;
 
   private Map<String, Application> applications = new HashMap<>();
@@ -83,6 +85,14 @@ public class IntegrationProperties {
 
   public void setPodSessionManager(ConnectionInfo podSessionManager) {
     this.podSessionManager = podSessionManager;
+  }
+
+  public ConnectionInfo getKeyManagerAuth() {
+    return keyManagerAuth;
+  }
+
+  public void setKeyManagerAuth(ConnectionInfo keyManagerAuth) {
+    this.keyManagerAuth = keyManagerAuth;
   }
 
   public CloudLogging getCloudLogging() {
@@ -221,17 +231,17 @@ public class IntegrationProperties {
   }
 
   public String getKeyManagerAuthUrl() {
-    if ((keyManager == null) || (StringUtils.isEmpty(keyManager.getHost()))) {
+    if ((keyManagerAuth == null) || (StringUtils.isEmpty(keyManagerAuth.getHost()))) {
       return StringUtils.EMPTY;
     }
 
-    String port = keyManager.getAuthPort();
+    String port = keyManagerAuth.getPort();
 
     if (StringUtils.isEmpty(port)) {
       port = DEFAULT_HTTPS_PORT;
     }
 
-    return String.format("https://%s:%s/keyauth", keyManager.getHost(), port);
+    return String.format("https://%s:%s/keyauth", keyManagerAuth.getHost(), port);
   }
 
   public String getAgentUrl() {
