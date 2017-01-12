@@ -126,12 +126,10 @@ public abstract class BaseIntegration {
 
     Application application = properties.getApplication(integrationUser);
 
-    if (application == null) {
-      throw new CertificateNotFoundException("Certificate file unknown");
-    }
-
     Keystore keystoreConfig;
-    if (application.getKeystore() == null) {
+    if (application == null) {
+      keystoreConfig = new DefaultAppKeystore(integrationUser);
+    } else if (application.getKeystore() == null) {
       keystoreConfig = new DefaultAppKeystore(application.getId());
     } else {
       keystoreConfig = application.getKeystore();
