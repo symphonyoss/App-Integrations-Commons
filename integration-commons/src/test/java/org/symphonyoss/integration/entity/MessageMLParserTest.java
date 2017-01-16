@@ -63,7 +63,7 @@ public class MessageMLParserTest {
         + "<attribute name=\"username\" type=\"org.symphonyoss.string\" value=\"test\"/>"
         + "</entity>"
         + "</messageML>";
-    MessageML messageML = parser.parse(xml);
+    MessageML messageML = MessageMLParser.parse(xml);
     String result = EntityBuilder.forEntity(messageML.getEntity()).generateXML();
 
     Assert.assertEquals(xml, "<messageML>" + result + "</messageML>");
@@ -79,7 +79,7 @@ public class MessageMLParserTest {
         + "</entity>"
         + "</messageML>";
 
-    MessageML messageML = parser.parse(xml);
+    MessageML messageML = MessageMLParser.parse(xml);
     String result = EntityBuilder.forEntity(messageML.getEntity()).generateXML();
 
     Assert.assertEquals(xml, "<messageML>" + result + "</messageML>");
@@ -101,7 +101,7 @@ public class MessageMLParserTest {
         + "</entity>"
         + "</entity>"
         + "</messageML>";
-    MessageML messageML = parser.parse(xml);
+    MessageML messageML = MessageMLParser.parse(xml);
     String result = EntityBuilder.forEntity(messageML.getEntity()).generateXML();
 
     Assert.assertEquals(xml, "<messageML>" + result + "</messageML>");
@@ -110,7 +110,7 @@ public class MessageMLParserTest {
   @Test(expected = MessageMLParseException.class)
   public void testParseWithoutEntity() throws JAXBException, EntityXMLGeneratorException {
     String xml = "<messageML>simple message</messageML>";
-    parser.parse(xml);
+    MessageMLParser.parse(xml);
   }
 
   @Test(expected = MessageMLParseException.class)

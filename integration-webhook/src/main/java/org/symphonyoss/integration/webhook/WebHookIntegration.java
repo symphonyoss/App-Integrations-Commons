@@ -512,7 +512,7 @@ public abstract class WebHookIntegration extends BaseIntegration implements Inte
       public void run() {
         closeCircuit();
       }
-    }, this.circuitTimeout, TimeUnit.MILLISECONDS);
+    }, circuitTimeout, TimeUnit.MILLISECONDS);
   }
 
   private void closeCircuit() {

@@ -57,7 +57,7 @@ public class SafeStringUtilsTest {
 
   @Test
   public void testConcatNull() {
-    SafeString result = SafeStringUtils.concat(null);
+    SafeString result = SafeStringUtils.concat((SafeString[])null);
     assertEquals(result.toString(), StringUtils.EMPTY);
   }
 
@@ -73,7 +73,7 @@ public class SafeStringUtilsTest {
     assertTrue(SafeStringUtils.isAnyBlank(s1, null));
     assertTrue(SafeStringUtils.isAnyBlank(null, s1));
     assertTrue(SafeStringUtils.isAnyBlank(null, null));
-    assertTrue(SafeStringUtils.isAnyBlank(null));
+    assertTrue(SafeStringUtils.isAnyBlank((SafeString[])null));
   }
 
   @Test

@@ -107,7 +107,7 @@ public class IntegrationBridgeKeyProviderTest {
     assertEquals("45123138714312", provider.getSessionKey());
   }
 
-  private ScheduledFuture mockThreadExecutor() {
+  private ScheduledFuture<?> mockThreadExecutor() {
     ScheduledFuture<?> future = mock(ScheduledFuture.class);
 
     //returns false for the first call and true the next.

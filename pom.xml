@@ -185,8 +185,11 @@
                 <version>${compiler.plugin.version}</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
+                    <showWarnings>true</showWarnings>
                     <compilerArgs>
                         <arg>-Xlint:all</arg>
+                        <arg>-Xlint:-processing</arg>
+                        <arg>-Xlint:-serial</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>

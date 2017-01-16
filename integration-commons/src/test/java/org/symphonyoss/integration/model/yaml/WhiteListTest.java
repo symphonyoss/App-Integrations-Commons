@@ -44,7 +44,7 @@ public class WhiteListTest {
 
     whiteList = new WhiteList();
 
-    Set<String> emptyWhiteList = whiteList.getWhiteList(Collections.EMPTY_LIST);
+    Set<String> emptyWhiteList = whiteList.getWhiteList(Collections.<AllowedOrigin>emptyList());
 
     assertNotNull(emptyWhiteList);
     assertTrue(emptyWhiteList.isEmpty());
