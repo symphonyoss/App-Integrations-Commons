@@ -18,6 +18,7 @@ package org.symphonyoss.integration;
 
 import com.symphony.api.pod.model.V1Configuration;
 
+import org.springframework.boot.actuate.health.HealthIndicator;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
 
 import java.util.Set;
@@ -28,7 +29,7 @@ import java.util.Set;
  *
  * Created by Milton Quilzini on 04/05/16.
  */
-public interface Integration {
+public interface Integration extends HealthIndicator {
 
   /**
    * Everything that needs to be executed when an Integration is being bootstrapped.
@@ -64,4 +65,5 @@ public interface Integration {
    * @return Integration whitelist.
    */
   Set<String> getIntegrationWhiteList();
+
 }

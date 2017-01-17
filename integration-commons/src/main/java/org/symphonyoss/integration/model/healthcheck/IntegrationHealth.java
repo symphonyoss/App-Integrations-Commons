@@ -17,7 +17,7 @@
 package org.symphonyoss.integration.model.healthcheck;
 
 /**
- * Part of {@link IntegrationBridgeHealth}, holds health information about an specific Integration.
+ * Holds health information about an specific Integration.
  * It contains the integration name, its current status, flags regarding its provisioning state and the last time this
  * integration has posted a message to Symphony.
  *

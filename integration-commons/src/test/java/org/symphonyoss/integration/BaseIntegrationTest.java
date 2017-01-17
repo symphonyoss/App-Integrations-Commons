@@ -30,6 +30,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.boot.actuate.health.Health;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
 import org.symphonyoss.integration.exception.ExceptionMessageFormatter;
 import org.symphonyoss.integration.exception.bootstrap.CertificateNotFoundException;
@@ -81,7 +82,7 @@ public class BaseIntegrationTest extends MockKeystore {
   private IntegrationUtils utils;
 
   @InjectMocks
-  private BaseIntegration integration = new MockIntegration(properties, utils, authenticationProxy);
+  private MockIntegration integration = new MockIntegration(properties, utils, authenticationProxy);
 
   private Application application;
 
@@ -194,6 +195,20 @@ public class BaseIntegrationTest extends MockKeystore {
     doReturn(Response.status(Response.Status.OK).build()).when(builder).get();
     assertEquals(IntegrationFlags.ValueEnum.OK,
         integration.getConfiguratorInstalledFlag(APP_TYPE));
+  }
+
+  @Test
+  public void testHealth() {
+    String status = IntegrationStatus.ACTIVE.name();
+    IntegrationHealth health = new IntegrationHealth();
+    health.setStatus(status);
+
+    integration.setHealth(health);
+
+    Health.Builder builder = Health.status(status);
+    builder.withDetail("detail", health);
+
+    assertEquals(builder.build(), integration.health());
   }
 
   private Invocation.Builder mockRequest() {

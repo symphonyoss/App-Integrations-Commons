@@ -31,12 +31,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.health.Health;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
-import org.symphonyoss.integration.exception.bootstrap.CertificateNotFoundException;
 import org.symphonyoss.integration.exception.bootstrap.LoadKeyStoreException;
 import org.symphonyoss.integration.healthcheck.IntegrationHealthManager;
 import org.symphonyoss.integration.model.DefaultAppKeystore;
 import org.symphonyoss.integration.model.healthcheck.IntegrationFlags;
+import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
 import org.symphonyoss.integration.model.yaml.Application;
 import org.symphonyoss.integration.model.yaml.IntegrationBridge;
 import org.symphonyoss.integration.model.yaml.IntegrationProperties;
@@ -60,13 +61,15 @@ import javax.ws.rs.core.Response;
  * implementations don't need to "re-implement" their own.
  * Created by rsanchez on 21/11/16.
  */
-public abstract class BaseIntegration {
+public abstract class BaseIntegration implements Integration {
 
   private static final ISymphonyLogger LOG = SymphonyLoggerFactory.getLogger(BaseIntegration.class);
 
   private static final String APPS_CONTEXT = "apps";
 
   private static final String APP_DEFAULT_PAGE = "controller.html";
+
+  private static final String DETAIL = "detail";
 
   @Autowired
   protected AuthenticationProxy authenticationProxy;
@@ -226,4 +229,11 @@ public abstract class BaseIntegration {
   public IntegrationHealthManager getHealthManager() {
     return healthManager;
   }
+
+  @Override
+  public Health health() {
+    IntegrationHealth healthStatus = getHealthStatus();
+    return Health.status(healthStatus.getStatus()).withDetail(DETAIL, healthStatus).build();
+  }
+
 }

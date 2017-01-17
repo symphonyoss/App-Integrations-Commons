@@ -33,22 +33,20 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.symphonyoss.integration.Integration;
 import org.symphonyoss.integration.BaseIntegration;
-import org.symphonyoss.integration.exception.config.ForbiddenUserException;
+import org.symphonyoss.integration.entity.model.User;
+import org.symphonyoss.integration.exception.IntegrationRuntimeException;
 import org.symphonyoss.integration.exception.authentication.ConnectivityException;
 import org.symphonyoss.integration.exception.bootstrap.BootstrapException;
 import org.symphonyoss.integration.exception.bootstrap.RetryLifecycleException;
 import org.symphonyoss.integration.exception.bootstrap.UnexpectedBootstrapException;
-import org.symphonyoss.integration.entity.model.User;
-import org.symphonyoss.integration.exception.IntegrationRuntimeException;
+import org.symphonyoss.integration.exception.config.ForbiddenUserException;
 import org.symphonyoss.integration.exception.config.IntegrationConfigException;
 import org.symphonyoss.integration.logging.IntegrationBridgeCloudLoggerFactory;
-import org.symphonyoss.integration.model.yaml.Application;
-import org.symphonyoss.integration.model.yaml.IntegrationProperties;
 import org.symphonyoss.integration.model.config.StreamType;
 import org.symphonyoss.integration.model.healthcheck.IntegrationFlags;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
+import org.symphonyoss.integration.model.yaml.Application;
 import org.symphonyoss.integration.service.ConfigurationService;
 import org.symphonyoss.integration.service.IntegrationBridge;
 import org.symphonyoss.integration.service.StreamService;
@@ -78,7 +76,7 @@ import javax.ws.rs.ProcessingException;
  *
  * Created by Milton Quilzini on 04/05/16.
  */
-public abstract class WebHookIntegration extends BaseIntegration implements Integration {
+public abstract class WebHookIntegration extends BaseIntegration {
 
   private static final ISymphonyLogger LOGGER =
       IntegrationBridgeCloudLoggerFactory.getLogger(WebHookIntegration.class);
@@ -543,4 +541,5 @@ public abstract class WebHookIntegration extends BaseIntegration implements Inte
 
     return application.getWhiteList();
   }
+
 }
