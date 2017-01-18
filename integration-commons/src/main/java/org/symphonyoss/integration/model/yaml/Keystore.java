@@ -16,6 +16,8 @@
 
 package org.symphonyoss.integration.model.yaml;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Represents the application keystore information.
  * Created by rsanchez on 27/12/16.
@@ -25,8 +27,6 @@ public class Keystore {
   public static final String DEFAULT_KEYSTORE_TYPE = "pkcs12";
 
   public static final String DEFAULT_KEYSTORE_TYPE_SUFFIX = ".p12";
-
-  public static final String DEFAULT_KEYSTORE_PASSWORD = "changeit";
 
   private String file;
 
@@ -44,7 +44,7 @@ public class Keystore {
 
   public String getPassword() {
     if (password == null) {
-      return DEFAULT_KEYSTORE_PASSWORD;
+      return StringUtils.EMPTY;
     }
 
     return password.trim();

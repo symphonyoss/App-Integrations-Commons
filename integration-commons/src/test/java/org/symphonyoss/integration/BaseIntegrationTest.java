@@ -39,6 +39,7 @@ import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
 import org.symphonyoss.integration.model.yaml.Application;
 import org.symphonyoss.integration.model.yaml.IntegrationBridge;
 import org.symphonyoss.integration.model.yaml.IntegrationProperties;
+import org.symphonyoss.integration.model.yaml.Keystore;
 import org.symphonyoss.integration.utils.IntegrationUtils;
 
 import java.io.IOException;
@@ -68,6 +69,8 @@ public class BaseIntegrationTest extends MockKeystore {
 
   private static final String MOCK_CONTEXT = "jira";
 
+  private static final String DEFAULT_KEYSTORE_PASSWORD = "changeit";
+
   @Mock
   private AuthenticationProxy authenticationProxy;
 
@@ -87,8 +90,12 @@ public class BaseIntegrationTest extends MockKeystore {
 
   @Before
   public void init() {
+    Keystore keystore = new Keystore();
+    keystore.setPassword(DEFAULT_KEYSTORE_PASSWORD);
+
     this.application = new Application();
     this.application.setComponent(APP_TYPE);
+    this.application.setKeystore(keystore);
 
     properties.setApplications(Collections.singletonMap(APP_ID, application));
   }
@@ -115,7 +122,7 @@ public class BaseIntegrationTest extends MockKeystore {
       integration.registerUser(APP_TYPE);
       fail();
     } catch (LoadKeyStoreException e) {
-      String message = "Fail to load keystore file at " + dir + APP_TYPE + ".p12";
+      String message = "Fail to retrieve the keystore password. Application: " + APP_TYPE;
       String formattedMessage =
           ExceptionMessageFormatter.format("Integration Bootstrap", message, e.getCause());
       assertEquals(formattedMessage, e.getMessage());
