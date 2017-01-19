@@ -81,7 +81,7 @@ public class BaseIntegrationTest extends MockKeystore {
   private IntegrationUtils utils;
 
   @InjectMocks
-  private BaseIntegration integration = new MockIntegration(properties, utils, authenticationProxy);
+  private MockIntegration integration = new MockIntegration(properties, utils, authenticationProxy);
 
   private Application application;
 

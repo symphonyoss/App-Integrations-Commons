@@ -64,4 +64,5 @@ public interface Integration {
    * @return Integration whitelist.
    */
   Set<String> getIntegrationWhiteList();
+
 }

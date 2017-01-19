@@ -14,7 +14,9 @@ import java.util.Set;
  * This is a mock class for the {@link Integration} interface.
  * Created by rsanchez on 11/01/17.
  */
-public class MockIntegration extends BaseIntegration implements Integration {
+public class MockIntegration extends BaseIntegration {
+
+  private IntegrationHealth health = new IntegrationHealth();
 
   public MockIntegration(IntegrationProperties properties, IntegrationUtils utils,
       AuthenticationProxy authenticationProxy) {
@@ -40,7 +42,11 @@ public class MockIntegration extends BaseIntegration implements Integration {
 
   @Override
   public IntegrationHealth getHealthStatus() {
-    return null;
+    return health;
+  }
+
+  public void setHealth(IntegrationHealth health) {
+    this.health = health;
   }
 
   @Override

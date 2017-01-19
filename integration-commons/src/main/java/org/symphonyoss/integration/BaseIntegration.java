@@ -32,7 +32,6 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
-import org.symphonyoss.integration.exception.bootstrap.CertificateNotFoundException;
 import org.symphonyoss.integration.exception.bootstrap.LoadKeyStoreException;
 import org.symphonyoss.integration.healthcheck.IntegrationHealthManager;
 import org.symphonyoss.integration.model.DefaultAppKeystore;
@@ -60,7 +59,7 @@ import javax.ws.rs.core.Response;
  * implementations don't need to "re-implement" their own.
  * Created by rsanchez on 21/11/16.
  */
-public abstract class BaseIntegration {
+public abstract class BaseIntegration implements Integration {
 
   private static final ISymphonyLogger LOG = SymphonyLoggerFactory.getLogger(BaseIntegration.class);
 
@@ -226,4 +225,5 @@ public abstract class BaseIntegration {
   public IntegrationHealthManager getHealthManager() {
     return healthManager;
   }
+
 }
