@@ -186,8 +186,15 @@
                 <version>${compiler.plugin.version}</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
+                    <showWarnings>true</showWarnings>
                     <compilerArgs>
                         <arg>-Xlint:all</arg>
+                        <arg>
+                            -Xlint:-processing<!--Disables any annotation processor warnings from JARs on the compile classpath-->
+                        </arg>
+                        <arg>
+                            -Xlint:-serial<!--Disables any warnings complaining of Serializable classes that do not have an explicit serialVersionUID field-->
+                        </arg>
                     </compilerArgs>
                 </configuration>
             </plugin>

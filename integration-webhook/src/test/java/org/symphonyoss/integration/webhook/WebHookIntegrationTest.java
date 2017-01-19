@@ -16,7 +16,6 @@
 
 package org.symphonyoss.integration.webhook;
 
-import static java.util.Collections.EMPTY_MAP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -33,6 +32,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.symphonyoss.integration.utils.WebHookConfigurationUtils.LAST_POSTED_DATE;
+import static org.mockito.Matchers.anyListOf;
 
 import com.symphony.api.agent.model.V2Message;
 import com.symphony.api.agent.model.V2MessageList;
@@ -253,7 +253,8 @@ public class WebHookIntegrationTest extends MockKeystore {
     response.add(message1);
     response.add(message2);
 
-    when(service.sendMessage(any(ConfigurationInstance.class), anyString(), any(List.class),
+    when(service.sendMessage(any(ConfigurationInstance.class), anyString(),
+        anyListOf(String.class),
         anyString())).thenReturn(response);
 
     Long optionalPropertiesTimestamp = timestamp1 - 1000;
@@ -268,7 +269,7 @@ public class WebHookIntegrationTest extends MockKeystore {
     doReturn(instance).when(configService).getInstanceById(anyString(), anyString(), anyString());
 
     mockWHI.handle(instance.getInstanceId(), INTEGRATION_USER,
-        new WebHookPayload(EMPTY_MAP, EMPTY_MAP, "{ \"webhookEvent\": \"mock\" }"));
+        new WebHookPayload(Collections.<String, String>emptyMap(), Collections.<String, String>emptyMap(), "{ \"webhookEvent\": \"mock\" }"));
 
     Long lastPostedDate = WebHookConfigurationUtils.fromJsonString(instance.getOptionalProperties())
         .path(LAST_POSTED_DATE).asLong();
@@ -290,7 +291,8 @@ public class WebHookIntegrationTest extends MockKeystore {
         .getConfigurationById(CONFIGURATION_ID, INTEGRATION_USER);
 
     doReturn(new V2MessageList()).when(service)
-        .sendMessage(any(ConfigurationInstance.class), anyString(), any(List.class), anyString());
+        .sendMessage(any(ConfigurationInstance.class), anyString(),
+            anyListOf(String.class), anyString());
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
@@ -304,7 +306,7 @@ public class WebHookIntegrationTest extends MockKeystore {
     doReturn(instance).when(configService).getInstanceById(anyString(), anyString(), anyString());
 
     mockWHI.handle(instance.getInstanceId(), INTEGRATION_USER,
-        new WebHookPayload(EMPTY_MAP, EMPTY_MAP, "{ \"webhookEvent\": \"mock\" }"));
+        new WebHookPayload(Collections.<String, String>emptyMap(), Collections.<String, String>emptyMap(), "{ \"webhookEvent\": \"mock\" }"));
 
     Long lastPostedDate = WebHookConfigurationUtils.fromJsonString(instance.getOptionalProperties())
         .path(LAST_POSTED_DATE).asLong();
@@ -325,7 +327,8 @@ public class WebHookIntegrationTest extends MockKeystore {
   public void testHandleSocketException() throws WebHookParseException, IOException {
     ProcessingException exception = new ProcessingException(new ConnectException());
     doThrow(exception).when(service)
-        .sendMessage(any(ConfigurationInstance.class), anyString(), any(List.class), anyString());
+        .sendMessage(any(ConfigurationInstance.class), anyString(),
+            anyListOf(String.class), anyString());
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
@@ -343,7 +346,7 @@ public class WebHookIntegrationTest extends MockKeystore {
     doReturn(configuration).when(configService).getConfigurationById(anyString(), anyString());
 
     mockWHI.handle("1234", INTEGRATION_USER,
-        new WebHookPayload(EMPTY_MAP, EMPTY_MAP, "{ \"webhookEvent\": \"mock\" }"));
+        new WebHookPayload(Collections.<String, String>emptyMap(), Collections.<String, String>emptyMap(), "{ \"webhookEvent\": \"mock\" }"));
 
     Long lastPostedDate = WebHookConfigurationUtils.fromJsonString(instance.getOptionalProperties())
         .path(LAST_POSTED_DATE).asLong();
@@ -364,7 +367,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   public void testWelcomeInvalidPayload() throws IOException {
     SendMessageAnswer answer = new SendMessageAnswer();
     doAnswer(answer).when(service).sendMessage(any(ConfigurationInstance.class), anyString(),
-        any(List.class), anyString());
+        anyListOf(String.class), anyString());
 
     mockWHI.welcome(new ConfigurationInstance(), INTEGRATION_USER, "");
   }
@@ -373,7 +376,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   public void testWelcomeEmptyPayload() throws IOException {
     SendMessageAnswer answer = new SendMessageAnswer();
     doAnswer(answer).when(service).sendMessage(any(ConfigurationInstance.class), anyString(),
-        any(List.class), anyString());
+        anyListOf(String.class), anyString());
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
@@ -391,7 +394,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   public void testWelcomeInvalidStreams() throws IOException {
     SendMessageAnswer answer = new SendMessageAnswer();
     doAnswer(answer).when(service).sendMessage(any(ConfigurationInstance.class), anyString(),
-        any(List.class), anyString());
+        anyListOf(String.class), anyString());
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
@@ -409,7 +412,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   public void testWelcomeEmptyStreamType() throws IOException {
     SendMessageAnswer answer = new SendMessageAnswer();
     doAnswer(answer).when(service).sendMessage(any(ConfigurationInstance.class), anyString(),
-        any(List.class), anyString());
+        anyListOf(String.class), anyString());
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
@@ -427,7 +430,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   public void testWelcomeIMStreamType() throws IOException {
     SendMessageAnswer answer = new SendMessageAnswer();
     doAnswer(answer).when(service).sendMessage(any(ConfigurationInstance.class), anyString(),
-        any(List.class), anyString());
+        anyListOf(String.class), anyString());
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
@@ -458,7 +461,7 @@ public class WebHookIntegrationTest extends MockKeystore {
 
     SendMessageAnswer answer = new SendMessageAnswer();
     doAnswer(answer).when(service).sendMessage(any(ConfigurationInstance.class), anyString(),
-        any(List.class), anyString());
+        anyListOf(String.class), anyString());
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
@@ -485,7 +488,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   public void testWelcomeChatroomWithoutUserStreamType() throws IOException {
     SendMessageAnswer answer = new SendMessageAnswer();
     doAnswer(answer).when(service).sendMessage(any(ConfigurationInstance.class), anyString(),
-        any(List.class), anyString());
+        anyListOf(String.class), anyString());
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
@@ -561,6 +564,7 @@ public class WebHookIntegrationTest extends MockKeystore {
     private int count;
 
     @Override
+    @SuppressWarnings("unchecked")
     public V2MessageList answer(InvocationOnMock invocationOnMock) throws Throwable {
       List<String> streams = (List<String>) invocationOnMock.getArguments()[2];
       this.message = (String) invocationOnMock.getArguments()[3];
