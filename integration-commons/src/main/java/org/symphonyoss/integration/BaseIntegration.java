@@ -126,8 +126,8 @@ public abstract class BaseIntegration {
 
     Application application = properties.getApplication(integrationUser);
 
-    if ((application == null) || (application.getKeystore() == null) || (StringUtils.isEmpty(
-        application.getKeystore().getPassword()))) {
+    if ((application == null) || (application.getKeystore() == null) ||
+        (StringUtils.isEmpty(application.getKeystore().getPassword()))) {
       String appId = application != null ? application.getId() : integrationUser;
       throw new LoadKeyStoreException(
           "Fail to retrieve the keystore password. Application: " + appId);
