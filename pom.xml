@@ -153,6 +153,8 @@
         <surefire.plugin.version>2.19.1</surefire.plugin.version>
         <jar.plugin.version>3.0.2</jar.plugin.version>
         <rpm.plugin.version>2.1.5</rpm.plugin.version>
+        <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
+        <reports.plugin.version>2.9</reports.plugin.version>
 
         <!-- compile -->
         <commons.lang3.version>3.4</commons.lang3.version>
@@ -304,10 +306,49 @@
                     <threadCount>1</threadCount>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${javadoc.plugin.version}</version>
+            </plugin>
         </plugins>
     </build>
 
-    <!--<reporting></reporting>-->
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>${reports.plugin.version}</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>index</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${javadoc.plugin.version}</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>javadoc</report>
+                            <report>test-javadoc</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <reports>
+                            <report>aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
 
     <!-- Project Information -->
     <name>Integration Parent</name>
