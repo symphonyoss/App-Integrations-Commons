@@ -26,6 +26,8 @@ public class Certificate {
 
   private String caKeyFile;
 
+  private String caKeyPassword;
+
   private String caCertChainFile;
 
   public String getCaCertFile() {
@@ -42,6 +44,14 @@ public class Certificate {
 
   public void setCaKeyFile(String caKeyFile) {
     this.caKeyFile = caKeyFile;
+  }
+
+  public String getCaKeyPassword() {
+    return caKeyPassword;
+  }
+
+  public void setCaKeyPassword(String caKeyPassword) {
+    this.caKeyPassword = caKeyPassword;
   }
 
   public String getCaCertChainFile() {

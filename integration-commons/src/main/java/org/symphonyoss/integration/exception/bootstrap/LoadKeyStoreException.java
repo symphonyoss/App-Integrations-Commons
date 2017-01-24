@@ -28,6 +28,10 @@ package org.symphonyoss.integration.exception.bootstrap;
  */
 public class LoadKeyStoreException extends BootstrapException {
 
+  public LoadKeyStoreException(String message) {
+    super(message);
+  }
+
   public LoadKeyStoreException(String message, Exception cause) {
     super(message, cause);
   }

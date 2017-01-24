@@ -7,6 +7,9 @@ applications:
     context: jira
     enabled: true
     visible: true
+    keystore:
+      file: jira.p12
+      password: changeit
     allowed_origins:
       - host: squid-104-1.sc1.uc-inf.net
         address: 165.254.226.119

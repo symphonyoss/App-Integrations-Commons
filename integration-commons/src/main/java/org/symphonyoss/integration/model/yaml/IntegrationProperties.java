@@ -37,6 +37,8 @@ public class IntegrationProperties {
 
   private static final String DEFAULT_HTTPS_PORT = "443";
 
+  private AdminUser adminUser;
+
   private ConnectionInfo pod;
 
   private ConnectionInfo agent;
@@ -54,6 +56,14 @@ public class IntegrationProperties {
   private IntegrationBridge integrationBridge;
 
   private Certificate signingCert;
+
+  public AdminUser getAdminUser() {
+    return adminUser;
+  }
+
+  public void setAdminUser(AdminUser adminUser) {
+    this.adminUser = adminUser;
+  }
 
   public ConnectionInfo getPod() {
     return pod;

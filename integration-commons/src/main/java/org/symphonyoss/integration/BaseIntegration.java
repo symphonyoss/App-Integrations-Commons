@@ -125,14 +125,14 @@ public abstract class BaseIntegration implements Integration {
 
     Application application = properties.getApplication(integrationUser);
 
-    Keystore keystoreConfig;
-    if (application == null) {
-      keystoreConfig = new DefaultAppKeystore(integrationUser);
-    } else if (application.getKeystore() == null) {
-      keystoreConfig = new DefaultAppKeystore(application.getId());
-    } else {
-      keystoreConfig = application.getKeystore();
+    if ((application == null) || (application.getKeystore() == null) ||
+        (StringUtils.isEmpty(application.getKeystore().getPassword()))) {
+      String appId = application != null ? application.getId() : integrationUser;
+      throw new LoadKeyStoreException(
+          "Fail to retrieve the keystore password. Application: " + appId);
     }
+
+    Keystore keystoreConfig = application.getKeystore();
 
     String locationFile = keystoreConfig.getFile();
     if (StringUtils.isBlank(locationFile)) {

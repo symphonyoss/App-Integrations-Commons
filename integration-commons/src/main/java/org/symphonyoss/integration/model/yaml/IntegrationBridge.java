@@ -31,6 +31,12 @@ public class IntegrationBridge {
 
   private List<AllowedOrigin> allowedOrigins;
 
+  private String truststoreFile;
+
+  private String truststorePassword;
+
+  private String truststoreType;
+
   private WhiteList whiteList = new WhiteList();
 
   public String getDomain() {
@@ -55,6 +61,30 @@ public class IntegrationBridge {
 
   public void setAllowedOrigins(List<AllowedOrigin> allowedOrigins) {
     this.allowedOrigins = allowedOrigins;
+  }
+
+  public String getTruststoreFile() {
+    return truststoreFile;
+  }
+
+  public void setTruststoreFile(String truststoreFile) {
+    this.truststoreFile = truststoreFile;
+  }
+
+  public String getTruststorePassword() {
+    return truststorePassword;
+  }
+
+  public void setTruststorePassword(String truststorePassword) {
+    this.truststorePassword = truststorePassword;
+  }
+
+  public String getTruststoreType() {
+    return truststoreType;
+  }
+
+  public void setTruststoreType(String truststoreType) {
+    this.truststoreType = truststoreType;
   }
 
   /**
