@@ -32,6 +32,8 @@ public class Application {
 
   private String id;
 
+  private String alias;
+
   private String component;
 
   private String name;
@@ -64,6 +66,14 @@ public class Application {
 
   public void setId(String id) {
     this.id = id;
+  }
+
+  public String getAlias() {
+    return alias;
+  }
+
+  public void setAlias(String alias) {
+    this.alias = alias;
   }
 
   public String getComponent() {
