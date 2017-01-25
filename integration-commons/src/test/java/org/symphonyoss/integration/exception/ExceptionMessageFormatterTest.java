@@ -61,12 +61,29 @@ public class ExceptionMessageFormatterTest {
     StrBuilder expected = new StrBuilder(BREAK_LINE)
         .append(COMPONENT).appendln(COMPONENT_NAME)
         .append(MESSAGE).appendln(STR_MESSAGE)
-        .append(ROOT_CAUSE).appendln(exceptionMessage)
         .appendln(SOLUTIONS)
         .appendWithSeparators(MY_SOLUTIONS, BREAK_LINE).appendNewLine()
-        .append(STACKTRACE);
+        .append(STACKTRACE).appendln(exceptionMessage);
 
-    Assert.assertEquals(actual, expected.toString());
+    Assert.assertEquals(expected.toString(), actual);
+  }
+
+  @Test
+  public void testMessageExceptionWithThroableOneSolution() {
+    String exceptionMessage = "Something is null";
+    NullPointerException exception = new NullPointerException(exceptionMessage);
+    String actual = ExceptionMessageFormatter.format(COMPONENT_NAME, STR_MESSAGE, SOLUTION,
+        exception
+    );
+
+    StrBuilder expected = new StrBuilder(BREAK_LINE)
+        .append(COMPONENT).appendln(COMPONENT_NAME)
+        .append(MESSAGE).appendln(STR_MESSAGE)
+        .appendln(SOLUTIONS)
+        .appendln(SOLUTION)
+        .append(STACKTRACE).appendln(exceptionMessage);
+
+    Assert.assertEquals(expected.toString(), actual);
   }
 
   @Test
@@ -78,10 +95,22 @@ public class ExceptionMessageFormatterTest {
         .append(COMPONENT).appendln(COMPONENT_NAME)
         .append(MESSAGE).appendln(STR_MESSAGE)
         .appendln(SOLUTIONS)
-        .appendWithSeparators(MY_SOLUTIONS, BREAK_LINE).appendNewLine()
-        .append(STACKTRACE);
+        .appendWithSeparators(MY_SOLUTIONS, BREAK_LINE).appendNewLine();
 
-    Assert.assertEquals(actual, expected.toString());
+    Assert.assertEquals(expected.toString(), actual);
+  }
+
+  @Test
+  public void testMessageExceptionWithoutThroableOneSolution() {
+    String actual = ExceptionMessageFormatter.format(COMPONENT_NAME, STR_MESSAGE, SOLUTION);
+
+    StrBuilder expected = new StrBuilder(BREAK_LINE)
+        .append(COMPONENT).appendln(COMPONENT_NAME)
+        .append(MESSAGE).appendln(STR_MESSAGE)
+        .appendln(SOLUTIONS)
+        .appendln(SOLUTION);
+
+    Assert.assertEquals(expected.toString(), actual);
   }
 
   @Test
@@ -92,8 +121,7 @@ public class ExceptionMessageFormatterTest {
         .append(COMPONENT).appendln(COMPONENT_NAME)
         .append(MESSAGE).appendln(STR_MESSAGE)
         .appendln(SOLUTIONS)
-        .appendln(NO_SOLUTION_MESSAGE)
-        .append(STACKTRACE);
+        .appendln(NO_SOLUTION_MESSAGE);
 
     Assert.assertEquals(actual, expected.toString());
   }
@@ -106,10 +134,9 @@ public class ExceptionMessageFormatterTest {
         .append(COMPONENT).appendln(UNKNOWN)
         .append(MESSAGE).appendln(NONE)
         .appendln(SOLUTIONS)
-        .appendln(NO_SOLUTION_MESSAGE)
-        .append(STACKTRACE);
+        .appendln(NO_SOLUTION_MESSAGE);
 
-    Assert.assertEquals(actual, expected.toString());
+    Assert.assertEquals(expected.toString(), actual);
   }
 
   @Test
@@ -120,10 +147,9 @@ public class ExceptionMessageFormatterTest {
         .append(COMPONENT).appendln(UNKNOWN)
         .append(MESSAGE).appendln(NONE)
         .appendln(SOLUTIONS)
-        .appendln(NO_SOLUTION_MESSAGE)
-        .append(STACKTRACE);
+        .appendln(NO_SOLUTION_MESSAGE);
 
-    Assert.assertEquals(actual, expected.toString());
+    Assert.assertEquals(expected.toString(), actual);
   }
 
 }

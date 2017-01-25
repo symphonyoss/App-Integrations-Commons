@@ -19,6 +19,7 @@ package org.symphonyoss.integration.exception;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.StrBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,7 +38,6 @@ public class ExceptionMessageFormatter {
 
   private static final String COMPONENT = "Component: ";
   private static final String MESSAGE = "Message: ";
-  private static final String ROOT_CAUSE = "Root cause: ";
   private static final String SOLUTIONS = "Solutions: ";
   private static final String STACKTRACE = "Stack trace: ";
   private static final String LINE_BREAK = "\n";
@@ -51,7 +51,6 @@ public class ExceptionMessageFormatter {
    *
    * Component: <Component>
    * Message: <Message>
-   * Stacktrace: <Trace>
    * @param component The component where the exception was thrown.
    * @param message The message why the exceptions happened.
    * @return Formatted message
@@ -68,7 +67,6 @@ public class ExceptionMessageFormatter {
    * Solutions:
    * <Solution A>
    * <Solution B>
-   * Stacktrace: <Trace>
    * @param component The component where the exception was thrown.
    * @param message The message why the exceptions happened.
    * @param solutions The solutions provided by exceptions.
@@ -79,12 +77,31 @@ public class ExceptionMessageFormatter {
     return getMessage(component, message, solutions, null);
   }
 
+
   /**
    * Formats the message following this sample:
    *
    * Component: <Component>
    * Message: <Message>
-   * Root cause: <Root cause>
+   * Solutions:
+   * <Solution A>
+   * @param component The component where the exception was thrown.
+   * @param message The message why the exceptions happened.
+   * @param solution The solution provided to the exceptions.
+   * @return Formatted message
+   */
+  public static String format(String component, String message,
+      String solution) {
+    List<String> solutions = new ArrayList<>();
+    solutions.add(solution);
+    return getMessage(component, message, solutions, null);
+  }
+
+  /**
+   * Formats the message following this sample:
+   *
+   * Component: <Component>
+   * Message: <Message>
    * Stacktrace: <Trace>
    * @param component The component where the exception was thrown.
    * @param message The message why the exceptions happened.
@@ -100,7 +117,27 @@ public class ExceptionMessageFormatter {
    *
    * Component: <Component>
    * Message: <Message>
-   * Root cause: <Root cause>
+   * Solutions:
+   * <Solution A>
+   * Stacktrace: <Trace>
+   * @param component The component where the exception was thrown.
+   * @param message The message why the exceptions happened.
+   * @param solution The solution provided by exceptions.
+   * @param t The exception caused the problem.
+   * @return Formatted message
+   */
+  public static String format(String component, String message, String solution,
+      Throwable t) {
+    List<String> solutions = new ArrayList<>();
+    solutions.add(solution);
+    return getMessage(component, message, solutions, t);
+  }
+
+  /**
+   * * Formats the message following this sample:
+   *
+   * Component: <Component>
+   * Message: <Message>
    * Solutions:
    * <Solution A>
    * <Solution B>
@@ -122,10 +159,6 @@ public class ExceptionMessageFormatter {
     sb.append(COMPONENT).appendln(StringUtils.isEmpty(component) ? UNKNOWN : component)
         .append(MESSAGE).appendln(StringUtils.isEmpty(message) ? NONE : message);
 
-    if (t != null) {
-      sb.append(ROOT_CAUSE).appendln(t.getMessage());
-    }
-
     sb.appendln(SOLUTIONS);
     if (solutions != null && !solutions.isEmpty()) {
       sb.appendWithSeparators(solutions, LINE_BREAK).appendNewLine();
@@ -133,7 +166,9 @@ public class ExceptionMessageFormatter {
       sb.appendln(NO_SOLUTION_MESSAGE);
     }
 
-    sb.append(STACKTRACE);
+    if (t != null) {
+      sb.append(STACKTRACE).appendln(t.getMessage());
+    }
 
     return sb.toString();
   }
