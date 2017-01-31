@@ -76,7 +76,7 @@ public abstract class BaseIntegration implements Integration {
   /**
    * Status of the integration
    */
-  protected IntegrationHealthManager healthManager = new IntegrationHealthManager();
+  protected IntegrationHealthManager healthManager;
 
   /**
    * HTTP client
@@ -92,6 +92,9 @@ public abstract class BaseIntegration implements Integration {
   protected IntegrationUtils utils;
 
   public BaseIntegration() {
+    String version = getClass().getPackage().getImplementationVersion();
+    this.healthManager = new IntegrationHealthManager(version);
+
     final ClientConfig configuration = new ClientConfig();
     configuration.property(ClientProperties.CONNECT_TIMEOUT, 1000);
     configuration.property(ClientProperties.READ_TIMEOUT, 1000);

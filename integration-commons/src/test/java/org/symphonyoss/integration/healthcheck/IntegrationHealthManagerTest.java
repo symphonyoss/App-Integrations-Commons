@@ -42,11 +42,13 @@ public class IntegrationHealthManagerTest {
 
   private static final String INTEGRATION_NAME = "jiraWebHookIntegration";
 
+  private static final String MOCK_VERSION = "0.0.1";
+
   @Mock
   private ScheduledExecutorService scheduler;
 
   @InjectMocks
-  private IntegrationHealthManager healthManager = new IntegrationHealthManager();
+  private IntegrationHealthManager healthManager = new IntegrationHealthManager(MOCK_VERSION);
 
   @Before
   public void setup() {
@@ -60,6 +62,7 @@ public class IntegrationHealthManagerTest {
     assertEquals(IntegrationStatus.INACTIVE.name(), integrationHealth.getStatus());
 
     assertNull(integrationHealth.getMessage());
+    assertEquals(MOCK_VERSION, integrationHealth.getVersion());
 
     IntegrationFlags flags = integrationHealth.getFlags();
     assertEquals(IntegrationFlags.ValueEnum.OK, flags.getParserInstalled());

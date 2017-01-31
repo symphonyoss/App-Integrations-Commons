@@ -43,7 +43,7 @@ public class IntegrationHealthManager {
 
   private IntegrationFlags flags = new IntegrationFlags();
 
-  public IntegrationHealthManager() {
+  public IntegrationHealthManager(String version) {
     this.flags.setParserInstalled(OK);
     this.flags.setConfiguratorInstalled(NOK);
     this.flags.setCertificateInstalled(NOK);
@@ -51,6 +51,7 @@ public class IntegrationHealthManager {
 
     this.health.setStatus(IntegrationStatus.INACTIVE.name());
     this.health.setFlags(flags);
+    this.health.setVersion(version);
   }
 
   public void setName(String name) {
