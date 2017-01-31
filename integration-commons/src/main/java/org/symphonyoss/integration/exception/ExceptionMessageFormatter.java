@@ -56,7 +56,7 @@ public class ExceptionMessageFormatter {
    * @return Formatted message
    */
   public static String format(String component, String message) {
-    return getMessage(component, message, null, null);
+    return getMessage(component, message, null);
   }
 
   /**
@@ -73,28 +73,8 @@ public class ExceptionMessageFormatter {
    * @return Formatted message
    */
   public static String format(String component, String message,
-      List<String> solutions) {
-    return getMessage(component, message, solutions, null);
-  }
-
-
-  /**
-   * Formats the message following this sample:
-   *
-   * Component: <Component>
-   * Message: <Message>
-   * Solutions:
-   * <Solution A>
-   * @param component The component where the exception was thrown.
-   * @param message The message why the exceptions happened.
-   * @param solution The solution provided to the exceptions.
-   * @return Formatted message
-   */
-  public static String format(String component, String message,
-      String solution) {
-    List<String> solutions = new ArrayList<>();
-    solutions.add(solution);
-    return getMessage(component, message, solutions, null);
+      String... solutions) {
+    return getMessage(component, message, null, solutions);
   }
 
   /**
@@ -109,28 +89,7 @@ public class ExceptionMessageFormatter {
    * @return Formatted message
    */
   public static String format(String component, String message, Throwable t) {
-    return getMessage(component, message, null, t);
-  }
-
-  /**
-   * * Formats the message following this sample:
-   *
-   * Component: <Component>
-   * Message: <Message>
-   * Solutions:
-   * <Solution A>
-   * Stacktrace: <Trace>
-   * @param component The component where the exception was thrown.
-   * @param message The message why the exceptions happened.
-   * @param solution The solution provided by exceptions.
-   * @param t The exception caused the problem.
-   * @return Formatted message
-   */
-  public static String format(String component, String message, String solution,
-      Throwable t) {
-    List<String> solutions = new ArrayList<>();
-    solutions.add(solution);
-    return getMessage(component, message, solutions, t);
+    return getMessage(component, message, t);
   }
 
   /**
@@ -144,23 +103,21 @@ public class ExceptionMessageFormatter {
    * Stacktrace: <Trace>
    * @param component The component where the exception was thrown.
    * @param message The message why the exceptions happened.
-   * @param solutions The solutions provided by exceptions.
    * @param t The exception caused the problem.
+   * @param solutions The solutions provided by exceptions.
    * @return Formatted message
    */
-  public static String format(String component, String message, List<String> solutions,
-      Throwable t) {
-    return getMessage(component, message, solutions, t);
+  public static String format(String component, String message, Throwable t, String... solutions) {
+    return getMessage(component, message, t, solutions);
   }
 
-  private static String getMessage(String component, String message, List<String> solutions,
-      Throwable t) {
+  private static String getMessage(String component, String message, Throwable t, String... solutions) {
     StrBuilder sb = new StrBuilder(LINE_BREAK);
     sb.append(COMPONENT).appendln(StringUtils.isEmpty(component) ? UNKNOWN : component)
         .append(MESSAGE).appendln(StringUtils.isEmpty(message) ? NONE : message);
 
     sb.appendln(SOLUTIONS);
-    if (solutions != null && !solutions.isEmpty()) {
+    if (solutions != null) {
       sb.appendWithSeparators(solutions, LINE_BREAK).appendNewLine();
     } else {
       sb.appendln(NO_SOLUTION_MESSAGE);
