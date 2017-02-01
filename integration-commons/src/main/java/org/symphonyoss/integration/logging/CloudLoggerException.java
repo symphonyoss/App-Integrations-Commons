@@ -18,8 +18,6 @@ package org.symphonyoss.integration.logging;
 
 import org.symphonyoss.integration.exception.IntegrationRuntimeException;
 
-import java.util.Arrays;
-
 /**
  * RuntimeException created when trying to connect to the Symphony cloud log.
  *
@@ -59,6 +57,6 @@ public class CloudLoggerException extends IntegrationRuntimeException {
    * @param cause The root cause of the error.
    */
   public CloudLoggerException(String message, Throwable cause) {
-    super(COMPONENT, message, Arrays.asList(INTRODUTION, TOMCAT_CONFIGS, ATLAS_CONFIGS), cause);
+    super(COMPONENT, message, cause, INTRODUTION, TOMCAT_CONFIGS, ATLAS_CONFIGS);
   }
 }

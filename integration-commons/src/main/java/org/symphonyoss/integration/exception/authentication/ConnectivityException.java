@@ -16,8 +16,6 @@
 
 package org.symphonyoss.integration.exception.authentication;
 
-import java.util.List;
-
 /**
  * Should be extended to denote specific connectivity problems.
  *
@@ -31,12 +29,12 @@ public abstract class ConnectivityException extends AuthenticationException {
     super(message);
   }
 
-  public ConnectivityException(String message, List<String> solutions) {
+  public ConnectivityException(String message, String... solutions) {
     super(message, solutions);
   }
 
-  public ConnectivityException(String message, List<String> solutions, Throwable cause) {
-    super(message, solutions, cause);
+  public ConnectivityException(String message, Throwable cause, String... solutions) {
+    super(message, cause, solutions);
   }
 
   public ConnectivityException(String message, Throwable cause) {

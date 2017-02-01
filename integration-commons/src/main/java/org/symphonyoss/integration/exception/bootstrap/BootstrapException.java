@@ -31,11 +31,11 @@ public abstract class BootstrapException extends IntegrationRuntimeException {
 
   private static final String COMPONENT = "Integration Bootstrap";
 
-  public BootstrapException(String message, List<String> solutions, Exception cause) {
-    super(COMPONENT, message, solutions, cause);
+  public BootstrapException(String message, Exception cause, String... solutions) {
+    super(COMPONENT, message, cause, solutions);
   }
 
-  public BootstrapException(String message, List<String> solutions) {
+  public BootstrapException(String message, String... solutions) {
     super(COMPONENT, message, solutions);
   }
 
