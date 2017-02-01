@@ -138,10 +138,9 @@ public abstract class WebHookIntegration extends BaseIntegration {
   public void onCreate(String integrationUser) {
     LOGGER.info("Create " + getClass().getCanonicalName());
 
-    try {
-      String applicationId = getApplicationId(integrationUser);
-      healthManager.setName(applicationId);
+    setupHealthManager(integrationUser);
 
+    try {
       registerUser(integrationUser);
     } catch (BootstrapException e) {
       healthManager.certificateInstalled(NOK);
@@ -159,7 +158,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
       authenticate(integrationUser);
       updateConfiguration(integrationUser);
 
-      healthManager.success();
+      healthManager.success(config);
     } catch (ConnectivityException | RetryLifecycleException e) {
       String message = String.format("%s. Cause: %s", e.getMessage(), e.getCause().getMessage());
       healthManager.retry(message);
@@ -443,23 +442,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
   @Override
   public IntegrationHealth getHealthStatus() {
-    boolean authenticated = false;
-    if (config != null) {
-      String configType = config.getType();
-
-      IntegrationFlags.ValueEnum flagStatus = getCachedConfiguratorInstalledFlag(configType);
-      healthManager.configuratorInstalled(flagStatus);
-
-      authenticated = authenticationProxy.isAuthenticated(configType);
-    }
-
-    if (authenticated) {
-      healthManager.userAuthenticated(IntegrationFlags.ValueEnum.OK);
-    } else {
-      healthManager.userAuthenticated(IntegrationFlags.ValueEnum.NOK);
-    }
-
-    return healthManager.getHealth();
+    return healthManager.updateFlags();
   }
 
   @Override

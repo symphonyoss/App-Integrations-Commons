@@ -63,10 +63,6 @@ public abstract class BaseIntegration implements Integration {
 
   private static final ISymphonyLogger LOG = SymphonyLoggerFactory.getLogger(BaseIntegration.class);
 
-  private static final String APPS_CONTEXT = "apps";
-
-  private static final String APP_DEFAULT_PAGE = "controller.html";
-
   @Autowired
   protected AuthenticationProxy authenticationProxy;
 
@@ -76,47 +72,22 @@ public abstract class BaseIntegration implements Integration {
   /**
    * Status of the integration
    */
+  @Autowired
   protected IntegrationHealthManager healthManager;
-
-  /**
-   * HTTP client
-   */
-  private Client client;
-
-  /**
-   * Cache to 'configurator installed' flag.
-   */
-  private LoadingCache<String, IntegrationFlags.ValueEnum> configuratorFlagsCache;
 
   @Autowired
   protected IntegrationUtils utils;
 
-  public BaseIntegration() {
-    String version = getClass().getPackage().getImplementationVersion();
-    this.healthManager = new IntegrationHealthManager(version);
-
-    final ClientConfig configuration = new ClientConfig();
-    configuration.property(ClientProperties.CONNECT_TIMEOUT, 1000);
-    configuration.property(ClientProperties.READ_TIMEOUT, 1000);
-
-    this.client = ClientBuilder.newBuilder().withConfig(configuration).build();
-
-    this.configuratorFlagsCache = CacheBuilder.newBuilder().expireAfterWrite(60, TimeUnit.SECONDS)
-        .build(new CacheLoader<String, IntegrationFlags.ValueEnum>() {
-          @Override
-          public IntegrationFlags.ValueEnum load(String key) throws Exception {
-            return getConfiguratorInstalledFlag(key);
-          }
-        });
-  }
-
   /**
-   * Get application identifier based on integration username
+   * Setup the health manager adding the application identifier and version.
    * @param integrationUser Integration username
-   * @return Application identifier
    */
-  public String getApplicationId(String integrationUser) {
-    return properties.getApplicationId(integrationUser);
+  public void setupHealthManager(String integrationUser) {
+    String applicationId = properties.getApplicationId(integrationUser);
+    healthManager.setName(applicationId);
+
+    String version = getClass().getPackage().getImplementationVersion();
+    healthManager.setVersion(version);
   }
 
   /**
@@ -170,59 +141,6 @@ public abstract class BaseIntegration implements Integration {
     final KeyStore ks = KeyStore.getInstance(type);
     ks.load(new FileInputStream(storeLocation), password.toCharArray());
     return ks;
-  }
-
-  /**
-   * Retrieves the cached 'configurator installed' flag.
-   * @param appType Application type
-   */
-  public IntegrationFlags.ValueEnum getCachedConfiguratorInstalledFlag(String appType) {
-    return configuratorFlagsCache.getUnchecked(appType);
-  }
-
-  /**
-   * Retrieves the 'configurator installed' flag.
-   * @param appType Application type
-   */
-  public IntegrationFlags.ValueEnum getConfiguratorInstalledFlag(String appType) {
-    Application application = properties.getApplication(appType);
-    IntegrationBridge bridge = properties.getIntegrationBridge();
-
-    if ((application == null) || (bridge == null)) {
-      return NOK;
-    }
-
-    return getConfiguratorInstalledFlag(bridge.getHost(), application.getContext());
-  }
-
-  /**
-   * Retrieves the 'configurator installed' flag. This method sends a request to Configurator app if
-   * the response is HTTP 200 then 'configurator installed' flag will be OK, otherwise it will be
-   * NOK.
-   * @param host Integration Bridge host
-   * @param context Application context
-   */
-  private IntegrationFlags.ValueEnum getConfiguratorInstalledFlag(String host, String context) {
-    if ((StringUtils.isEmpty(host)) || (StringUtils.isEmpty(context))) {
-      return NOK;
-    }
-
-    try {
-      String baseUrl = String.format("https://%s", host);
-
-      WebTarget target =
-          client.target(baseUrl).path(APPS_CONTEXT).path(context).path(APP_DEFAULT_PAGE);
-      Response response = target.request().accept(TEXT_HTML_TYPE).get();
-
-      if (Response.Status.OK.getStatusCode() == response.getStatus()) {
-        return OK;
-      } else {
-        return NOK;
-      }
-    } catch (Exception e) {
-      LOG.error("Fail to verify configurator status.", e);
-      return NOK;
-    }
   }
 
   public IntegrationHealthManager getHealthManager() {

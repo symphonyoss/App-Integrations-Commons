@@ -14,29 +14,32 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration;
+package org.symphonyoss.integration.model.healthcheck;
 
 /**
- * Represents the status of integration.
- * Created by rsanchez on 07/10/16.
+ * Holds the information about the configurator application.
+ * It contains the load and icon URL's.
+ * Created by rsanchez on 01/02/17.
  */
-public enum IntegrationStatus {
+public class IntegrationConfigurator {
 
-  INACTIVE("Inactive"),
-  RETRYING_BOOTSTRAP("Retrying Bootstrap"),
-  FAILED_BOOTSTRAP("Failed bootstrap"),
-  ACTIVE("Active"),
-  OUT_OF_SERVICE("Out of service");
+  private String loadUrl;
 
-  private String value;
+  private String iconUrl;
 
-  IntegrationStatus(String value) {
-    this.value = value;
+  public String getLoadUrl() {
+    return loadUrl;
   }
 
-  @Override
-  public String toString() {
-    return value;
+  public void setLoadUrl(String loadUrl) {
+    this.loadUrl = loadUrl;
   }
 
+  public String getIconUrl() {
+    return iconUrl;
+  }
+
+  public void setIconUrl(String iconUrl) {
+    this.iconUrl = iconUrl;
+  }
 }

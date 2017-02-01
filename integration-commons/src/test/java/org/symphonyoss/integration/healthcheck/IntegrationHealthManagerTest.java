@@ -16,22 +16,41 @@
 
 package org.symphonyoss.integration.healthcheck;
 
+import static javax.ws.rs.core.MediaType.WILDCARD;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+
+import com.symphony.api.pod.model.V1Configuration;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.symphonyoss.integration.IntegrationStatus;
+import org.symphonyoss.integration.authentication.AuthenticationProxy;
 import org.symphonyoss.integration.model.healthcheck.IntegrationFlags;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
+import org.symphonyoss.integration.model.yaml.Application;
+import org.symphonyoss.integration.model.yaml.IntegrationBridge;
+import org.symphonyoss.integration.model.yaml.IntegrationProperties;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.ScheduledExecutorService;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Unit test for {@link IntegrationHealthManager}
@@ -40,15 +59,31 @@ import java.util.concurrent.ScheduledExecutorService;
 @RunWith(MockitoJUnitRunner.class)
 public class IntegrationHealthManagerTest {
 
+  private static final String APP_ID = "jira";
+
   private static final String INTEGRATION_NAME = "jiraWebHookIntegration";
+
+  private static final String NOT_AVAILABLE = "N/A";
 
   private static final String MOCK_VERSION = "0.0.1";
 
+  private static final String OUT_OF_SERVICE = "Integration Out of Service. Please, check the flags";
+
+  private static final String SUCCESS = "Success";
+
+  private static final String MOCK_HOST = "test.symphony.com";
+
+  @Spy
+  private IntegrationProperties properties = new IntegrationProperties();
+
   @Mock
-  private ScheduledExecutorService scheduler;
+  private AuthenticationProxy authenticationProxy;
+
+  @Mock
+  private Client client;
 
   @InjectMocks
-  private IntegrationHealthManager healthManager = new IntegrationHealthManager(MOCK_VERSION);
+  private IntegrationHealthManager healthManager = new IntegrationHealthManager();
 
   @Before
   public void setup() {
@@ -62,7 +97,7 @@ public class IntegrationHealthManagerTest {
     assertEquals(IntegrationStatus.INACTIVE.name(), integrationHealth.getStatus());
 
     assertNull(integrationHealth.getMessage());
-    assertEquals(MOCK_VERSION, integrationHealth.getVersion());
+    assertEquals(NOT_AVAILABLE, integrationHealth.getVersion());
 
     IntegrationFlags flags = integrationHealth.getFlags();
     assertEquals(IntegrationFlags.ValueEnum.OK, flags.getParserInstalled());
@@ -75,7 +110,10 @@ public class IntegrationHealthManagerTest {
   public void testSuccessInvalid() {
     testFailBootstrap();
 
-    healthManager.success();
+    V1Configuration configuration = new V1Configuration();
+    configuration.setType(INTEGRATION_NAME);
+
+    healthManager.success(configuration);
 
     IntegrationHealth integrationHealth = healthManager.getHealth();
 
@@ -85,12 +123,19 @@ public class IntegrationHealthManagerTest {
 
   @Test
   public void testSuccess() {
-    healthManager.success();
+    V1Configuration configuration = new V1Configuration();
+    configuration.setType(INTEGRATION_NAME);
+
+    healthManager.setVersion(MOCK_VERSION);
+    healthManager.success(configuration);
 
     IntegrationHealth integrationHealth = healthManager.getHealth();
 
+    assertEquals(MOCK_VERSION, integrationHealth.getVersion());
+    assertEquals(INTEGRATION_NAME, integrationHealth.getName());
+
     assertEquals(IntegrationStatus.ACTIVE.name(), integrationHealth.getStatus());
-    assertEquals("Success", integrationHealth.getMessage());
+    assertEquals(SUCCESS, integrationHealth.getMessage());
   }
 
   @Test
@@ -101,7 +146,7 @@ public class IntegrationHealthManagerTest {
     IntegrationHealth integrationHealth = healthManager.getHealth();
 
     assertEquals(IntegrationStatus.ACTIVE.name(), integrationHealth.getStatus());
-    assertEquals("Success", integrationHealth.getMessage());
+    assertEquals(SUCCESS, integrationHealth.getMessage());
   }
 
   @Test
@@ -129,7 +174,7 @@ public class IntegrationHealthManagerTest {
     IntegrationHealth integrationHealth = healthManager.getHealth();
 
     assertEquals(IntegrationStatus.ACTIVE.name(), integrationHealth.getStatus());
-    assertEquals("Success", integrationHealth.getMessage());
+    assertEquals(SUCCESS, integrationHealth.getMessage());
   }
 
   @Test
@@ -156,7 +201,6 @@ public class IntegrationHealthManagerTest {
     assertEquals("2016-10-10T14:31:20Z+0000", integrationHealth.getLatestPostTimestamp());
   }
 
-
   @Test
   public void testFlagsUpdate() {
     healthManager.parserInstalled(IntegrationFlags.ValueEnum.NOK);
@@ -173,4 +217,111 @@ public class IntegrationHealthManagerTest {
     assertEquals(IntegrationFlags.ValueEnum.OK, flags.getUserAuthenticated());
   }
 
+  @Test
+  public void testFlagsWithoutConfiguratorInfo() {
+    testSuccess();
+
+    IntegrationHealth integrationHealth = healthManager.updateFlags();
+
+    assertEquals(IntegrationStatus.OUT_OF_SERVICE.name(), integrationHealth.getStatus());
+    assertEquals(OUT_OF_SERVICE, integrationHealth.getMessage());
+  }
+
+  @Test
+  public void testFlagsLoadUrlNOK() {
+    mockApplications();
+    mockIntegrationBridge();
+
+    testSuccess();
+
+    mockResponse("https://test.symphony.com/apps/jira/controller.html",
+        Response.Status.BAD_GATEWAY.getStatusCode());
+
+    IntegrationHealth integrationHealth = healthManager.updateFlags();
+
+    assertEquals(IntegrationStatus.OUT_OF_SERVICE.name(), integrationHealth.getStatus());
+    assertEquals(OUT_OF_SERVICE, integrationHealth.getMessage());
+  }
+
+  @Test
+  public void testFlagsIconUrlNOK() {
+    mockApplications();
+    mockIntegrationBridge();
+
+    testSuccess();
+
+    mockResponse("https://test.symphony.com/apps/jira/controller.html",
+        Response.Status.OK.getStatusCode());
+    mockResponse("https://test.symphony.com/apps/jira/img/appstore-logo.png",
+        Response.Status.BAD_GATEWAY.getStatusCode());
+
+    IntegrationHealth integrationHealth = healthManager.updateFlags();
+
+    assertEquals(IntegrationStatus.OUT_OF_SERVICE.name(), integrationHealth.getStatus());
+    assertEquals(OUT_OF_SERVICE, integrationHealth.getMessage());
+  }
+
+  @Test
+  public void testFlagsUserNotAuthenticated() {
+    healthManager.certificateInstalled(IntegrationFlags.ValueEnum.OK);
+
+    mockApplications();
+    mockIntegrationBridge();
+
+    testSuccess();
+
+    mockResponse("https://test.symphony.com/apps/jira/controller.html",
+        Response.Status.OK.getStatusCode());
+    mockResponse("https://test.symphony.com/apps/jira/img/appstore-logo.png",
+        Response.Status.OK.getStatusCode());
+
+    doReturn(false).when(authenticationProxy).isAuthenticated(INTEGRATION_NAME);
+
+    IntegrationHealth integrationHealth = healthManager.updateFlags();
+
+    assertEquals(IntegrationStatus.OUT_OF_SERVICE.name(), integrationHealth.getStatus());
+    assertEquals(OUT_OF_SERVICE, integrationHealth.getMessage());
+  }
+
+  @Test
+  public void testFlagsOK() {
+    testFlagsUserNotAuthenticated();
+
+    doReturn(true).when(authenticationProxy).isAuthenticated(INTEGRATION_NAME);
+
+    IntegrationHealth integrationHealth = healthManager.updateFlags();
+
+    assertEquals(IntegrationStatus.ACTIVE.name(), integrationHealth.getStatus());
+    assertEquals(SUCCESS, integrationHealth.getMessage());
+  }
+
+  private void mockApplications() {
+    Application application = new Application();
+    application.setComponent(INTEGRATION_NAME);
+    application.setContext(APP_ID);
+
+    Map<String, Application> applications = new HashMap<>();
+    applications.put(APP_ID, application);
+
+    this.properties.setApplications(applications);
+  }
+
+  private void mockIntegrationBridge() {
+    IntegrationBridge bridge = new IntegrationBridge();
+    bridge.setHost(MOCK_HOST);
+
+    this.properties.setIntegrationBridge(bridge);
+  }
+
+  private void mockResponse(String path, int statusCode) {
+    WebTarget target = mock(WebTarget.class);
+    Invocation.Builder builder = mock(Invocation.Builder.class);
+    Response response = mock(Response.class);
+
+    doReturn(target).when(client).target(path);
+    doReturn(builder).when(target).request();
+    doReturn(builder).when(builder).accept(WILDCARD);
+    doReturn(response).when(builder).get();
+    doReturn(statusCode).when(response).getStatus();
+  }
 }

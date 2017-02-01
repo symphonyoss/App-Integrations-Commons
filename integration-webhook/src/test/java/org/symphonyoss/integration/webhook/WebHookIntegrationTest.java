@@ -101,7 +101,8 @@ import javax.ws.rs.ProcessingException;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @EnableConfigurationProperties
-@ContextConfiguration(classes = {IntegrationProperties.class, MockWebHookIntegration.class})
+@ContextConfiguration(classes = {IntegrationProperties.class, MockWebHookIntegration.class,
+    MockIntegrationHealthManager.class})
 public class WebHookIntegrationTest extends MockKeystore {
 
   private static final String CONFIGURATION_ID = "57bf581ae4b079de6a1cbbf9";
@@ -161,6 +162,8 @@ public class WebHookIntegrationTest extends MockKeystore {
     configuration.setEnabled(true);
 
     mockWHI.onConfigChange(configuration);
+
+    doReturn(configuration).when(configService).getConfigurationByType(INTEGRATION_USER, INTEGRATION_USER);
 
     doAnswer(new Answer<StreamType>() {
       @Override
