@@ -117,7 +117,7 @@ public class ExceptionMessageFormatter {
         .append(MESSAGE).appendln(StringUtils.isEmpty(message) ? NONE : message);
 
     sb.appendln(SOLUTIONS);
-    if (solutions != null) {
+    if ((solutions != null) && (solutions.length > 0)) {
       sb.appendWithSeparators(solutions, LINE_BREAK).appendNewLine();
     } else {
       sb.appendln(NO_SOLUTION_MESSAGE);

@@ -16,8 +16,9 @@
 
 package org.symphonyoss.integration.exception;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.commons.lang3.text.StrBuilder;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -60,15 +61,14 @@ public class ExceptionMessageFormatterTest {
         .appendWithSeparators(SOLUTIONS_ARRAY, BREAK_LINE).appendNewLine()
         .append(STACKTRACE).appendln(exceptionMessage);
 
-    Assert.assertEquals(expected.toString(), actual);
+    assertEquals(expected.toString(), actual);
   }
 
   @Test
   public void testMessageExceptionWithThrowableOneSolution() {
     String exceptionMessage = "Something is null";
     NullPointerException exception = new NullPointerException(exceptionMessage);
-    String actual = ExceptionMessageFormatter.format(COMPONENT_NAME, STR_MESSAGE, exception, SOLUTION1
-    );
+    String actual = ExceptionMessageFormatter.format(COMPONENT_NAME, STR_MESSAGE, exception, SOLUTION1);
 
     StrBuilder expected = new StrBuilder(BREAK_LINE)
         .append(COMPONENT).appendln(COMPONENT_NAME)
@@ -77,7 +77,7 @@ public class ExceptionMessageFormatterTest {
         .appendln(SOLUTION1)
         .append(STACKTRACE).appendln(exceptionMessage);
 
-    Assert.assertEquals(expected.toString(), actual);
+    assertEquals(expected.toString(), actual);
   }
 
   @Test
@@ -91,7 +91,7 @@ public class ExceptionMessageFormatterTest {
         .appendln(SOLUTIONS)
         .appendWithSeparators(SOLUTIONS_ARRAY, BREAK_LINE).appendNewLine();
 
-    Assert.assertEquals(expected.toString(), actual);
+    assertEquals(expected.toString(), actual);
   }
 
   @Test
@@ -104,7 +104,7 @@ public class ExceptionMessageFormatterTest {
         .appendln(SOLUTIONS)
         .appendln(SOLUTION1);
 
-    Assert.assertEquals(expected.toString(), actual);
+    assertEquals(expected.toString(), actual);
   }
 
   @Test
@@ -117,7 +117,7 @@ public class ExceptionMessageFormatterTest {
         .appendln(SOLUTIONS)
         .appendln(NO_SOLUTION_MESSAGE);
 
-    Assert.assertEquals(actual, expected.toString());
+    assertEquals(expected.toString(), actual);
   }
 
   @Test
@@ -130,7 +130,7 @@ public class ExceptionMessageFormatterTest {
         .appendln(SOLUTIONS)
         .appendln(NO_SOLUTION_MESSAGE);
 
-    Assert.assertEquals(expected.toString(), actual);
+    assertEquals(expected.toString(), actual);
   }
 
   @Test
@@ -143,7 +143,7 @@ public class ExceptionMessageFormatterTest {
         .appendln(SOLUTIONS)
         .appendln(NO_SOLUTION_MESSAGE);
 
-    Assert.assertEquals(expected.toString(), actual);
+    assertEquals(expected.toString(), actual);
   }
 
 }
