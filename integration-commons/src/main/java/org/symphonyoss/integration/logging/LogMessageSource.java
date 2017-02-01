@@ -43,15 +43,15 @@ public class LogMessageSource {
 
   private static final String UNABLE_TO_LOAD_LOG_MESSAGES = "integration.commons.unable.to.load.log.messages";
 
-  private static final String UNABLE_TO_LOAD_LOG_MESSAGES_SOLUTION1 =
-      "integration.commons.unable.to.load.log.messages.solution1";
+  private static final String UNABLE_TO_LOAD_LOG_MESSAGES_SOLUTION =
+      "integration.commons.unable.to.load.log.messages.solution";
 
   private static final String INTEGRATION_COMMONS_LOG_MESSAGES = "integration-commons-log-messages";
 
   private static final String CLASSPATH_LOG_MESSAGES_PROPERTIES = "classpath*:*-log-messages.properties";
 
-  private static final String UNABLE_TO_RECORD_LOG_INFORMATION_LOG_MESSAGE_NOT_FOUND =
-      "Unable to record log information. Log message not found.";
+  private static final String RESOURCE_NOT_FOUND = "Unable to record log information. Log message not found for "
+      + "resource id %s.";
 
   @Autowired
   private ResourceLoader resourceLoader;
@@ -81,7 +81,7 @@ public class LogMessageSource {
     } catch (IOException e) {
       LOGGER.error(ExceptionMessageFormatter.format("Log Message Source",
           this.getMessage(UNABLE_TO_LOAD_LOG_MESSAGES),
-          this.getMessage(UNABLE_TO_LOAD_LOG_MESSAGES_SOLUTION1)));
+          this.getMessage(UNABLE_TO_LOAD_LOG_MESSAGES_SOLUTION)));
     }
   }
 
@@ -95,7 +95,7 @@ public class LogMessageSource {
     try {
       return accessor.getMessage(resId, args);
     } catch (NoSuchMessageException e) {
-      return UNABLE_TO_RECORD_LOG_INFORMATION_LOG_MESSAGE_NOT_FOUND;
+      return String.format(RESOURCE_NOT_FOUND, resId);
     }
   }
 

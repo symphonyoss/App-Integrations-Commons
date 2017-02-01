@@ -42,7 +42,7 @@ public class LogMessageSourceTest {
   @Test
   public void testUnknownMessageId() {
 
-    assertEquals("Unable to record log information. Log message not found.",
+    assertEquals("Unable to record log information. Log message not found for resource id my.wrong.id.",
         logMessage.getMessage("my.wrong.id", "my data"));
   }
 
