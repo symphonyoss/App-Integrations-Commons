@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { Link, Router, Route, hashHistory, IndexRoute } from 'react-router';
 import reducers from '../reducers/reducers';
+import './Integration';
 import { getParameterByName } from './utils.service';
 import Home from '../views/Home';
 
@@ -24,7 +25,7 @@ let themeSize;
 
 function loadApplication(rooms) {
   document.getElementsByTagName('h1')[0].innerHTML = 'My Configurator';
-
+  // INTEGRATION.setConfigurationId()
   render(
     <Provider store={store}>
       <Home />

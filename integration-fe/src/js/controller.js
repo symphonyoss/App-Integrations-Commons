@@ -9,6 +9,9 @@ const params = {
   host: `${window.location.protocol}//${window.location.hostname}:${window.location.port}`,
 };
 
+
+
+
 let INTEGRATION = {};
 
 if (typeof window !== 'undefined') {

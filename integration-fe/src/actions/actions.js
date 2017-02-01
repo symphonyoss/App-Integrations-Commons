@@ -20,6 +20,12 @@ export const CREATE_INSTANCE_ERROR = 'CREATE_INSTANCE_ERROR';
 */
 export function fetchInstanceList(configurationId) {
   // TODO, make an ajax request to the end poit passing the configurationId parameter...
+  let response;
+  // const integrationConfService = SYMPHONY.services.subscribe("integration-config");
+  // integrationConfService.getConfigurationInstanceList(configurationId).then((data) => {
+  //   response = data;
+  // });
+
   return {
     type: FETCH_INSTANCE_LIST,
     payload: response, // ajax request response
