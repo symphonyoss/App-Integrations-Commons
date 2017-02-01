@@ -52,8 +52,6 @@ function registerApplication() {
       );
     },
   });
-
-  INTEGRATION.configurationId = params.configurationId;
 }
 
 function helloController() {
