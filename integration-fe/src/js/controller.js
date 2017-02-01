@@ -9,24 +9,6 @@ const params = {
   host: `${window.location.protocol}//${window.location.hostname}:${window.location.port}`,
 };
 
-
-
-
-let INTEGRATION = {};
-
-if (typeof window !== 'undefined') {
-  if (window.INTEGRATION === undefined) {
-    window.INTEGRATION = INTEGRATION;
-  }
-}
-
-if (typeof module !== 'undefined') {
-  if (global.INTEGRATION === undefined) {
-    global.INTEGRATION = INTEGRATION;
-  }
-}
-
-
 const dependencies = [
   'ui',
   'modules',
