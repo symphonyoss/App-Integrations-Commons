@@ -10,11 +10,3 @@ const mapStateToProps = (state) => {
     instanceList: state.instances.instanceList
   };
 }
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     fetchInstanceList: () => {
-
-//     }
-//   }
-// }
