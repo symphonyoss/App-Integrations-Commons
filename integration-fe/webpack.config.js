@@ -47,6 +47,9 @@ module.exports = {
     new CopyWebpackPlugin([{
       from: './src/bundle.json'
     }]),
+    new CopyWebpackPlugin([{
+      from: './src/js/symphony-api.js'
+    }]),
   ],
   devServer: {
     contentBase: path.resolve(__dirname, 'dist'),
