@@ -8,29 +8,16 @@ import {
   CREATE_INTANCE,
   CREATE_INSTANCE_SUCCESS,
   CREATE_INSTANCE_ERROR,
+  CREATE_STREAM,
+  CREATE_STREAM_SUCCESS,
+  CREATE_STREAM_ERROR,
 } from '../actions/actions';
 
 const INITIAL_STATE =  {
-  instanceList: {
-    instances: [],
-    loading: false,
-    error: null,
-  },
-  newInstance: {
-    instance: null,
-    loading: false,
-    error: null,
-  },
-  activeInstance: {
-    instance: null,
-    loading: false,
-    error: null,
-  },
-  deletedInstance: {
-    instance: null,
-    loading: false,
-    error: null,
-  },
+  instances: [],
+  loading: true,
+  erro: null,
+  activeInstance: null,
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -40,30 +27,39 @@ export default function (state = INITIAL_STATE, action) {
     case FETCH_INSTANCE_LIST:
       return {
         ...state,
-        instanceList: {
-          instances: [],
-          loading: true,
-          error: null,
-        },
+        instances: [],
+        loading: true,
+        error: null,
       };
     case FETCH_INSTANCE_LIST_SUCCESS:
       return {
         ...state,
-        instanceList: {
-          instances: action.payload,
-          loading: false,
-          error: null,
-        }
+        instances: action.payload,
+        loading: false,
+        error: null,
       };
     case FETCH_INSTANCE_LIST_ERROR:
       error = action.payload || {message: action.payload.message} // 2nd one is network or server down errors
       return {
         ...state,
-        instanceList: {
-          instances: [],
-          loading: false,
-          error: error,
-        }
+        instances: null,
+        loading: false,
+        error: error,
       };
+    case CREATE_STREAM:
+      return {
+        ...state,
+          loading: true,
+          error: null
+      } ; 
+    case CREATE_INSTANCE_SUCCESS:
+      return {
+        ...state,
+        instances: [...instances, action.payload],
+        loading: false,
+        error: null,
+      };
+    default:
+      return state;
   }
 }

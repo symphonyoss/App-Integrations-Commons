@@ -9,10 +9,16 @@ export const EDIT_INSTANCE = 'EDIT_INSTANCE';
 export const EDIT_INSTANCE_SUCCESS = 'EDIT_INSTANCE_SUCCESS';
 export const EDIT_INSTANCE_ERROR = 'EDIT_INSTANCE_ERROR';
 
+/* Create stream */
+export const CREATE_STREAM = 'CREATE_STREAM';
+export const CREATE_STREAM_SUCCESS = 'CREATE_STREAM_SUCCESS';
+export const CREATE_STREAMSTREAM_ERROR = 'CREATE_STREAMSTREAM_ERROR';
+
 /* Create instance */
 export const CREATE_INTANCE = 'CREATE_INTANCE';
 export const CREATE_INSTANCE_SUCCESS = 'CREATE_INSTANCE_SUCCESS';
 export const CREATE_INSTANCE_ERROR = 'CREATE_INSTANCE_ERROR';
+
 
 
 /* 
@@ -80,19 +86,47 @@ export function editInstanceByIdFailure(error) {
   Actions for Input Description component,
   Posting Location component and Suggestions Rooms component (Create View)
 */
-export function createInstance(configurationId, payload) {
+export function createInstance(configurationId, streamId, name) {
+  
   /*
     TODO, makes an ajax request to the end poit passing the configurationId and the new instance payload.
     This call returns an instance ID, which we can build the new webhook URL, as well
     returns an instanceObj
   */
+  var integrationConfService = SYMPHONY.services.subscribe("integration-config");
+  var _streams = [];
+  _streams.push(streamId);
+  var optionalProperties = "{\"owner\":\""+ 7627861928877 +"\",\"streams\":[\""+ streamId +"\"],\"streamType\":\""+ "IM" +"\"}";
+  var payload = {
+        configurationId: configurationId,
+        name: name,
+        description: 'Testing',
+        creatorId: 7627861928877,
+        optionalProperties: optionalProperties
+      }
+  var saveInstance = integrationConfService.createConfigurationInstance(configurationId, payload);
+
   return {
     type: CREATE_INTANCE,
-    instance: instanceObj,  // ajax request response
+    payload: saveInstance
   };
 }
 
+export function createStream(configurationId, obj){
+  if(obj.streamType === 'IM'){
+    var streamService = SYMPHONY.services.subscribe('stream-service');
+    var _streams = [];
+    var promisedIM = streamService.createIM([7627861919706]);
+  
+    return {
+      type: CREATE_STREAM,
+      payload: promisedIM
+    };
+  }
+}
+
 export function createInstanceSuccess(instance) {
+  console.error('Instance ', instance);
   return {
     type: CREATE_INSTANCE_SUCCESS,
     payload: instance,

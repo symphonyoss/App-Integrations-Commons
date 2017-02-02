@@ -25,6 +25,8 @@ const dependencies = [
   'applications-nav',
   'integration-config',
   'extended-user-service',
+  'stream-service',
+  'integration-config'
 ];
 
 let themeColor;
