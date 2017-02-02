@@ -16,8 +16,6 @@
 
 package org.symphonyoss.integration.webhook.exception;
 
-import java.util.List;
-
 /**
  * Created by Milton Quilzini on 21/11/16.
  */
@@ -31,12 +29,11 @@ public class WebHookUnavailableException extends WebhookException {
     super(String.format("Configuration %s unavailable! %s", configurationType, message));
   }
 
-  public WebHookUnavailableException(String message, List<String> solutions) {
+  public WebHookUnavailableException(String message, String... solutions) {
     super(message, solutions);
   }
 
-  public WebHookUnavailableException(String message, List<String> solutions,
-      Throwable cause) {
-    super(message, solutions, cause);
+  public WebHookUnavailableException(String message, Throwable cause, String... solutions) {
+    super(message, cause, solutions);
   }
 }

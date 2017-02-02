@@ -18,8 +18,6 @@ package org.symphonyoss.integration.webhook.exception;
 
 import org.symphonyoss.integration.exception.IntegrationRuntimeException;
 
-import java.util.List;
-
 /**
  * Abstract class to be used for all Webhook Exception.
  *
@@ -31,12 +29,12 @@ public abstract class WebhookException extends IntegrationRuntimeException {
 
   private static final String COMPONENT = "Webhook Dispatcher";
 
-  public WebhookException(String message, List<String> solutions) {
+  public WebhookException(String message, String... solutions) {
     super(COMPONENT, message, solutions);
   }
 
-  public WebhookException(String message, List<String> solutions, Throwable cause) {
-    super(COMPONENT, message, solutions, cause);
+  public WebhookException(String message, Throwable cause, String... solutions) {
+    super(COMPONENT, message, cause, solutions);
   }
 
   public WebhookException(String message) {
