@@ -5,18 +5,25 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { Link, Router, Route, hashHistory, IndexRoute } from 'react-router';
 import reducers from '../reducers/reducers';
-import './Integration';
 import { getParameterByName } from './utils.service';
 import Home from '../views/Home';
+import './Integration';
+import configureStore from '../store/configureStore.js';
 
-let store = createStore(reducers);
+// let store = createStore(reducers);
+const store = configureStore();
 
-const appId = getParameterByName('id');
+
+const params = {
+  appId: getParameterByName('id'),
+  configurationId: getParameterByName('configurationId'),
+}
 
 const dependencies = [
   'ui',
   'modules',
   'applications-nav',
+  'integration-config',
   'extended-user-service',
 ];
 
@@ -24,8 +31,8 @@ let themeColor;
 let themeSize;
 
 function loadApplication(rooms) {
-  document.getElementsByTagName('h1')[0].innerHTML = 'My Configurator';
-  // INTEGRATION.setConfigurationId()
+  INTEGRATION.setConfigurationId(params.configurationId);
+  
   render(
     <Provider store={store}>
       <Home />
@@ -66,9 +73,9 @@ function helloApplication(data) {
   document.body.className = `symphony-external-app ${themeColor} ${themeSize}`;
 
   SYMPHONY.application.connect(
-    appId,
+    params.appId,
     dependencies,
-    [`${appId}:app`]
+    [`${params.appId}:app`]
   ).then(connectApplication);
 }
 
