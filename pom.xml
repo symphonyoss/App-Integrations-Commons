@@ -162,6 +162,8 @@
         <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
         <reports.plugin.version>2.9</reports.plugin.version>
 
+        <webapp.directory>${project.artifactId}</webapp.directory>
+
         <!-- compile -->
         <commons.lang3.version>3.4</commons.lang3.version>
         <commons-validator.version>1.5.0</commons-validator.version>
@@ -182,8 +184,8 @@
         <!-- RPM properties -->
         <rpm.deployment.prefix>/opt/symphony</rpm.deployment.prefix>
         <rpm.name.prefix>symphony</rpm.name.prefix>
-        <rpm.name>integration-bridge</rpm.name>
-        <rpm.deployment.folder>${rpm.deployment.prefix}/ib</rpm.deployment.folder>
+        <rpm.name>${project.artifactId}</rpm.name>
+        <rpm.deployment.folder>${rpm.deployment.prefix}/ib/libs</rpm.deployment.folder>
         <rpm.deployment.user>ibridge</rpm.deployment.user>
         <rpm.deployment.filemode>755</rpm.deployment.filemode>
         <rpm.type>single</rpm.type>
@@ -265,6 +267,20 @@
                                     <regex>([0-9]+)[\.]([0-9]+)[\.]([0-9]+)(.*)</regex>
                                     <replacement>$1.$2.$3</replacement>
                                     <failIfNoMatch>true</failIfNoMatch>
+                                </regexPropertySetting>
+                                <regexPropertySetting>
+                                    <name>rpm.version</name>
+                                    <value>${project.version}</value>
+                                    <regex>([0-9]+)[\.]([0-9]+)[\.]([0-9]+)</regex>
+                                    <replacement>$1.$2.$3</replacement>
+                                    <failIfNoMatch>false</failIfNoMatch>
+                                </regexPropertySetting>
+                                <regexPropertySetting>
+                                    <name>rpm.version</name>
+                                    <value>${project.version}</value>
+                                    <regex>([0-9]+)[\.]([0-9]+)[\.]([0-9]+)-SNAPSHOT</regex>
+                                    <replacement>$1.$2.$3_SNAPSHOT</replacement>
+                                    <failIfNoMatch>false</failIfNoMatch>
                                 </regexPropertySetting>
                             </regexPropertySettings>
                         </configuration>
@@ -487,7 +503,7 @@
             <activation>
                 <activeByDefault>false</activeByDefault>
                 <file>
-                    <exists>./src/main/resources/application.yml</exists>
+                    <exists>./src/main/java</exists>
                 </file>
                 <property>
                     <name>build.rpm</name>
@@ -516,7 +532,7 @@
                             <distribution>${rpm.name.prefix}-${rpm.type}</distribution>
                             <name>${rpm.name}</name>
                             <group>${rpm.name.prefix}-${rpm.type}</group>
-                            <version>${semantic.version}_${maven.compiler.target}</version>
+                            <version>${rpm.version}</version>
                             <release>${build.number}</release>
                             <needarch>x86_64</needarch>
                             <targetOS>linux</targetOS>
@@ -524,7 +540,6 @@
                             <repackJars>false</repackJars>
 
                             <requires>
-                                <require>tomcat</require>
                                 <require>symphony-apps-base</require>
                             </requires>
 
@@ -576,11 +591,110 @@
                                     <artifacts>
                                         <artifact>
                                             <file>
-                                                ${project.build.directory}/rpm/${rpm.name}/RPMS/x86_64/${rpm.name}-${semantic.version}_${maven.compiler.target}-${build.number}.x86_64.rpm
+                                                ${project.build.directory}/rpm/${rpm.name}/RPMS/x86_64/${rpm.name}-${rpm.version}-${build.number}.x86_64.rpm
                                             </file>
                                             <type>rpm</type>
                                         </artifact>
                                     </artifacts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>webapp</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <file>
+                    <exists>./src/main/webapp/package.json</exists>
+                </file>
+                <property>
+                    <name>env</name>
+                    <value>!dev</value>
+                </property>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>exec-npm</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>npm</executable>
+                                    <arguments>
+                                        <argument>install</argument>
+                                        <argument>--verbose</argument>
+                                    </arguments>
+                                    <workingDirectory>${project.basedir}/src/main/webapp</workingDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>gulp</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <file>
+                    <exists>./src/main/webapp/gulpfile.js</exists>
+                </file>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>exec-gulp</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>gulp</executable>
+                                    <arguments>
+                                        <argument>build</argument>
+                                        <argument>--output-path</argument>
+                                        <argument>${project.build.directory}</argument>
+                                    </arguments>
+                                    <workingDirectory>${project.basedir}/src/main/webapp</workingDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>3.0.2</version>
+                        <executions>
+                            <execution>
+                                <id>copy-resources</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.outputDirectory}/static/${webapp.directory}</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}/static</directory>
+                                            <filtering>true</filtering>
+                                        </resource>
+                                    </resources>
                                 </configuration>
                             </execution>
                         </executions>
