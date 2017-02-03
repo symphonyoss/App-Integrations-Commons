@@ -13,52 +13,52 @@ import {
   CREATE_STREAM_ERROR,
 } from '../actions/actions';
 
-const INITIAL_STATE =  {
+const INITIAL_STATE = {
   instances: [],
   loading: true,
   erro: null,
   activeInstance: null,
+  configurationId: null,
 };
 
 export default function (state = INITIAL_STATE, action) {
   let error;
 
-  switch(action.type) {
-    case FETCH_INSTANCE_LIST:
-      return {
-        ...state,
-        instances: [],
-        loading: true,
-        error: null,
-      };
+  switch (action.type) {
     case FETCH_INSTANCE_LIST_SUCCESS:
-      return {
+      return Object.assign({}, state, {
         ...state,
-        instances: action.payload,
+        instances: [
+          ...state.instances,
+          action.payload
+        ],
         loading: false,
-        error: null,
-      };
+      });
+    case CREATE_STREAM: // this new stream will be used to create the new instance...
+      return Object.assign({}, state, {
+        ...state,
+        loading: true,
+      });
+    case CREATE_INSTANCE_SUCCESS:
+      return Object.assign({}, state, {
+        ...state,
+        instances: [
+          ...state.instances,
+          action.payload
+        ],
+        activeInstance: action.payload,
+        loading: false,
+      });
     case FETCH_INSTANCE_LIST_ERROR:
-      error = action.payload || {message: action.payload.message} // 2nd one is network or server down errors
-      return {
+    case CREATE_STREAM_ERROR:
+    case CREATE_INSTANCE_ERROR:
+      error = action.payload || { message: action.payload.message } // 2nd one is network or server down errors
+      return Object.assign({}, state, {
         ...state,
         instances: null,
         loading: false,
         error: error,
-      };
-    case CREATE_STREAM:
-      return {
-        ...state,
-          loading: true,
-          error: null
-      } ; 
-    case CREATE_INSTANCE_SUCCESS:
-      return {
-        ...state,
-        instances: [...instances, action.payload],
-        loading: false,
-        error: null,
-      };
+      });
     default:
       return state;
   }
