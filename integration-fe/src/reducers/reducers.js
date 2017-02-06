@@ -18,7 +18,7 @@ import {
 
 const INITIAL_STATE = {
   instances: [],
-  loading: true,
+  loading: false,
   error: null,
   activeInstance: null,
   configurationId: getParameterByName('configurationId'),

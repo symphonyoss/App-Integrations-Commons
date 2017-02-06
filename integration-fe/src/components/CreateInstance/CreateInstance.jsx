@@ -8,8 +8,22 @@ export default class CreateInstance extends Component{
         super(props);
         this.state = {
             description: '',
-            streamType: 'IM'
+            streamType: 'IM',
+            error: undefined
         }
+
+        this.onCreate = this.onCreate.bind(this);
+    }
+
+    onCreate(){
+        if(!this.state.description){
+            //TODO remove this to reuse the error component that will be created.
+            this.setState({error: 'Description is required'});
+            return;
+        }
+
+        this.setState({error: undefined});
+        this.props.onCreate(this.state);
     }
 
     onCancel() {
@@ -18,12 +32,28 @@ export default class CreateInstance extends Component{
 	}
     
     render(){
+        //TODO remove this to reuse the error component that will be created.
+        var error = '';
+        if(this.state.error){
+            error = <h1>{this.state.error}</h1>
+        }
+
+        console.error('LOADING ', this.props.loading);
+        var loading = '';
+        if(this.props.loading === true){
+            loading = <h1>CREATING...</h1>;
+        }else{
+            loading = '';
+        }
+
         return (
             <div className="container-component block">
+                {error}
+                {loading}
                 <InputDescription handleChange={description => this.setState({description: description})} />
                 <div className="submit-webhook">
                     <div className="btn-container">
-                        <button className="button" onClick={() => this.props.onCreate(this.state)} type="button" >Add</button>
+                        <button className="button" onClick={this.onCreate} type="button" >Add</button>
                         <button className="button cancel-link" onClick={this.onCancel}>Cancel</button>
                     </div>
 			    </div>

@@ -11,7 +11,7 @@ import CreateInstance from '../components/CreateInstance/CreateInstance';
 
 const mapStateToProps = (state) => {
     return {
-        myValue: state.myValue
+        loading: state.loading
     }
 }
 
