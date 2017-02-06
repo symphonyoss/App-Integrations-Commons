@@ -3,7 +3,7 @@
     {
       "type": "sandbox",
       "id": "devWebHookIntegration",
-      "name": "Template APP-686",
+      "name": "APP-686",
       "blurb": "Webhook Integration in Development Mode",
       "publisher": "Symphony",
       "url": "https://localhost:4000/controller.html?configurationId=578543c2e4b0edcf4f5ff520&botUserId=68719476768&id=devWebHookIntegration",

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { createStore } from 'redux';
 import TableInstanceContainer from '../containers/TableInstanceContainer';
+import CreateInstanceContainer from '../containers/CreateInstanceContainer';
 import {
   fetchInstanceList,
   fetchInstanceListSuccess,

@@ -16,17 +16,17 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-    const obj = {
-        name: 'My chat',
-        streamType: 'IM'
-    }
     const configurationId = '578543c2e4b0edcf4f5ff520';
     return {
-        myOnClick: (text) => { 
-            dispatch(createStream(configurationId, obj)).then((response) => {
-                dispatch(createInstance(configurationId, response.payload.id, obj.name)).then((response2) => {
+        onCreate: (instance) => { 
+            dispatch(createStream(configurationId, instance)).then((response) => {
+                dispatch(createInstance(configurationId, response.payload.id, instance.description)).then((response2) => {
                     dispatch(createInstanceSuccess(response2.payload));
-                })
+                }, (error) => {
+                    fetchInstanceListFailure(error)
+                });
+            }, (error) => {
+                fetchInstanceListFailure(error);
             });
         }
     }

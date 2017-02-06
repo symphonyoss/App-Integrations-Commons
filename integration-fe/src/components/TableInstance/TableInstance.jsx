@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import DataRow from './DataRow';
+//import DataRow from './DataRow';
 
 class TableInstance extends Component {
   constructor(props) {

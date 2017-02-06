@@ -52,11 +52,13 @@ const integrationApp = (state = INITIAL_STATE, action) => {
         text: action.payload
       });
     case CREATE_STREAM: // this new stream will be used to create the new instance...
+      console.error('CREATE_STREAM');
       return Object.assign({}, state, {
         ...state,
         loading: true,
       });
     case CREATE_INSTANCE_SUCCESS:
+      console.error('CREATE_INSTANCE_SUCCESS');
       return Object.assign({}, state, {
         ...state,
         instances: [
