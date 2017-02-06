@@ -1,3 +1,4 @@
+import { getParameterByName } from '../js/utils.service';
 
 /* Instance List */
 export const FETCH_INSTANCE_LIST = 'FETCH_INSTANCE_LIST';
@@ -19,29 +20,28 @@ export const CREATE_INTANCE = 'CREATE_INTANCE';
 export const CREATE_INSTANCE_SUCCESS = 'CREATE_INSTANCE_SUCCESS';
 export const CREATE_INSTANCE_ERROR = 'CREATE_INSTANCE_ERROR';
 
+export const CHANGE = 'CHANGE';
 
-
+const configurationId = getParameterByName('configurationId');
+console.error('from actions, confId: ', configurationId);
 /* 
   Actions for Table Instance component (List View)
 */
-export function fetchInstanceList(configurationId) {
-  // TODO, make an ajax request to the end poit passing the configurationId parameter...
-  let response;
-  // const integrationConfService = SYMPHONY.services.subscribe("integration-config");
-  // integrationConfService.getConfigurationInstanceList(configurationId).then((data) => {
-  //   response = data;
-  // });
+export function fetchInstanceList() {
+  const integrationConfService = SYMPHONY.services.subscribe('integration-config');
+  const promisedInstanceList =  integrationConfService.getConfigurationInstanceList('578543c2e4b0edcf4f5ff520');
 
   return {
     type: FETCH_INSTANCE_LIST,
-    payload: response, // ajax request response
+    payload: promisedInstanceList,
   };
 }
 
 export function fetchInstanceListSuccess(instanceList) {
+  console.error('fetchInstanceListSuccess: ', instanceList.payload);
   return {
     type: FETCH_INSTANCE_LIST_SUCCESS,
-    payload: instanceList,
+    payload: instanceList.payload,
   };
 }
 
@@ -50,6 +50,13 @@ export function fetchInstanceListFailure(error) {
     type: FETCH_INSTANCE_LIST_ERROR,
     payload: error,
   };
+}
+
+export function changeIt(text) {
+  return {
+    type: CHANGE,
+    payload: text,
+  }
 }
 
 /* 

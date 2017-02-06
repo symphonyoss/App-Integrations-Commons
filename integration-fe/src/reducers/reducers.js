@@ -1,3 +1,5 @@
+import { getParameterByName } from '../js/utils.service';
+
 import {
   FETCH_INSTANCE_LIST,
   FETCH_INSTANCE_LIST_SUCCESS,
@@ -11,28 +13,43 @@ import {
   CREATE_STREAM,
   CREATE_STREAM_SUCCESS,
   CREATE_STREAM_ERROR,
+  CHANGE,
 } from '../actions/actions';
 
 const INITIAL_STATE = {
   instances: [],
   loading: true,
-  erro: null,
+  error: null,
   activeInstance: null,
-  configurationId: null,
+  configurationId: getParameterByName('configurationId'),
+  text: '',
 };
 
-export default function (state = INITIAL_STATE, action) {
+const integrationApp = (state = INITIAL_STATE, action) => {
   let error;
 
   switch (action.type) {
-    case FETCH_INSTANCE_LIST_SUCCESS:
+    case FETCH_INSTANCE_LIST: {
       return Object.assign({}, state, {
         ...state,
-        instances: [
-          ...state.instances,
-          action.payload
-        ],
+        loading: true,
+        error: null,
+        activeInstance: null,
+      });
+    }
+    case FETCH_INSTANCE_LIST_SUCCESS:
+      debugger;
+      return Object.assign({}, state, {
+        ...state,
+        instances: action.payload.slice(),
         loading: false,
+        error: null,
+      });
+    case CHANGE:
+      debugger;
+      return Object.assign({}, state, {
+        ...state,
+        text: action.payload
       });
     case CREATE_STREAM: // this new stream will be used to create the new instance...
       return Object.assign({}, state, {
@@ -63,3 +80,5 @@ export default function (state = INITIAL_STATE, action) {
       return state;
   }
 }
+
+export default integrationApp;
