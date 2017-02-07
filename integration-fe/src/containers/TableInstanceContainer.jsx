@@ -1,17 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {
+  fetchUserId,
+  fetchUserIdSuccess,
   fetchInstanceList,
   fetchInstanceListSuccess,
-  fetchInstanceListError,
   fetchUserRooms,
   fetchUserRoomsSuccess,
-  fetchUserRoomsError,
-  changeIt,
+  setError,
 } from '../actions/actions';
 import TableInstance from '../components/TableInstance/TableInstance';
 
 const mapStateToProps = (state) => {
+  debugger;
   return {
     instanceList: state.instances,
     configurationId: state.configurationId,
@@ -27,11 +28,18 @@ const mapDispatchToProps = (dispatch) => {
           dispatch(fetchInstanceListSuccess(list));
 
         }, (error) => {
-          fetchInstanceListError(error);
+          setError(error);
         })
-        
+
       }, (error) => {
-        fetchUserRoomsError(error);
+        setError(error);
+      })
+    },
+    fetchUserId: () => {
+      dispatch(fetchUserId()).then((user) => {
+        dispatch(fetchUserIdSuccess(user));
+      }, (error) => {
+        setError(error);
       })
     }
   }

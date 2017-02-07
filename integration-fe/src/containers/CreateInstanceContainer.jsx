@@ -2,31 +2,32 @@ import {connect} from 'react-redux';
 import {
     CREATE_INTANCE,
     CREATE_INSTANCE_SUCCESS,
-    CREATE_INSTANCE_ERROR,
+    ERROR,
     createStream,
     createInstance,
-    createInstanceSuccess
+    createInstanceSuccess,
+    setError,
 } from '../actions/actions';
 import CreateInstance from '../components/CreateInstance/CreateInstance';
 
 const mapStateToProps = (state) => {
     return {
-        myValue: state.myValue
+        loading: state.loading
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
-    const obj = {
-        name: 'My chat',
-        streamType: 'IM'
-    }
     const configurationId = '578543c2e4b0edcf4f5ff520';
     return {
-        myOnClick: (text) => { 
-            dispatch(createStream(configurationId, obj)).then((response) => {
-                dispatch(createInstance(configurationId, response.payload.id, obj.name)).then((response2) => {
-                    dispatch(createInstanceSuccess(response2.payload));
-                })
+        onCreate: (instance) => { 
+            dispatch(createStream(configurationId, instance)).then((stream) => {
+                dispatch(createInstance(configurationId, stream.payload.id, instance.description)).then((instance) => {
+                    dispatch(createInstanceSuccess(instance.payload));
+                }, (error) => {
+                    setError(error)
+                });
+            }, (error) => {
+                setError(error);
             });
         }
     }

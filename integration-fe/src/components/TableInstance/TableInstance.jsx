@@ -10,6 +10,7 @@ class TableInstance extends Component {
   }
 
   componentDidMount() {
+    this.props.fetchUserId();
     this.props.fetchInstanceList();
     this.setState({
       instances: this.props.instanceList

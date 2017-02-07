@@ -1,28 +1,27 @@
 import { Utils } from '../js/utils.service';
 
 import {
+  FETCH_USER_ID,
+  FETCH_USER_ID_SUCCESS,
   FETCH_INSTANCE_LIST,
   FETCH_INSTANCE_LIST_SUCCESS,
-  FETCH_INSTANCE_LIST_ERROR,
   FETCH_USER_ROOMS_SUCCESS,
-  FETCH_USER_ROOMS_ERROR,
   EDIT_INSTANCE,
   EDIT_INSTANCE_SUCCESS,
-  EDIT_INSTANCE_ERROR,
   CREATE_INTANCE,
   CREATE_INSTANCE_SUCCESS,
-  CREATE_INSTANCE_ERROR,
   CREATE_STREAM,
   CREATE_STREAM_SUCCESS,
-  CREATE_STREAM_ERROR,
+  ERROR,
 } from '../actions/actions';
 
 const INITIAL_STATE = {
   instances: [],
-  loading: true,
+  loading: false,
   error: null,
   activeInstance: null,
   userRooms: [],
+  userId: null,
   configurationId: Utils.getParameterByName('configurationId'),
 };
 
@@ -30,6 +29,19 @@ const integrationApp = (state = INITIAL_STATE, action) => {
   let error;
 
   switch (action.type) {
+    case FETCH_USER_ID:
+      return Object.assign({}, state, {
+        ...state,
+        loading: true,
+      });
+    case FETCH_USER_ID_SUCCESS:
+      debugger;
+      return Object.assign({}, state, {
+        ...state,
+        loading: false,
+        error: null,
+        userId: action.payload,
+      })
     case FETCH_INSTANCE_LIST: {
       return Object.assign({}, state, {
         ...state,
@@ -66,10 +78,7 @@ const integrationApp = (state = INITIAL_STATE, action) => {
         activeInstance: action.payload,
         loading: false,
       });
-    case FETCH_INSTANCE_LIST_ERROR:
-    case FETCH_USER_ROOMS_ERROR:
-    case CREATE_STREAM_ERROR:
-    case CREATE_INSTANCE_ERROR:
+    case ERROR:
       error = action.payload || { message: action.payload.message } // 2nd one is network or server down errors
       return Object.assign({}, state, {
         ...state,

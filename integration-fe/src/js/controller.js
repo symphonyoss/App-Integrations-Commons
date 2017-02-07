@@ -22,7 +22,7 @@ const dependencies = [
 // create our own service
 const listService = SYMPHONY.services.register(`${params.appId}:controller`);
 
-function registerApplication() {
+function registerApplication(response) {
   
   // system services
   const uiService = SYMPHONY.services.subscribe('ui');
