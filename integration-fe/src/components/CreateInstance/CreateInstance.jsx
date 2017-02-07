@@ -11,7 +11,7 @@ export default class CreateInstance extends Component{
             streamType: 'IM',
             error: undefined
         }
-
+        
         this.onCreate = this.onCreate.bind(this);
     }
 
@@ -23,7 +23,7 @@ export default class CreateInstance extends Component{
         }
 
         this.setState({error: undefined});
-        this.props.onCreate(this.state);
+        this.props.onCreate(this.state, this.props.userId);
     }
 
     onCancel() {

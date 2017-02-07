@@ -41,10 +41,9 @@ export function fetchUserId() {
 }
 
 export function fetchUserIdSuccess(user) {
-  debugger;
   return {
     type: FETCH_USER_ID_SUCCESS,
-    payload: user,
+    payload: user.payload,
   }
 }
 
@@ -133,16 +132,16 @@ export function createStream(configurationId, obj){
   Actions for Input Description component,
   Posting Location component and Suggestions Rooms component (Create View)
 */
-export function createInstance(configurationId, streamId, description) {
+export function createInstance(configurationId, streamId, description, userId) {
   var integrationConfService = SYMPHONY.services.subscribe("integration-config");
   var _streams = [];
   _streams.push(streamId);
-  var optionalProperties = "{\"owner\":\""+ 7627861928877 +"\",\"streams\":[\""+ streamId +"\"],\"streamType\":\""+ "IM" +"\"}";
+  var optionalProperties = "{\"owner\":\""+ userId +"\",\"streams\":[\""+ streamId +"\"],\"streamType\":\""+ "IM" +"\"}";
   var payload = {
         configurationId: configurationId,
         name: name,
         description: description,
-        creatorId: 7627861928877,
+        creatorId: userId,
         optionalProperties: optionalProperties
       }
   var saveInstance = integrationConfService.createConfigurationInstance(configurationId, payload);

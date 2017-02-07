@@ -12,7 +12,6 @@ import {
 import TableInstance from '../components/TableInstance/TableInstance';
 
 const mapStateToProps = (state) => {
-  debugger;
   return {
     instanceList: state.instances,
     configurationId: state.configurationId,

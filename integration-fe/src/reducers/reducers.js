@@ -35,7 +35,6 @@ const integrationApp = (state = INITIAL_STATE, action) => {
         loading: true,
       });
     case FETCH_USER_ID_SUCCESS:
-      debugger;
       return Object.assign({}, state, {
         ...state,
         loading: false,
