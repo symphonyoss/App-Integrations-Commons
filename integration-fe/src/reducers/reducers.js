@@ -1,9 +1,11 @@
-import { getParameterByName } from '../js/utils.service';
+import { Utils } from '../js/utils.service';
 
 import {
   FETCH_INSTANCE_LIST,
   FETCH_INSTANCE_LIST_SUCCESS,
   FETCH_INSTANCE_LIST_ERROR,
+  FETCH_USER_ROOMS_SUCCESS,
+  FETCH_USER_ROOMS_ERROR,
   EDIT_INSTANCE,
   EDIT_INSTANCE_SUCCESS,
   EDIT_INSTANCE_ERROR,
@@ -13,7 +15,6 @@ import {
   CREATE_STREAM,
   CREATE_STREAM_SUCCESS,
   CREATE_STREAM_ERROR,
-  CHANGE,
 } from '../actions/actions';
 
 const INITIAL_STATE = {
@@ -21,8 +22,8 @@ const INITIAL_STATE = {
   loading: true,
   error: null,
   activeInstance: null,
-  configurationId: getParameterByName('configurationId'),
-  text: '',
+  userRooms: [],
+  configurationId: Utils.getParameterByName('configurationId'),
 };
 
 const integrationApp = (state = INITIAL_STATE, action) => {
@@ -38,19 +39,18 @@ const integrationApp = (state = INITIAL_STATE, action) => {
       });
     }
     case FETCH_INSTANCE_LIST_SUCCESS:
-      debugger;
       return Object.assign({}, state, {
         ...state,
         instances: action.payload.slice(),
         loading: false,
         error: null,
       });
-    case CHANGE:
-      debugger;
+    case FETCH_USER_ROOMS_SUCCESS: {
       return Object.assign({}, state, {
         ...state,
-        text: action.payload
-      });
+        userRooms: action.payload.slice(),
+      })
+    }
     case CREATE_STREAM: // this new stream will be used to create the new instance...
       return Object.assign({}, state, {
         ...state,
@@ -67,6 +67,7 @@ const integrationApp = (state = INITIAL_STATE, action) => {
         loading: false,
       });
     case FETCH_INSTANCE_LIST_ERROR:
+    case FETCH_USER_ROOMS_ERROR:
     case CREATE_STREAM_ERROR:
     case CREATE_INSTANCE_ERROR:
       error = action.payload || { message: action.payload.message } // 2nd one is network or server down errors

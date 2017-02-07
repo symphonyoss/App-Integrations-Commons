@@ -1983,7 +1983,7 @@
                     name: service.xlat || service.name,
                     method: method,
                     args: args
-                }).timeout(5000)
+                }).timeout(500)
             }
 
             function onDisconnected(disconnectedSource) {

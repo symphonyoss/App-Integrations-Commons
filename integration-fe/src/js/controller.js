@@ -1,11 +1,11 @@
-import { getParameterByName } from './utils.service';
+import { Utils } from './utils.service';
 import config from './data.service';
 
 const params = {
-  appId: getParameterByName('id'),
-  configurationId: getParameterByName('configurationId'),
-  botUserId: getParameterByName('botUserId'),
-  context: getParameterByName('context') ? `/${getParameterByName('context')}` : '',
+  appId: Utils.getParameterByName('id'),
+  configurationId: Utils.getParameterByName('configurationId'),
+  botUserId: Utils.getParameterByName('botUserId'),
+  context: Utils.getParameterByName('context') ? `/${Utils.getParameterByName('context')}` : '',
   host: `${window.location.protocol}//${window.location.hostname}:${window.location.port}`,
 };
 
@@ -16,12 +16,14 @@ const dependencies = [
   'account',
   'integrationConfigService',
   'stream-service',
+  'integration-config'
 ];
 
 // create our own service
 const listService = SYMPHONY.services.register(`${params.appId}:controller`);
 
 function registerApplication() {
+  
   // system services
   const uiService = SYMPHONY.services.subscribe('ui');
   const modulesService = SYMPHONY.services.subscribe('modules');

@@ -3,33 +3,36 @@ import { connect } from 'react-redux';
 import {
   fetchInstanceList,
   fetchInstanceListSuccess,
-  fetchInstanceListFailure,
+  fetchInstanceListError,
+  fetchUserRooms,
+  fetchUserRoomsSuccess,
+  fetchUserRoomsError,
   changeIt,
 } from '../actions/actions';
 import TableInstance from '../components/TableInstance/TableInstance';
-// import '../js/Integration';
 
 const mapStateToProps = (state) => {
-  debugger;
   return {
     instanceList: state.instances,
     configurationId: state.configurationId,
-    text: state.text,
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchInstanceList: () => {
-      dispatch(fetchInstanceList()).then((response) => {
-        dispatch(fetchInstanceListSuccess(response));
+      dispatch(fetchUserRooms()).then((rooms) => {
+        dispatch(fetchUserRoomsSuccess(rooms));
+        dispatch(fetchInstanceList()).then((list) => {
+          dispatch(fetchInstanceListSuccess(list));
+
+        }, (error) => {
+          fetchInstanceListError(error);
+        })
+        
       }, (error) => {
-        fetchInstanceListFailure(error);
-      });
-    },
-    changeIt: (val) => {
-      debugger;
-      dispatch(changeIt(val));
+        fetchUserRoomsError(error);
+      })
     }
   }
 }

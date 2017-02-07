@@ -5,18 +5,16 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { Link, Router, Route, hashHistory, IndexRoute } from 'react-router';
 import reducers from '../reducers/reducers';
-import { getParameterByName } from './utils.service';
+import { Utils } from './utils.service';
 import Home from '../views/Home';
-import './Integration';
 import configureStore from '../store/configureStore.js';
 
-// let store = createStore(reducers);
 const store = configureStore();
 
 
 const params = {
-  appId: getParameterByName('id'),
-  configurationId: getParameterByName('configurationId'),
+  appId: Utils.getParameterByName('id'),
+  configurationId: Utils.getParameterByName('configurationId'),
 }
 
 const dependencies = [
@@ -33,8 +31,6 @@ let themeColor;
 let themeSize;
 
 function loadApplication(rooms) {
-  INTEGRATION.setConfigurationId(params.configurationId);
-  
   render(
     <Provider store={store}>
       <Home />
