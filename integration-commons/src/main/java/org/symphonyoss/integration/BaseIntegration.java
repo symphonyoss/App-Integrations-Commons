@@ -132,6 +132,19 @@ public abstract class BaseIntegration implements Integration {
           "Fail to retrieve the keystore password. Application: " + appId);
     }
 
+    KeyStore keyStore = loadKeyStore(certsDir, application);
+
+    healthManager.certificateInstalled(OK);
+    authenticationProxy.registerUser(integrationUser, keyStore, application.getKeystore().getPassword());
+  }
+
+  /**
+   * Load the keystore file.
+   * @param certsDir Certificate directory
+   * @param application Application settings
+   * @return Keystore object
+   */
+  protected KeyStore loadKeyStore(String certsDir, Application application) {
     Keystore keystoreConfig = application.getKeystore();
 
     String locationFile = keystoreConfig.getFile();
@@ -143,30 +156,15 @@ public abstract class BaseIntegration implements Integration {
     String password = keystoreConfig.getPassword();
     String type = keystoreConfig.getType();
 
-    KeyStore keyStore;
-    try {
-      keyStore = loadKeyStore(storeLocation, password, type);
+    try(FileInputStream inputStream = new FileInputStream(storeLocation)) {
+      final KeyStore ks = KeyStore.getInstance(type);
+      ks.load(inputStream, password.toCharArray());
+
+      return ks;
     } catch (GeneralSecurityException | IOException e) {
       throw new LoadKeyStoreException(
           String.format("Fail to load keystore file at %s", storeLocation), e);
     }
-
-    healthManager.certificateInstalled(OK);
-    authenticationProxy.registerUser(integrationUser, keyStore, password);
-  }
-
-  /**
-   * Load the keystore file.
-   * @param storeLocation Keystore path.
-   * @param password Keystore password
-   * @param type Keystore type
-   * @return Keystore object
-   */
-  private KeyStore loadKeyStore(String storeLocation, String password, String type)
-      throws GeneralSecurityException, IOException {
-    final KeyStore ks = KeyStore.getInstance(type);
-    ks.load(new FileInputStream(storeLocation), password.toCharArray());
-    return ks;
   }
 
   /**
