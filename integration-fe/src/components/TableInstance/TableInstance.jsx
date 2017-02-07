@@ -42,7 +42,6 @@ class TableInstance extends Component {
     this.setState({
       instances: nextProps.instanceList
     });
-    debugger;
   }
 
   changeText(e) {

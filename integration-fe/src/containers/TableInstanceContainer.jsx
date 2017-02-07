@@ -10,7 +10,6 @@ import TableInstance from '../components/TableInstance/TableInstance';
 // import '../js/Integration';
 
 const mapStateToProps = (state) => {
-  debugger;
   return {
     instanceList: state.instances,
     configurationId: state.configurationId,
@@ -28,7 +27,6 @@ const mapDispatchToProps = (dispatch) => {
       });
     },
     changeIt: (val) => {
-      debugger;
       dispatch(changeIt(val));
     }
   }

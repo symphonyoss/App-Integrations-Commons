@@ -38,7 +38,6 @@ export default class CreateInstance extends Component{
             error = <h1>{this.state.error}</h1>
         }
 
-        console.error('LOADING ', this.props.loading);
         var loading = '';
         if(this.props.loading === true){
             loading = <h1>CREATING...</h1>;

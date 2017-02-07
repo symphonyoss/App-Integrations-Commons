@@ -99,7 +99,6 @@ export function createStreamFailure(error){
   Creates the stream to be able to create an instance
 */
 export function createStream(configurationId, obj){
-  console.error('createStream');
   if(obj.streamType === 'IM'){
     var streamService = SYMPHONY.services.subscribe('stream-service');
     var _streams = [];
@@ -117,8 +116,6 @@ export function createStream(configurationId, obj){
   Posting Location component and Suggestions Rooms component (Create View)
 */
 export function createInstance(configurationId, streamId, description) {
-  console.error('createInstance');
-  
   var integrationConfService = SYMPHONY.services.subscribe("integration-config");
   var _streams = [];
   _streams.push(streamId);
@@ -142,7 +139,6 @@ export function createInstance(configurationId, streamId, description) {
   The instance was create Successfully 
 */
 export function createInstanceSuccess(instance) {
-  console.error('createInstanceSuccess', instance);
   return {
     type: CREATE_INSTANCE_SUCCESS,
     payload: instance,
