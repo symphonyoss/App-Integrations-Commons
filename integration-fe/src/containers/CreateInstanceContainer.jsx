@@ -18,11 +18,10 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-    const configurationId = '578543c2e4b0edcf4f5ff520';
     return {
         onCreate: (instance, userId) => { 
-            dispatch(createStream(configurationId, instance)).then((stream) => {
-                dispatch(createInstance(configurationId, stream.payload.id, instance.description, userId)).then((instance) => {
+            dispatch(createStream(instance)).then((stream) => {
+                dispatch(createInstance(stream.payload.id, instance.description, userId)).then((instance) => {
                     dispatch(createInstanceSuccess(instance.payload));
                 }, (error) => {
                     setError(error)

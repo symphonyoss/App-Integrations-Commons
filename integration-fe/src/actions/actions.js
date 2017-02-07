@@ -115,7 +115,7 @@ export function editInstanceByIdSuccess(instance) {
 /*
   Creates the stream to be able to create an instance
 */
-export function createStream(configurationId, obj){
+export function createStream(obj){
   if(obj.streamType === 'IM'){
     var streamService = SYMPHONY.services.subscribe('stream-service');
     var _streams = [];
@@ -132,7 +132,8 @@ export function createStream(configurationId, obj){
   Actions for Input Description component,
   Posting Location component and Suggestions Rooms component (Create View)
 */
-export function createInstance(configurationId, streamId, description, userId) {
+export function createInstance(streamId, description, userId) {
+  debugger;
   var integrationConfService = SYMPHONY.services.subscribe("integration-config");
   var _streams = [];
   _streams.push(streamId);
