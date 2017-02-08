@@ -12,16 +12,16 @@ import CreateInstance from '../components/CreateInstance/CreateInstance';
 
 const mapStateToProps = (state) => {
     return {
-        loading: state.loading
+        loading: state.loading,
+        userId: state.userId
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
-    const configurationId = '578543c2e4b0edcf4f5ff520';
     return {
-        onCreate: (instance) => { 
-            dispatch(createStream(configurationId, instance)).then((stream) => {
-                dispatch(createInstance(configurationId, stream.payload.id, instance.description)).then((instance) => {
+        onCreate: (instance, userId) => { 
+            dispatch(createStream(instance)).then((stream) => {
+                dispatch(createInstance(stream.payload.id, instance.description, userId)).then((instance) => {
                     dispatch(createInstanceSuccess(instance.payload));
                 }, (error) => {
                     setError(error)

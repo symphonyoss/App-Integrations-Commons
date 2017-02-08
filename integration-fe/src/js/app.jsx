@@ -7,7 +7,7 @@ import { Link, Router, Route, hashHistory, IndexRoute } from 'react-router';
 import reducers from '../reducers/reducers';
 import { Utils } from './utils.service';
 import Home from '../views/Home';
-import configureStore from '../store/configureStore.js';
+import configureStore from '../store/configureStore';
 
 const store = configureStore();
 
