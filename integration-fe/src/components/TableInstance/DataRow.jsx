@@ -26,7 +26,6 @@ class DataRow extends Component {
     // callback function called from copyToClipboard
     const cb = (value) => {
       if (value) {
-        alert('set enableCopy true!!');
         this.setState({
           enableCopy: true,
         });

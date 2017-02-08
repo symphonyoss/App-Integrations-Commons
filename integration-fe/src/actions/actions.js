@@ -21,6 +21,8 @@ export const CREATE_STREAM = 'CREATE_STREAM';
 /* Create instance */
 export const CREATE_INTANCE = 'CREATE_INTANCE';
 export const CREATE_INSTANCE_SUCCESS = 'CREATE_INSTANCE_SUCCESS';
+
+/* General Errors */
 export const ERROR = 'ERROR';
 
 const configurationId = Utils.getParameterByName('configurationId');
