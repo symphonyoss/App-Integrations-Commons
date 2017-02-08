@@ -1,5 +1,5 @@
 import { Utils } from './utils.service';
-import config from './data.service';
+import config from './config.service';
 
 const params = {
   appId: Utils.getParameterByName('id'),

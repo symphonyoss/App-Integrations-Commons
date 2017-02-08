@@ -1,4 +1,5 @@
 import { Utils } from '../js/utils.service';
+import config from '../js/config.service';
 
 import {
   FETCH_USER_ID,
@@ -15,14 +16,22 @@ import {
   ERROR,
 } from '../actions/actions';
 
+const configurationId = Utils.getParameterByName('configurationId');
+const appId = Utils.getParameterByName('id');
+const baseUrl = `${window.location.protocol}//${window.location.hostname}/integration`;
+const baseWebhookUrl = `${baseUrl}/v1/whi/${appId}/${configurationId}`
+
 const INITIAL_STATE = {
   instances: [],
   loading: false,
   error: null,
   activeInstance: null,
+  appName: config.app_name,
   userRooms: [],
   userId: null,
-  configurationId: Utils.getParameterByName('configurationId'),
+  baseWebhookUrl,
+  appId,
+  configurationId,
 };
 
 const integrationApp = (state = INITIAL_STATE, action) => {
@@ -35,10 +44,8 @@ const integrationApp = (state = INITIAL_STATE, action) => {
         loading: true,
       });
     case FETCH_USER_ID_SUCCESS:
-      debugger;
       return Object.assign({}, state, {
         ...state,
-        loading: false,
         error: null,
         userId: action.payload,
       })

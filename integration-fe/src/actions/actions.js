@@ -1,8 +1,3 @@
-// import { 
-//   getParameterByName,
-//   normalizeInstanceList,
-//   getUserRooms } from '../js/utils.service';
-
 import { Utils } from '../js/utils.service';
 
 /* Setup initial parameters */
@@ -41,13 +36,11 @@ export function fetchUserId() {
 }
 
 export function fetchUserIdSuccess(user) {
-  debugger;
   return {
     type: FETCH_USER_ID_SUCCESS,
     payload: user,
   }
 }
-
 
 /* 
   Actions for Table Instance component (List View)
@@ -55,7 +48,6 @@ export function fetchUserIdSuccess(user) {
 export function fetchInstanceList() {
   const integrationConfService = SYMPHONY.services.subscribe('integration-config');
   const promisedInstanceList =  integrationConfService.getConfigurationInstanceList('578543c2e4b0edcf4f5ff520');
-  
   return {
     type: FETCH_INSTANCE_LIST,
     payload: promisedInstanceList,
@@ -64,7 +56,6 @@ export function fetchInstanceList() {
 
 export function fetchInstanceListSuccess(instanceList) {
   const response = Utils.normalizeInstanceList(instanceList.payload);
-  
   return {
     type: FETCH_INSTANCE_LIST_SUCCESS,
     payload: response,
@@ -74,7 +65,6 @@ export function fetchInstanceListSuccess(instanceList) {
 export function fetchUserRooms() {
   const extendedUserService = SYMPHONY.services.subscribe("extended-user-service");
   const promisedRooms = extendedUserService.getRooms();
-  
   return {
     type: FETCH_USER_ROOMS,
     payload: promisedRooms,
@@ -83,7 +73,6 @@ export function fetchUserRooms() {
 
 export function fetchUserRoomsSuccess(userRooms) {
   const response = Utils.getUserRooms(userRooms.payload);
-  
   return {
     type: FETCH_USER_ROOMS_SUCCESS,
     payload: response,
