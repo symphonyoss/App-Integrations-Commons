@@ -49,8 +49,6 @@ public class IntegrationProperties {
 
   private ConnectionInfo keyManagerAuth;
 
-  private CloudLogging cloudLogging;
-
   private Map<String, Application> applications = new HashMap<>();
 
   private IntegrationBridge integrationBridge;
@@ -103,14 +101,6 @@ public class IntegrationProperties {
 
   public void setKeyManagerAuth(ConnectionInfo keyManagerAuth) {
     this.keyManagerAuth = keyManagerAuth;
-  }
-
-  public CloudLogging getCloudLogging() {
-    return cloudLogging;
-  }
-
-  public void setCloudLogging(CloudLogging cloudLogging) {
-    this.cloudLogging = cloudLogging;
   }
 
   public Map<String, Application> getApplications() {
