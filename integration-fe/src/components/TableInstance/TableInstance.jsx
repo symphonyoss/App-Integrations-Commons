@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import DataRow from './DataRow';
 import '../../styles/main.less';
 import './styles/styles.less';
@@ -8,20 +8,19 @@ class TableInstance extends Component {
     super(props);
     this.state = {
       instances: [],
-    }
+    };
     this.onConfigureNew = this.onConfigureNew.bind(this);
   }
 
-  onConfigureNew(e) {
-    e.preventDefault();
+  componentWillMount() {
+    this.setState({
+      instances: this.props.instanceList,
+    });
   }
 
   componentDidMount() {
     this.props.fetchUserId();
     this.props.fetchInstanceList();
-    this.setState({
-      instances: this.props.instanceList
-    })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -30,6 +29,10 @@ class TableInstance extends Component {
         instances: nextProps.instanceList,
       });
     }
+  }
+
+  onConfigureNew(e) {
+    e.preventDefault();
   }
 
   render() {
@@ -60,9 +63,9 @@ class TableInstance extends Component {
                   instanceId: item.instanceId,
                   baseWebhookUrl: this.props.baseWebhookUrl,
                   postingLocationRooms: item.postingLocationRooms,
-                  lastPosted: item.lastPosted
+                  lastPosted: item.lastPosted,
                 };
-                return <DataRow instance={dataRowObj} key={index} id={index} />
+                return <DataRow instance={dataRowObj} key={index} id={index} />;
               })
             }
           </tbody>
@@ -71,5 +74,13 @@ class TableInstance extends Component {
     );
   }
 }
+
+TableInstance.propTypes = {
+  fetchUserId: PropTypes.func.isRequired,
+  fetchInstanceList: PropTypes.func.isRequired,
+  instanceList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  appName: PropTypes.string.isRequired,
+  baseWebhookUrl: PropTypes.string.isRequired,
+};
 
 export default TableInstance;

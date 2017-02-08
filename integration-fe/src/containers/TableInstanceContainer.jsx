@@ -1,4 +1,3 @@
-import React from 'react';
 import { connect } from 'react-redux';
 import {
   fetchUserId,
@@ -11,39 +10,37 @@ import {
 } from '../actions/actions';
 import TableInstance from '../components/TableInstance/TableInstance';
 
-const mapStateToProps = (state) => {
-  return {
+const mapStateToProps = state => (
+  {
     instanceList: state.instances,
     baseWebhookUrl: state.baseWebhookUrl,
     appName: state.appName,
-  };
-}
+  }
+);
 
-const mapDispatchToProps = (dispatch) => {
-  return {
+const mapDispatchToProps = dispatch => (
+  {
     fetchInstanceList: () => {
       dispatch(fetchUserRooms()).then((rooms) => {
         dispatch(fetchUserRoomsSuccess(rooms));
         dispatch(fetchInstanceList()).then((list) => {
           dispatch(fetchInstanceListSuccess(list));
-
         }, (error) => {
           setError(error);
-        })
-
+        });
       }, (error) => {
         setError(error);
-      })
+      });
     },
     fetchUserId: () => {
       dispatch(fetchUserId()).then((user) => {
         dispatch(fetchUserIdSuccess(user));
       }, (error) => {
         setError(error);
-      })
-    }
+      });
+    },
   }
-}
+);
 
 const TableInstanceContainer = connect(
   mapStateToProps,

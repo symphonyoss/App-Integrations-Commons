@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Utils } from '../js/utils.service';
 import config from '../js/config.service';
 
@@ -19,7 +20,7 @@ import {
 const configurationId = Utils.getParameterByName('configurationId');
 const appId = Utils.getParameterByName('id');
 const baseUrl = `${window.location.protocol}//${window.location.hostname}/integration`;
-const baseWebhookUrl = `${baseUrl}/v1/whi/${appId}/${configurationId}`
+const baseWebhookUrl = `${baseUrl}/v1/whi/${appId}/${configurationId}`;
 
 const INITIAL_STATE = {
   instances: [],
@@ -48,7 +49,7 @@ const integrationApp = (state = INITIAL_STATE, action) => {
         ...state,
         error: null,
         userId: action.payload,
-      })
+      });
     case FETCH_INSTANCE_LIST: {
       return Object.assign({}, state, {
         ...state,
@@ -68,7 +69,7 @@ const integrationApp = (state = INITIAL_STATE, action) => {
       return Object.assign({}, state, {
         ...state,
         userRooms: action.payload.slice(),
-      })
+      });
     }
     case CREATE_STREAM: // this new stream will be used to create the new instance...
       return Object.assign({}, state, {
@@ -80,22 +81,23 @@ const integrationApp = (state = INITIAL_STATE, action) => {
         ...state,
         instances: [
           ...state.instances,
-          action.payload
+          action.payload,
         ],
         activeInstance: action.payload,
         loading: false,
       });
     case ERROR:
-      error = action.payload || { message: action.payload.message } // 2nd one is network or server down errors
+      // 2nd one is network or server down errors
+      error = action.payload || { message: action.payload.message };
       return Object.assign({}, state, {
         ...state,
         instances: null,
         loading: false,
-        error: error,
+        error,
       });
     default:
       return state;
   }
-}
+};
 
 export default integrationApp;

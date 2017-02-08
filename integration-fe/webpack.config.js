@@ -12,13 +12,16 @@ module.exports = {
   },
   evtool: 'source-map',
   module: {
+    preLoaders: [
+      { test: /\.jsx?$/, loader: 'eslint', exclude: /node_modules/ }
+    ],
     loaders: [
       { test: /\.css$/, loader: "style!css" },
       { test: /\.less$/, loader: "style!css!less" },
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: 'babel', // loaders: ['babel?presets[]=es2015,presets[]=react', 'eslint-loader']
+        loader: 'babel',
         query: {
           presets: ['react', 'es2015'],
           plugins: ['transform-object-rest-spread'],
@@ -35,7 +38,9 @@ module.exports = {
     extensions: ['', '.js', '.jsx']
   },
   eslint: {
-    configFile: './.eslintrc.js'
+    configFile: './.eslintrc.js',
+    failOnWarning: false,
+    failOnError: true,
   },
   plugins: [
     new CopyWebpackPlugin([{

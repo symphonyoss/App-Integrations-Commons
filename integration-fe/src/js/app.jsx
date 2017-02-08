@@ -15,7 +15,7 @@ const store = configureStore();
 const params = {
   appId: Utils.getParameterByName('id'),
   configurationId: Utils.getParameterByName('configurationId'),
-}
+};
 
 const dependencies = [
   'ui',
@@ -24,7 +24,7 @@ const dependencies = [
   'integration-config',
   'extended-user-service',
   'stream-service',
-  'integration-config'
+  'integration-config',
 ];
 
 let themeColor;

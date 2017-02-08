@@ -1,8 +1,6 @@
-'use strict';
-
-export const Utils = (function () {
-
-  let pub = {};
+/* eslint-disable no-console*/
+export const Utils = (function utils() {
+  const pub = {};
   const userRooms = [];
 
   const timestampToDate = (_ts) => {
@@ -19,11 +17,11 @@ export const Utils = (function () {
       'Sep',
       'Oct',
       'Nov',
-      'Dec'
+      'Dec',
     ];
     const month = monthNames[date.getMonth()];
     return `${month} ${date.getDate()}, ${date.getFullYear()}`;
-  }
+  };
 
   pub.getParameterByName = (_name, _url) => {
     let [name, url] = [_name, _url];
@@ -34,82 +32,91 @@ export const Utils = (function () {
     if (!results) return null;
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
-  }
+  };
 
   pub.normalizeInstanceList = (rawInstanceList) => {
     const instances = [];
     let op; // parsed optional properties
-    for (let obj in rawInstanceList) {
-      op = JSON.parse(rawInstanceList[obj].optionalProperties);
-      instances.push({
-        description: rawInstanceList[obj].name,
-        instanceId: rawInstanceList[obj].instanceId,
-        lastPosted: op.lastPostedDate ? timestampToDate(op.lastPostedDate) : 'not available',
-        created: rawInstanceList[obj].createdDate ? timestampToDate(rawInstanceList[obj].createdDate) : 'not available',
-        streamType: op.streamType,
-        streams: op.streams || [],
-        postingLocationRooms: [],
-        notPostingLocationRooms: [],
-      });
+    for (const obj in rawInstanceList) {
+      if (obj) {
+        op = JSON.parse(rawInstanceList[obj].optionalProperties);
+        instances.push({
+          description: rawInstanceList[obj].name,
+          instanceId: rawInstanceList[obj].instanceId,
+          lastPosted: op.lastPostedDate ? timestampToDate(op.lastPostedDate) : 'not available',
+          created: rawInstanceList[obj].createdDate ?
+            timestampToDate(rawInstanceList[obj].createdDate) : 'not available',
+          streamType: op.streamType,
+          streams: op.streams || [],
+          postingLocationRooms: [],
+          notPostingLocationRooms: [],
+        });
+      }
     }
 
     // store all posting location rooms into instances...
     instances.map((instance) => {
       if (instance.streamType === 'CHATROOM') {
-        instance.streams.map((stream) => {
-          instance.postingLocationRooms.push(userRooms.filter((userRoom) => stream === userRoom.threadId)[0]);
-        });
+        instance.streams.map(stream =>
+          instance.postingLocationRooms.push(
+            userRooms.filter(userRoom => stream === userRoom.threadId)[0])
+        );
       }
+      return instance;
     });
 
     // stores all indexes of the rooms (object) that are not posting locations into an array
-    let pl, idx, aux;
-    instances.map((instance, i) => {
-      pl = false;
+    let idx,
+      aux;
+
+    instances.map((instance) => {
       idx = [];
       aux = userRooms.slice();
-      instance.streams.map((stream, j) => {
-        for (let k = 0, n = aux.length; k < n; k++) {
-          if (aux[k].threadId == stream) {
+      instance.streams.map((stream) => {
+        for (let k = 0, n = aux.length; k < n; k += 1) {
+          if (aux[k].threadId === stream) {
             idx.push(k);
           }
         }
-      })
+        return idx;
+      });
       // remove from the user rooms array all those are posting locations rooms
-      for (let i = 0, n = aux.length; i < n; i++) {
-        for (let j = 0, l = idx.length; j < l; j++) {
-          if (i == idx[j]) {
+      for (let i = 0, n = aux.length; i < n; i += 1) {
+        for (let j = 0, l = idx.length; j < l; j += 1) {
+          if (i === idx[j]) {
             aux.splice(i, 1);
             idx.splice(j, 1);
-            for (let k = 0, s = idx.length; k < s; k++) idx[k]--;
-            i--;
+            for (let k = 0, s = idx.length; k < s; k += 1) idx[k] -= 1;
+            i -= 1;
             break;
           }
         }
       }
       instance.notPostingLocationRooms = aux.slice();
+      // instance.notPostingLocationRooms.concat(aux.slice());
+      return instance;
     });
 
     return instances;
-  }
+  };
 
   pub.getUserRooms = (rooms) => {
     const regExp = /\//g;
 
-    for (let obj in rooms) {
+    for (const obj in rooms) {
       if (rooms[obj].userIsOwner) {
-        rooms[obj].threadId = rooms[obj].threadId.replace(regExp, '_').replace("==", "");
+        rooms[obj].threadId = rooms[obj].threadId.replace(regExp, '_').replace('==', '');
         userRooms.push(rooms[obj]);
       }
     }
     return userRooms;
-  }
+  };
   return pub;
-})();
+}());
 
 export function copyToClipboard(target, cb) {
   // Copy to clipboard without displaying an input...
-  let textarea = document.createElement('textarea');
+  const textarea = document.createElement('textarea');
   textarea.style.position = 'relative';
   textarea.style.top = 0;
   textarea.style.left = 0;
@@ -122,10 +129,10 @@ export function copyToClipboard(target, cb) {
   textarea.style.background = 'transparent';
   textarea.style.fontSize = 0;
 
-  let webhook_url = document.querySelector(target.dataset.copytarget) ?
+  const webhookUrl = document.querySelector(target.dataset.copytarget) ?
     document.querySelector(target.dataset.copytarget).getAttribute('data-value') : null;
-  debugger;
-  textarea.value = webhook_url;
+
+  textarea.value = webhookUrl;
 
   if (textarea) {
     target.parentNode.appendChild(textarea);
@@ -133,10 +140,9 @@ export function copyToClipboard(target, cb) {
     try {
       // copy text
       document.execCommand('copy');
-      target.innerHTML = "Copied!";
-      var that = this;
-      setTimeout(function () {
-        target.innerHTML = "Copy URL";
+      target.innerHTML = 'Copied!';
+      setTimeout(() => {
+        target.innerHTML = 'Copy URL';
         target.parentNode.removeChild(target.parentNode.getElementsByTagName('textarea')[0]);
         cb(true);
       }, 2000);
@@ -144,7 +150,7 @@ export function copyToClipboard(target, cb) {
       console.error(err);
     }
   } else {
-    console.error('element not found ' + textarea);
+    console.error(`element not found ${textarea}`);
   }
 }
 

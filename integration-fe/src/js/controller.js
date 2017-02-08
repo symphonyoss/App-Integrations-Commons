@@ -16,14 +16,13 @@ const dependencies = [
   'account',
   'integrationConfigService',
   'stream-service',
-  'integration-config'
+  'integration-config',
 ];
 
 // create our own service
 const listService = SYMPHONY.services.register(`${params.appId}:controller`);
 
-function registerApplication(response) {
-  
+function registerApplication() {
   // system services
   const uiService = SYMPHONY.services.subscribe('ui');
   const modulesService = SYMPHONY.services.subscribe('modules');
