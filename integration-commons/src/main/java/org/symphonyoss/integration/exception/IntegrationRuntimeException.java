@@ -16,8 +16,6 @@
 
 package org.symphonyoss.integration.exception;
 
-import java.util.List;
-
 /**
  * Unchecked exception who will format the message following this pattern {@link
  * ExceptionMessageFormatter}
@@ -47,7 +45,7 @@ public class IntegrationRuntimeException extends RuntimeException {
    * @param message The message why the exceptions happened.
    * @param solutions The list of possible solutions to solve the problem.
    */
-  public IntegrationRuntimeException(String component, String message, List<String> solutions) {
+  public IntegrationRuntimeException(String component, String message, String... solutions) {
     super(ExceptionMessageFormatter.format(component, message, solutions));
   }
 
@@ -57,12 +55,11 @@ public class IntegrationRuntimeException extends RuntimeException {
    * and the root cause of the problem.
    * @param component The component where the exception was thrown.
    * @param message The message why the exceptions happened.
-   * @param solutions The list of possible solutions to solve the problem.
    * @param cause The root cause of the error.
+   * @param solutions The list of possible solutions to solve the problem.
    */
-  public IntegrationRuntimeException(String component, String message, List<String> solutions,
-      Throwable cause) {
-    super(ExceptionMessageFormatter.format(component, message, solutions, cause), cause);
+  public IntegrationRuntimeException(String component, String message, Throwable cause, String... solutions) {
+    super(ExceptionMessageFormatter.format(component, message, cause, solutions), cause);
   }
 
   /**

@@ -32,7 +32,7 @@ public abstract class IntegrationConfigException extends IntegrationRuntimeExcep
 
   private static final String COMPONENT = "Configuration Service";
 
-  public IntegrationConfigException(String message, List<String> solutions) {
+  public IntegrationConfigException(String message, String... solutions) {
     super(COMPONENT, message, solutions);
   }
 
@@ -40,8 +40,8 @@ public abstract class IntegrationConfigException extends IntegrationRuntimeExcep
     super(COMPONENT, message);
   }
 
-  public IntegrationConfigException(String message, List<String> solutions, Throwable cause) {
-    super(COMPONENT, message, solutions, cause);
+  public IntegrationConfigException(String message, Throwable cause, String... solutions) {
+    super(COMPONENT, message, cause, solutions);
   }
 
   public IntegrationConfigException(String message, Throwable cause) {

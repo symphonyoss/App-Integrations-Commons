@@ -19,6 +19,7 @@ package org.symphonyoss.integration.exception;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.StrBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,7 +38,6 @@ public class ExceptionMessageFormatter {
 
   private static final String COMPONENT = "Component: ";
   private static final String MESSAGE = "Message: ";
-  private static final String ROOT_CAUSE = "Root cause: ";
   private static final String SOLUTIONS = "Solutions: ";
   private static final String STACKTRACE = "Stack trace: ";
   private static final String LINE_BREAK = "\n";
@@ -51,13 +51,12 @@ public class ExceptionMessageFormatter {
    *
    * Component: <Component>
    * Message: <Message>
-   * Stacktrace: <Trace>
    * @param component The component where the exception was thrown.
    * @param message The message why the exceptions happened.
    * @return Formatted message
    */
   public static String format(String component, String message) {
-    return getMessage(component, message, null, null);
+    return getMessage(component, message, null);
   }
 
   /**
@@ -68,15 +67,14 @@ public class ExceptionMessageFormatter {
    * Solutions:
    * <Solution A>
    * <Solution B>
-   * Stacktrace: <Trace>
    * @param component The component where the exception was thrown.
    * @param message The message why the exceptions happened.
    * @param solutions The solutions provided by exceptions.
    * @return Formatted message
    */
   public static String format(String component, String message,
-      List<String> solutions) {
-    return getMessage(component, message, solutions, null);
+      String... solutions) {
+    return getMessage(component, message, null, solutions);
   }
 
   /**
@@ -84,7 +82,6 @@ public class ExceptionMessageFormatter {
    *
    * Component: <Component>
    * Message: <Message>
-   * Root cause: <Root cause>
    * Stacktrace: <Trace>
    * @param component The component where the exception was thrown.
    * @param message The message why the exceptions happened.
@@ -92,7 +89,7 @@ public class ExceptionMessageFormatter {
    * @return Formatted message
    */
   public static String format(String component, String message, Throwable t) {
-    return getMessage(component, message, null, t);
+    return getMessage(component, message, t);
   }
 
   /**
@@ -100,40 +97,35 @@ public class ExceptionMessageFormatter {
    *
    * Component: <Component>
    * Message: <Message>
-   * Root cause: <Root cause>
    * Solutions:
    * <Solution A>
    * <Solution B>
    * Stacktrace: <Trace>
    * @param component The component where the exception was thrown.
    * @param message The message why the exceptions happened.
-   * @param solutions The solutions provided by exceptions.
    * @param t The exception caused the problem.
+   * @param solutions The solutions provided by exceptions.
    * @return Formatted message
    */
-  public static String format(String component, String message, List<String> solutions,
-      Throwable t) {
-    return getMessage(component, message, solutions, t);
+  public static String format(String component, String message, Throwable t, String... solutions) {
+    return getMessage(component, message, t, solutions);
   }
 
-  private static String getMessage(String component, String message, List<String> solutions,
-      Throwable t) {
+  private static String getMessage(String component, String message, Throwable t, String... solutions) {
     StrBuilder sb = new StrBuilder(LINE_BREAK);
     sb.append(COMPONENT).appendln(StringUtils.isEmpty(component) ? UNKNOWN : component)
         .append(MESSAGE).appendln(StringUtils.isEmpty(message) ? NONE : message);
 
-    if (t != null) {
-      sb.append(ROOT_CAUSE).appendln(t.getMessage());
-    }
-
     sb.appendln(SOLUTIONS);
-    if (solutions != null && !solutions.isEmpty()) {
+    if ((solutions != null) && (solutions.length > 0)) {
       sb.appendWithSeparators(solutions, LINE_BREAK).appendNewLine();
     } else {
       sb.appendln(NO_SOLUTION_MESSAGE);
     }
 
-    sb.append(STACKTRACE);
+    if (t != null) {
+      sb.append(STACKTRACE).appendln(t.getMessage());
+    }
 
     return sb.toString();
   }

@@ -18,8 +18,6 @@ package org.symphonyoss.integration.webhook.exception;
 
 import org.symphonyoss.integration.exception.IntegrationRuntimeException;
 
-import java.util.List;
-
 /**
  * Integration class couldn't validate the incoming payload.
  *
@@ -31,13 +29,12 @@ public class WebHookParseException extends IntegrationRuntimeException {
     super(component, message);
   }
 
-  public WebHookParseException(String component, String message, List<String> solutions) {
+  public WebHookParseException(String component, String message, String... solutions) {
     super(component, message, solutions);
   }
 
-  public WebHookParseException(String component, String message, List<String> solutions,
-      Throwable cause) {
-    super(component, message, solutions, cause);
+  public WebHookParseException(String component, String message, Throwable cause, String... solutions) {
+    super(component, message, cause, solutions);
   }
 
   public WebHookParseException(String component, String message, Throwable cause) {
