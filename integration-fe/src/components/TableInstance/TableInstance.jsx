@@ -4,28 +4,15 @@ import '../../styles/main.less';
 import './styles/styles.less';
 
 class TableInstance extends Component {
-  constructor(props) {
-    super(props);
-    this.onConfigureNew = this.onConfigureNew.bind(this);
-  }
-
-  componentDidMount() {
+  componentWillMount() {
     this.props.fetchUserId();
     this.props.fetchInstanceList();
-  }
-
-  onConfigureNew(e) {
-    e.preventDefault();
   }
 
   render() {
     let dataRowObj = {};
     return (
       <div className='wrapper table-instance'>
-        <header>
-          <h2>Configured Integrations</h2>
-          <button onClick={this.onConfigureNew} className="button">Configure New</button>
-        </header>
         <table className='instances'>
           <thead>
             <tr>
