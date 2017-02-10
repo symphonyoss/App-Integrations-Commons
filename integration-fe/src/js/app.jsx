@@ -6,7 +6,7 @@ import { createStore } from 'redux';
 import { Link, Router, Route, hashHistory, IndexRoute } from 'react-router';
 import reducers from '../reducers/reducers';
 import { Utils } from './utils.service';
-import Home from '../views/Home';
+import Routes from '../routes/Routes';
 import configureStore from '../store/configureStore';
 import '../../vendors/font-awesome-4.6.3/css/font-awesome.min.css';
 
@@ -34,7 +34,7 @@ let themeSize;
 function loadApplication(rooms) {
   render(
     <Provider store={store}>
-      <Home />
+      <Routes />
     </Provider>,
     document.getElementById('app')
   );
