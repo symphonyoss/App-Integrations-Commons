@@ -6,9 +6,9 @@ This document provides a brief overview of Integration Commons components and ho
 
 # Overview
 
-Integration Commons provides the common components required to build a new integration to Symphony Platform.
+Integration Commons provides the common components required to build a new integration to Symphony Platform, as the common base class for any WebHook based integration, Symphony authentication utility classes, metrics tools, and many other utility classes.
 
-The third-party services that would like to post messages into a configurable set of streams should define the integration-parent as a parent of your application.
+The third-party services that would like to post messages into a configurable set of streams should define the integration-parent as a parent of your maven project.
 
 Example:
 
@@ -36,12 +36,12 @@ Example:
 </project>
 ```
 
-If you want to create a new webhook integration you should define the __integration-webhook__ module as a dependency.
+If you want to create a new webhook integration you should define the __integration-webhook__ module as a dependency and start by extending the [WebHookIntegration](integration-webhook/src/main/java/org/symphonyoss/integration/webhook/WebHookIntegration.java) class, as it is the super class of every other integration.
 
 # Installation instructions for the Java developer
 
 ### What you’ll build
-You’ll build a simple java library that provides some useful services to build new integration.
+You’ll build a simple java library that provides some useful services to build new integrations.
 
 ### What you’ll need
 * JDK 1.7
@@ -52,8 +52,6 @@ Integration Commons is compatible with Apache Maven 3.0.5 or above. If you don�
 
 To start from scratch, do the following:
 
-1. Clone the source repository using Git:
-   `git clone https://github.com/SymphonyOSF/App-Integrations-Commons.git`
+1. Clone the source repository using Git: `git clone https://github.com/SymphonyOSF/App-Integrations-Commons.git`
 2. cd into _App-Integrations-Commons_
-3. Build using maven:
-   `mvn clean install`
+3. Build using maven: `mvn clean install`
