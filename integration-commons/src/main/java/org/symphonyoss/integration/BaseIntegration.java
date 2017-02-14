@@ -16,28 +16,15 @@
 
 package org.symphonyoss.integration;
 
-import static javax.ws.rs.core.MediaType.TEXT_HTML_TYPE;
-import static org.symphonyoss.integration.model.healthcheck.IntegrationFlags.ValueEnum.NOK;
 import static org.symphonyoss.integration.model.healthcheck.IntegrationFlags.ValueEnum.OK;
 import static org.symphonyoss.integration.model.yaml.Keystore.DEFAULT_KEYSTORE_TYPE_SUFFIX;
 
-import com.symphony.logging.ISymphonyLogger;
-import com.symphony.logging.SymphonyLoggerFactory;
-
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import org.apache.commons.lang3.StringUtils;
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.client.ClientProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
 import org.symphonyoss.integration.exception.bootstrap.LoadKeyStoreException;
 import org.symphonyoss.integration.healthcheck.IntegrationHealthManager;
-import org.symphonyoss.integration.model.DefaultAppKeystore;
-import org.symphonyoss.integration.model.healthcheck.IntegrationFlags;
 import org.symphonyoss.integration.model.yaml.Application;
-import org.symphonyoss.integration.model.yaml.IntegrationBridge;
 import org.symphonyoss.integration.model.yaml.IntegrationProperties;
 import org.symphonyoss.integration.model.yaml.Keystore;
 import org.symphonyoss.integration.utils.IntegrationUtils;
@@ -46,12 +33,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
-import java.util.concurrent.TimeUnit;
-
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
 
 /**
  * Abstract integration class that contains the key services for all the integrations.
@@ -60,8 +41,6 @@ import javax.ws.rs.core.Response;
  * Created by rsanchez on 21/11/16.
  */
 public abstract class BaseIntegration implements Integration {
-
-  private static final ISymphonyLogger LOG = SymphonyLoggerFactory.getLogger(BaseIntegration.class);
 
   @Autowired
   protected AuthenticationProxy authenticationProxy;
@@ -106,6 +85,19 @@ public abstract class BaseIntegration implements Integration {
           "Fail to retrieve the keystore password. Application: " + appId);
     }
 
+    KeyStore keyStore = loadKeyStore(certsDir, application);
+
+    healthManager.certificateInstalled(OK);
+    authenticationProxy.registerUser(integrationUser, keyStore, application.getKeystore().getPassword());
+  }
+
+  /**
+   * Load the keystore file.
+   * @param certsDir Certificate directory
+   * @param application Application settings
+   * @return Keystore object
+   */
+  protected KeyStore loadKeyStore(String certsDir, Application application) {
     Keystore keystoreConfig = application.getKeystore();
 
     String locationFile = keystoreConfig.getFile();
@@ -117,30 +109,15 @@ public abstract class BaseIntegration implements Integration {
     String password = keystoreConfig.getPassword();
     String type = keystoreConfig.getType();
 
-    KeyStore keyStore;
-    try {
-      keyStore = loadKeyStore(storeLocation, password, type);
+    try(FileInputStream inputStream = new FileInputStream(storeLocation)) {
+      final KeyStore ks = KeyStore.getInstance(type);
+      ks.load(inputStream, password.toCharArray());
+
+      return ks;
     } catch (GeneralSecurityException | IOException e) {
       throw new LoadKeyStoreException(
           String.format("Fail to load keystore file at %s", storeLocation), e);
     }
-
-    healthManager.certificateInstalled(OK);
-    authenticationProxy.registerUser(integrationUser, keyStore, password);
-  }
-
-  /**
-   * Load the keystore file.
-   * @param storeLocation Keystore path.
-   * @param password Keystore password
-   * @param type Keystore type
-   * @return Keystore object
-   */
-  private KeyStore loadKeyStore(String storeLocation, String password, String type)
-      throws GeneralSecurityException, IOException {
-    final KeyStore ks = KeyStore.getInstance(type);
-    ks.load(new FileInputStream(storeLocation), password.toCharArray());
-    return ks;
   }
 
   public IntegrationHealthManager getHealthManager() {
