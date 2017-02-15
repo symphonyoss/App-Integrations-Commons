@@ -19,7 +19,6 @@ package org.symphonyoss.integration.healthcheck;
 import static javax.ws.rs.core.MediaType.WILDCARD;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -34,6 +33,7 @@ import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.symphonyoss.integration.IntegrationStatus;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
+import org.symphonyoss.integration.model.config.IntegrationSettings;
 import org.symphonyoss.integration.model.healthcheck.IntegrationFlags;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
 import org.symphonyoss.integration.model.yaml.Application;
@@ -44,12 +44,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.concurrent.ScheduledExecutorService;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
@@ -113,7 +111,9 @@ public class IntegrationHealthManagerTest {
     V1Configuration configuration = new V1Configuration();
     configuration.setType(INTEGRATION_NAME);
 
-    healthManager.success(configuration);
+    IntegrationSettings settings = new IntegrationSettings(configuration);
+
+    healthManager.success(settings);
 
     IntegrationHealth integrationHealth = healthManager.getHealth();
 
@@ -126,8 +126,10 @@ public class IntegrationHealthManagerTest {
     V1Configuration configuration = new V1Configuration();
     configuration.setType(INTEGRATION_NAME);
 
+    IntegrationSettings settings = new IntegrationSettings(configuration);
+
     healthManager.setVersion(MOCK_VERSION);
-    healthManager.success(configuration);
+    healthManager.success(settings);
 
     IntegrationHealth integrationHealth = healthManager.getHealth();
 

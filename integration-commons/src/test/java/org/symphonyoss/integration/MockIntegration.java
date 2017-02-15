@@ -4,6 +4,7 @@ import com.symphony.api.pod.model.V1Configuration;
 
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
 import org.symphonyoss.integration.healthcheck.IntegrationHealthManager;
+import org.symphonyoss.integration.model.config.IntegrationSettings;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
 import org.symphonyoss.integration.model.yaml.IntegrationProperties;
 import org.symphonyoss.integration.utils.IntegrationUtils;
@@ -52,7 +53,7 @@ public class MockIntegration extends BaseIntegration {
   }
 
   @Override
-  public V1Configuration getConfig() {
+  public IntegrationSettings getSettings() {
     return null;
   }
 

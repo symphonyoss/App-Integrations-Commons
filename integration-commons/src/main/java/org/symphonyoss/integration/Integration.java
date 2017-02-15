@@ -18,6 +18,7 @@ package org.symphonyoss.integration;
 
 import com.symphony.api.pod.model.V1Configuration;
 
+import org.symphonyoss.integration.model.config.IntegrationSettings;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
 
 import java.util.Set;
@@ -57,7 +58,7 @@ public interface Integration {
    * Get the integration config
    * @return Integration config
    */
-  V1Configuration getConfig();
+  IntegrationSettings getSettings();
 
   /**
    * Retrieve the integration whitelist.

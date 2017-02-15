@@ -36,6 +36,7 @@ import org.springframework.stereotype.Component;
 import org.symphonyoss.integration.IntegrationStatus;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
 import org.symphonyoss.integration.logging.IntegrationBridgeCloudLoggerFactory;
+import org.symphonyoss.integration.model.config.IntegrationSettings;
 import org.symphonyoss.integration.model.healthcheck.IntegrationConfigurator;
 import org.symphonyoss.integration.model.healthcheck.IntegrationFlags;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
@@ -91,7 +92,7 @@ public class IntegrationHealthManager {
   /**
    * Integration settings
    */
-  private V1Configuration configuration;
+  private IntegrationSettings settings;
 
   /**
    * HTTP client
@@ -154,8 +155,8 @@ public class IntegrationHealthManager {
     return health;
   }
 
-  public void success(V1Configuration configuration) {
-    this.configuration = configuration;
+  public void success(IntegrationSettings settings) {
+    this.settings = settings;
 
     List<String> expectedStatus = Arrays.asList(IntegrationStatus.INACTIVE.name(),
         IntegrationStatus.RETRYING_BOOTSTRAP.name());
@@ -174,7 +175,7 @@ public class IntegrationHealthManager {
    * This method should fill the configurator data according to the YAML file.
    */
   private void initConfiguratorData() {
-    Application application = properties.getApplication(configuration.getType());
+    Application application = properties.getApplication(settings.getType());
     IntegrationBridge bridge = properties.getIntegrationBridge();
 
     if ((application != null) && (bridge != null) && (StringUtils.isNotEmpty(application.getContext())) &&
@@ -246,8 +247,8 @@ public class IntegrationHealthManager {
   private void updateUserAuthenticatedFlag() {
     boolean authenticated = false;
 
-    if (configuration != null) {
-      authenticated = authenticationProxy.isAuthenticated(configuration.getType());
+    if (settings != null) {
+      authenticated = authenticationProxy.isAuthenticated(settings.getType());
     }
 
     if (authenticated) {
@@ -261,8 +262,8 @@ public class IntegrationHealthManager {
    * Updates the 'configurator installed' flag.
    */
   private void updateConfiguratorInstalledFlag() {
-    if (configuration != null) {
-      IntegrationFlags.ValueEnum flagStatus = configuratorFlagsCache.getUnchecked(configuration.getType());
+    if (settings != null) {
+      IntegrationFlags.ValueEnum flagStatus = configuratorFlagsCache.getUnchecked(settings.getType());
       configuratorInstalled(flagStatus);
     }
   }

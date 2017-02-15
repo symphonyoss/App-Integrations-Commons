@@ -148,6 +148,8 @@ public class WebHookIntegrationTest extends MockKeystore {
   @Autowired
   private MockWebHookIntegration mockWHI;
 
+  private V1Configuration configuration;
+
   @Before
   public void setup() {
     TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
@@ -155,7 +157,7 @@ public class WebHookIntegrationTest extends MockKeystore {
 
     when(authenticationProxy.isAuthenticated(anyString())).thenReturn(true);
 
-    V1Configuration configuration = new V1Configuration();
+    configuration = new V1Configuration();
     configuration.setConfigurationId(CONFIGURATION_ID);
     configuration.setName("JIRA");
     configuration.setType(INTEGRATION_USER);
@@ -240,8 +242,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   @Test
   public void testHandleWithUpdateTimestamp()
       throws WebHookParseException, IOException {
-    doReturn(mockWHI.getConfig()).when(configService)
-        .getConfigurationById(CONFIGURATION_ID, INTEGRATION_USER);
+    doReturn(configuration).when(configService).getConfigurationById(CONFIGURATION_ID, INTEGRATION_USER);
 
     V2MessageList response = new V2MessageList();
     V2Message message1 = new V2Message();
@@ -290,8 +291,7 @@ public class WebHookIntegrationTest extends MockKeystore {
 
   @Test
   public void testHandleFailedSend() throws WebHookParseException, IOException {
-    doReturn(mockWHI.getConfig()).when(configService)
-        .getConfigurationById(CONFIGURATION_ID, INTEGRATION_USER);
+    doReturn(configuration).when(configService).getConfigurationById(CONFIGURATION_ID, INTEGRATION_USER);
 
     doReturn(new V2MessageList()).when(service)
         .sendMessage(any(ConfigurationInstance.class), anyString(),
@@ -514,13 +514,10 @@ public class WebHookIntegrationTest extends MockKeystore {
 
   @Test(expected = WebHookDisabledException.class)
   public void testUnavailable() {
-    V1Configuration config = mockWHI.getConfig();
-    config.setEnabled(false);
+    configuration.setEnabled(false);
 
-    doReturn(mockWHI.getConfig()).when(configService)
-        .getConfigurationById(CONFIGURATION_ID, INTEGRATION_USER);
-    doReturn(IntegrationFlags.ValueEnum.NOK).when(configuratorFlagsCache).getUnchecked
-        (INTEGRATION_USER);
+    doReturn(configuration).when(configService).getConfigurationById(CONFIGURATION_ID, INTEGRATION_USER);
+    doReturn(IntegrationFlags.ValueEnum.NOK).when(configuratorFlagsCache).getUnchecked(INTEGRATION_USER);
 
     mockWHI.isAvailable();
   }
@@ -537,9 +534,7 @@ public class WebHookIntegrationTest extends MockKeystore {
 
   @Test
   public void testAvailable() {
-    doReturn(mockWHI.getConfig()).when(configService)
-        .getConfigurationById(CONFIGURATION_ID, INTEGRATION_USER);
-
+    doReturn(configuration).when(configService).getConfigurationById(CONFIGURATION_ID, INTEGRATION_USER);
     assertTrue(mockWHI.isAvailable());
   }
 
