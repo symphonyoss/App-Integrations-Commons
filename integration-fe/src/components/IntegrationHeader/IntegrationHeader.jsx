@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 import React from 'react';
 import config from '../../js/config.service';
 import './styles/styles.less';

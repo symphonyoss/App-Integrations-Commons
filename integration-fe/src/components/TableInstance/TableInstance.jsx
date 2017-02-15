@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 import React, { Component, PropTypes } from 'react';
 import DataRow from './DataRow';
 import Spinner from '../../containers/SpinnerContainer';

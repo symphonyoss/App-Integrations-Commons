@@ -13,31 +13,30 @@ function setup() {
   return {
     props,
     enzymeWrapper,
-  }
+  };
 }
 
 describe('components', () => {
   describe('Spinner', () => {
 
+    const { enzymeWrapper } = setup();
+
     it('Should show loading message when state loading is true!', () => {
-      const { enzymeWrapper } = setup();
       expect(enzymeWrapper.find('p').text()).not.toBeNull();
     });
 
     it('Should NOT have the class "spinner-opacity-0" when loading is true!', () => {
-      const { enzymeWrapper } = setup();
       expect(enzymeWrapper.find('div').hasClass('spinner')).toBe(true);
     });
 
     it('Should NOT have the class "spinner-opacity-0" when loading is true!', () => {
-      const { enzymeWrapper } = setup();
       expect(enzymeWrapper.find('div').hasClass('spinner-opacity-0')).toBe(false);
     });
 
     it('Should have the class "spinner-opacity-0" when loading is false!', () => {
-      let { props, enzymeWrapper } = setup();
+      const { props } = setup();
       props.loading = false;
-      enzymeWrapper = shallow(<Spinner {...props} />);
+      const enzymeWrapper = shallow(<Spinner {...props} />);
       expect(enzymeWrapper.find('div').hasClass('spinner-opacity-0')).toBe(true);
     });
 
