@@ -21,10 +21,13 @@ const configurationId = Utils.getParameterByName('configurationId');
 const appId = Utils.getParameterByName('id');
 const baseUrl = `${window.location.protocol}//${window.location.hostname}/integration`;
 const baseWebhookUrl = `${baseUrl}/v1/whi/${appId}/${configurationId}`;
+const messages = {
+  loadingInstances: 'Searching for Instances',
+};
 
 const INITIAL_STATE = {
   instances: [],
-  loading: false,
+  loading: true,
   error: null,
   activeInstance: null,
   appName: config.app_name,
@@ -33,6 +36,7 @@ const INITIAL_STATE = {
   baseWebhookUrl,
   appId,
   configurationId,
+  messages,
 };
 
 const integrationApp = (state = INITIAL_STATE, action) => {

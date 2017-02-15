@@ -20,5 +20,6 @@ module.exports = {
       "no-restricted-syntax": 0,
       "no-shadow": 0,
       "quotes": [2, "single"],
+      "import/no-named-as-default": "warn",
     },
 };

@@ -23,6 +23,8 @@
     flex-grow: 1;
     width: 100%;
     max-width: @table-max-width;
+    opacity: 0;
+    transition: opacity .5s ease;
     
     thead tr { padding-bottom: 1.25rem; }
 
@@ -103,6 +105,8 @@
     }
 
     tr td:last-child { padding: 0; }
+
+    &.table-opacity-1 { opacity: 1; }
 
     @media only screen and (max-width: @breakpoint-width) {
       tr td { width: 20% !important; }
