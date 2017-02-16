@@ -126,8 +126,19 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${log4j2.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lmax</groupId>
@@ -166,6 +177,7 @@
         <commons-net.version>3.5</commons-net.version>
         <guava.version>18.0</guava.version>
         <jackson.version>2.7.3</jackson.version>
+        <log4j2.version>2.5</log4j2.version>
         <lmax-disruptor.version>3.3.4</lmax-disruptor.version>
         <metrics.version>3.1.2</metrics.version>
         <spring.boot.version>1.4.2.RELEASE</spring.boot.version>
