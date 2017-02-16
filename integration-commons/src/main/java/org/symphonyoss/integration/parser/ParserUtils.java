@@ -18,12 +18,11 @@ package org.symphonyoss.integration.parser;
 
 import static org.symphonyoss.integration.parser.SafeString.newSafeString;
 
-import com.symphony.logging.ISymphonyLogger;
-
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.symphonyoss.integration.exception.URISyntaxRuntimeException;
-import org.symphonyoss.integration.logging.IntegrationBridgeCloudLoggerFactory;
 import org.symphonyoss.integration.parser.model.HashTag;
 
 import java.net.MalformedURLException;
@@ -42,18 +41,19 @@ import javax.ws.rs.core.UriBuilder;
  */
 public final class ParserUtils {
 
+  private static final Logger LOG = LoggerFactory.getLogger(ParserUtils.class);
+
   /**
    * presentationML linebreak.
    */
   public static final String MESSAGEML_LINEBREAK = "<br/>";
+
   /**
    * Regular expression to match CR/LF or LF.
    */
   public static final String CR_LF_OR_LF = "(\\r\\n)|(\\n)|(\\\\r\\\\n)|(\\\\n)";
   public static final String PRESENTATION_ML_BEGIN = "<presentationML>";
   public static final String PRESENTATION_ML_END = "</presentationML>";
-  private static final ISymphonyLogger LOG =
-      IntegrationBridgeCloudLoggerFactory.getLogger(ParserUtils.class);
 
   /**
    * Regular expression strings for markupLinks method.

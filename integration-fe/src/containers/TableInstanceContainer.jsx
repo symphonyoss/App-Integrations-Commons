@@ -15,6 +15,7 @@ const mapStateToProps = state => (
     instanceList: state.instances,
     baseWebhookUrl: state.baseWebhookUrl,
     appName: state.appName,
+    loading: state.loading,
   }
 );
 

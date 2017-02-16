@@ -18,8 +18,10 @@ export const EDIT_INSTANCE_SUCCESS = 'EDIT_INSTANCE_SUCCESS';
 
 /* Create stream */
 export const CREATE_STREAM = 'CREATE_STREAM';
+export const SWITCH_STREAM_TYPE = 'SWITCH_STREAM_TYPE';
 
 /* Create instance */
+export const CHANGE_DESCRIPTION = 'CHANGE_DESCRIPTION';
 export const CREATE_INTANCE = 'CREATE_INTANCE';
 export const CREATE_INSTANCE_SUCCESS = 'CREATE_INSTANCE_SUCCESS';
 
@@ -85,9 +87,8 @@ export function fetchUserRoomsSuccess(userRooms) {
 }
 
 /*
-  Actions for Input Description component,
-  Posting Location component and
-  Suggestions Rooms component (Edit View)
+  Actions for Input Description component, Posting Location component and Suggestions Rooms
+  component (Edit View)
 */
 export function editInstanceById(configurationId, instanceId, payload) {
   /*
@@ -124,6 +125,19 @@ export function createStream(obj) {
   // }
 }
 
+export function switchStreamType(streamType) {
+  return {
+    type: SWITCH_STREAM_TYPE,
+    payload: streamType,
+  };
+}
+
+export function changeDescription(description) {
+  return {
+    type: CHANGE_DESCRIPTION,
+    payload: description,
+  };
+}
 /*
   Actions for Input Description component,
   Posting Location component and Suggestions Rooms component (Create View)

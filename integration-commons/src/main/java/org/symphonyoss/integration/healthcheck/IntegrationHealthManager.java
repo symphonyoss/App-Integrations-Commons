@@ -20,22 +20,20 @@ import static javax.ws.rs.core.MediaType.WILDCARD;
 import static org.symphonyoss.integration.model.healthcheck.IntegrationFlags.ValueEnum.NOK;
 import static org.symphonyoss.integration.model.healthcheck.IntegrationFlags.ValueEnum.OK;
 
-import com.symphony.api.pod.model.V1Configuration;
-import com.symphony.logging.ISymphonyLogger;
-
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.symphonyoss.integration.IntegrationStatus;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
-import org.symphonyoss.integration.logging.IntegrationBridgeCloudLoggerFactory;
 import org.symphonyoss.integration.model.config.IntegrationSettings;
 import org.symphonyoss.integration.model.healthcheck.IntegrationConfigurator;
 import org.symphonyoss.integration.model.healthcheck.IntegrationFlags;
@@ -64,8 +62,7 @@ import javax.ws.rs.core.Response;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class IntegrationHealthManager {
 
-  private static final ISymphonyLogger LOG =
-      IntegrationBridgeCloudLoggerFactory.getLogger(IntegrationHealthManager.class);
+  private static final Logger LOG = LoggerFactory.getLogger(IntegrationHealthManager.class);
 
   private static final String SUCCESS = "Success";
 

@@ -14,6 +14,8 @@ import {
   CREATE_INSTANCE_SUCCESS,
   CREATE_STREAM,
   CREATE_STREAM_SUCCESS,
+  SWITCH_STREAM_TYPE,
+  CHANGE_DESCRIPTION,
   ERROR,
 } from '../actions/actions';
 
@@ -21,18 +23,24 @@ const configurationId = Utils.getParameterByName('configurationId');
 const appId = Utils.getParameterByName('id');
 const baseUrl = `${window.location.protocol}//${window.location.hostname}/integration`;
 const baseWebhookUrl = `${baseUrl}/v1/whi/${appId}/${configurationId}`;
+const messages = {
+  loadingInstances: 'Searching for Instances',
+};
 
 const INITIAL_STATE = {
   instances: [],
-  loading: false,
+  description: '',
+  loading: true,
   error: null,
   activeInstance: null,
+  streamType: 'IM',
   appName: config.app_name,
   userRooms: [],
   userId: null,
   baseWebhookUrl,
   appId,
   configurationId,
+  messages,
 };
 
 const integrationApp = (state = INITIAL_STATE, action) => {
@@ -85,6 +93,16 @@ const integrationApp = (state = INITIAL_STATE, action) => {
         ],
         activeInstance: action.payload,
         loading: false,
+      });
+    case SWITCH_STREAM_TYPE:
+      return Object.assign({}, state, {
+        ...state,
+        streamType: action.payload,
+      });
+    case CHANGE_DESCRIPTION:
+      return Object.assign({}, state, {
+        ...state,
+        description: action.payload,
       });
     case ERROR:
       // 2nd one is network or server down errors

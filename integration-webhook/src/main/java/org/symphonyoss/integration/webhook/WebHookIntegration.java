@@ -26,11 +26,12 @@ import com.symphony.api.agent.model.V2MessageList;
 import com.symphony.api.auth.client.ApiException;
 import com.symphony.api.pod.model.ConfigurationInstance;
 import com.symphony.api.pod.model.V1Configuration;
-import com.symphony.logging.ISymphonyLogger;
 
 import com.codahale.metrics.Timer;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.symphonyoss.integration.BaseIntegration;
@@ -42,7 +43,6 @@ import org.symphonyoss.integration.exception.bootstrap.RetryLifecycleException;
 import org.symphonyoss.integration.exception.bootstrap.UnexpectedBootstrapException;
 import org.symphonyoss.integration.exception.config.ForbiddenUserException;
 import org.symphonyoss.integration.exception.config.IntegrationConfigException;
-import org.symphonyoss.integration.logging.IntegrationBridgeCloudLoggerFactory;
 import org.symphonyoss.integration.model.config.IntegrationSettings;
 import org.symphonyoss.integration.model.config.StreamType;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
@@ -78,8 +78,7 @@ import javax.ws.rs.ProcessingException;
  */
 public abstract class WebHookIntegration extends BaseIntegration {
 
-  private static final ISymphonyLogger LOGGER =
-      IntegrationBridgeCloudLoggerFactory.getLogger(WebHookIntegration.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(WebHookIntegration.class);
 
   private static final String IM_WELCOME_MESSAGE = "Hi there. This is the %s application. I'll let"
       + " you know of any new events sent from the %s integration you configured.";
@@ -421,7 +420,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
       healthManager.updateLatestPostTimestamp(timestamp);
     } catch (IntegrationRuntimeException | IOException e) {
-      LOGGER.fatal("Fail to update the last posted date", e);
+      LOGGER.error("Fail to update the last posted date", e);
     }
   }
 

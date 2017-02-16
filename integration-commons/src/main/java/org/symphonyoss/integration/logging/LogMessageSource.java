@@ -1,9 +1,8 @@
 package org.symphonyoss.integration.logging;
 
-import com.symphony.logging.ISymphonyLogger;
-import com.symphony.logging.SymphonyLoggerFactory;
-
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -39,7 +38,7 @@ import javax.annotation.PostConstruct;
 @Component
 public class LogMessageSource {
 
-  private static final ISymphonyLogger LOGGER = SymphonyLoggerFactory.getLogger(LogMessageSource.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(LogMessageSource.class);
 
   private static final String UNABLE_TO_LOAD_LOG_MESSAGES = "integration.commons.unable.to.load.log.messages";
 
