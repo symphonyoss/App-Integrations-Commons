@@ -16,19 +16,34 @@
 
 package org.symphonyoss.integration.model.healthcheck;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Holds health information about an specific Integration.
- * It contains the integration name, its current status, flags regarding its provisioning state and the last time this
- * integration has posted a message to Symphony.
+ * It contains the integration name, its current status, version, flags regarding its provisioning
+ * state and the last time this integration has posted a message to Symphony.
  *
  * Created by Milton Quilzini on 01/12/16.
  */
 public class IntegrationHealth {
 
+  /**
+   * Version not available
+   */
+  private static final String NOT_AVAILABLE = "N/A";
+
   private String name;
+
+  private String version;
+
   private String status;
-  private IntegrationFlags flags;
+
   private String message;
+
+  private IntegrationConfigurator configurator;
+
+  private IntegrationFlags flags;
+
   private String latestPostTimestamp;
 
   public String getName() {
@@ -39,12 +54,33 @@ public class IntegrationHealth {
     this.name = name;
   }
 
+  public String getVersion() {
+    if (StringUtils.isNotEmpty(version)) {
+      return version;
+    }
+
+    return NOT_AVAILABLE;
+  }
+
+  public void setVersion(String version) {
+    this.version = version;
+  }
+
   public String getStatus() {
     return status;
   }
 
   public void setStatus(String status) {
     this.status = status;
+  }
+
+  public IntegrationConfigurator getConfigurator() {
+    return configurator;
+  }
+
+  public void setConfigurator(
+      IntegrationConfigurator configurator) {
+    this.configurator = configurator;
   }
 
   public IntegrationFlags getFlags() {

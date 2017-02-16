@@ -18,10 +18,8 @@ package org.symphonyoss.integration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,10 +32,10 @@ import org.symphonyoss.integration.authentication.AuthenticationProxy;
 import org.symphonyoss.integration.exception.ExceptionMessageFormatter;
 import org.symphonyoss.integration.exception.bootstrap.CertificateNotFoundException;
 import org.symphonyoss.integration.exception.bootstrap.LoadKeyStoreException;
+import org.symphonyoss.integration.healthcheck.IntegrationHealthManager;
 import org.symphonyoss.integration.model.healthcheck.IntegrationFlags;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
 import org.symphonyoss.integration.model.yaml.Application;
-import org.symphonyoss.integration.model.yaml.IntegrationBridge;
 import org.symphonyoss.integration.model.yaml.IntegrationProperties;
 import org.symphonyoss.integration.model.yaml.Keystore;
 import org.symphonyoss.integration.utils.IntegrationUtils;
@@ -49,10 +47,6 @@ import java.security.cert.CertificateException;
 import java.util.Collections;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
  * Test class to validate {@link BaseIntegration}
@@ -65,11 +59,9 @@ public class BaseIntegrationTest extends MockKeystore {
 
   private static final String APP_TYPE = "jiraWebHookIntegration";
 
-  private static final String MOCK_HOST = "test.symphony.com";
-
-  private static final String MOCK_CONTEXT = "jira";
-
   private static final String DEFAULT_KEYSTORE_PASSWORD = "changeit";
+
+  private static final String NOT_AVAILABLE = "N/A";
 
   @Mock
   private AuthenticationProxy authenticationProxy;
@@ -83,8 +75,11 @@ public class BaseIntegrationTest extends MockKeystore {
   @Mock
   private IntegrationUtils utils;
 
+  private IntegrationHealthManager healthManager = new IntegrationHealthManager();
+
   @InjectMocks
-  private MockIntegration integration = new MockIntegration(properties, utils, authenticationProxy);
+  private MockIntegration integration =
+      new MockIntegration(properties, utils, authenticationProxy, healthManager);
 
   private Application application;
 
@@ -98,11 +93,6 @@ public class BaseIntegrationTest extends MockKeystore {
     this.application.setKeystore(keystore);
 
     properties.setApplications(Collections.singletonMap(APP_ID, application));
-  }
-
-  @Test
-  public void testApplicationId() {
-    assertEquals(APP_ID, integration.getApplicationId(APP_TYPE));
   }
 
   @Test(expected = CertificateNotFoundException.class)
@@ -158,60 +148,13 @@ public class BaseIntegrationTest extends MockKeystore {
   }
 
   @Test
-  public void testConfiguratorInstalledFlag() {
-    assertEquals(IntegrationFlags.ValueEnum.NOK,
-        integration.getConfiguratorInstalledFlag(APP_TYPE));
+  public void testSetupHealthManager() {
+    integration.setupHealthManager(APP_TYPE);
 
-    IntegrationBridge bridge = new IntegrationBridge();
-    properties.setIntegrationBridge(bridge);
+    IntegrationHealth health = integration.getHealthManager().getHealth();
 
-    assertEquals(IntegrationFlags.ValueEnum.NOK,
-        integration.getConfiguratorInstalledFlag(APP_TYPE));
-
-    bridge.setHost(MOCK_HOST);
-    assertEquals(IntegrationFlags.ValueEnum.NOK,
-        integration.getConfiguratorInstalledFlag(APP_TYPE));
-
-    application.setContext(MOCK_CONTEXT);
-
-    Invocation.Builder builder = mockRequest();
-    doThrow(RuntimeException.class).when(builder).get();
-
-    assertEquals(IntegrationFlags.ValueEnum.NOK,
-        integration.getConfiguratorInstalledFlag(APP_TYPE));
-  }
-
-  @Test
-  public void testConfiguratorInstalledFlagNOK() {
-    testConfiguratorInstalledFlag();
-
-    Invocation.Builder builder = mockRequest();
-
-    doReturn(Response.status(Response.Status.NOT_FOUND).build()).when(builder).get();
-    assertEquals(IntegrationFlags.ValueEnum.NOK,
-        integration.getConfiguratorInstalledFlag(APP_TYPE));
-  }
-
-  @Test
-  public void testConfiguratorInstalledFlagOK() {
-    testConfiguratorInstalledFlag();
-
-    Invocation.Builder builder = mockRequest();
-
-    doReturn(Response.status(Response.Status.OK).build()).when(builder).get();
-    assertEquals(IntegrationFlags.ValueEnum.OK,
-        integration.getConfiguratorInstalledFlag(APP_TYPE));
-  }
-
-  private Invocation.Builder mockRequest() {
-    Invocation.Builder builder = mock(Invocation.Builder.class);
-    WebTarget target = mock(WebTarget.class);
-
-    doReturn(target).when(client).target("https://" + MOCK_HOST);
-    doReturn(target).when(target).path(anyString());
-    doReturn(builder).when(target).request();
-    doReturn(builder).when(builder).accept(MediaType.TEXT_HTML_TYPE);
-    return builder;
+    assertEquals(NOT_AVAILABLE, health.getVersion());
+    assertEquals(APP_ID, health.getName());
   }
 
 }

@@ -20,6 +20,7 @@ import static org.symphonyoss.integration.messageml.MessageMLFormatConstants.MES
 import static org.symphonyoss.integration.messageml.MessageMLFormatConstants.MESSAGEML_START;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.context.annotation.Scope;
 import org.symphonyoss.integration.json.JsonUtils;
@@ -28,10 +29,11 @@ import org.symphonyoss.integration.webhook.exception.WebHookParseException;
 import java.io.IOException;
 
 /**
+ * Mock class for {@link WebHookIntegration}
  * Created by rsanchez on 10/08/16.
  */
 @TestComponent
-@Scope("prototype")
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class MockWebHookIntegration extends WebHookIntegration {
 
   @Override

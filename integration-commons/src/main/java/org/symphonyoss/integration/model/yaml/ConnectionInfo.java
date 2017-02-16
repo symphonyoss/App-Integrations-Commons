@@ -27,6 +27,8 @@ public class ConnectionInfo {
 
   private String port;
 
+  private String minVersion;
+
   public String getHost() {
     return host;
   }
@@ -43,6 +45,13 @@ public class ConnectionInfo {
     this.port = port;
   }
 
+  public String getMinVersion() {
+    return minVersion;
+  }
+
+  public void setMinVersion(String minVersion) {
+    this.minVersion = minVersion;
+  }
 
   @Override
   public String toString() {

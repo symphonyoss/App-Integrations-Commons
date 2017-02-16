@@ -16,6 +16,7 @@
 
 package org.symphonyoss.integration.model.healthcheck;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
@@ -74,5 +75,11 @@ public class IntegrationFlags {
   public enum ValueEnum {
     OK,
     NOK;
+  }
+
+  @JsonIgnore
+  public boolean isUp() {
+    return parserInstalled == ValueEnum.OK && configuratorInstalled == ValueEnum.OK
+        && certificateInstalled == ValueEnum.OK && userAuthenticated == ValueEnum.OK;
   }
 }

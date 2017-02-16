@@ -17,37 +17,29 @@
 package org.symphonyoss.integration.model.healthcheck;
 
 /**
- * Holds the connectivity state from Integration Bridge with POD API, Agent and Key Manager.
- *
- * Created by Milton Quilzini on 01/12/16.
+ * Holds the information about the configurator application.
+ * It contains the load and icon URL's.
+ * Created by rsanchez on 01/02/17.
  */
-public class IntegrationBridgeHealthConnectivity {
+public class IntegrationConfigurator {
 
-  private String km;
-  private String agent;
-  private String pod;
+  private String loadUrl;
 
-  public String getKm() {
-    return km;
+  private String iconUrl;
+
+  public String getLoadUrl() {
+    return loadUrl;
   }
 
-  public void setKm(String km) {
-    this.km = km;
+  public void setLoadUrl(String loadUrl) {
+    this.loadUrl = loadUrl;
   }
 
-  public String getAgent() {
-    return agent;
+  public String getIconUrl() {
+    return iconUrl;
   }
 
-  public void setAgent(String agent) {
-    this.agent = agent;
-  }
-
-  public String getPod() {
-    return pod;
-  }
-
-  public void setPod(String pod) {
-    this.pod = pod;
+  public void setIconUrl(String iconUrl) {
+    this.iconUrl = iconUrl;
   }
 }

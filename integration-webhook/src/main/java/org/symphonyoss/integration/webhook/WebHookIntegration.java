@@ -43,8 +43,8 @@ import org.symphonyoss.integration.exception.bootstrap.RetryLifecycleException;
 import org.symphonyoss.integration.exception.bootstrap.UnexpectedBootstrapException;
 import org.symphonyoss.integration.exception.config.ForbiddenUserException;
 import org.symphonyoss.integration.exception.config.IntegrationConfigException;
+import org.symphonyoss.integration.model.config.IntegrationSettings;
 import org.symphonyoss.integration.model.config.StreamType;
-import org.symphonyoss.integration.model.healthcheck.IntegrationFlags;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
 import org.symphonyoss.integration.model.yaml.Application;
 import org.symphonyoss.integration.service.ConfigurationService;
@@ -112,7 +112,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
   /**
    * Local Configuration kept for faster processing.
    */
-  private V1Configuration config;
+  private IntegrationSettings settings;
 
   /**
    * Represents the current circuit state that this integration uses to determine whether it is
@@ -137,10 +137,9 @@ public abstract class WebHookIntegration extends BaseIntegration {
   public void onCreate(String integrationUser) {
     LOGGER.info("Create " + getClass().getCanonicalName());
 
-    try {
-      String applicationId = getApplicationId(integrationUser);
-      healthManager.setName(applicationId);
+    setupHealthManager(integrationUser);
 
+    try {
       registerUser(integrationUser);
     } catch (BootstrapException e) {
       healthManager.certificateInstalled(NOK);
@@ -158,7 +157,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
       authenticate(integrationUser);
       updateConfiguration(integrationUser);
 
-      healthManager.success();
+      healthManager.success(settings);
     } catch (ConnectivityException | RetryLifecycleException e) {
       String message = String.format("%s. Cause: %s", e.getMessage(), e.getCause().getMessage());
       healthManager.retry(message);
@@ -198,13 +197,13 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
   @Override
   public void onConfigChange(V1Configuration conf) {
-    this.config = conf;
+    this.settings = new IntegrationSettings(conf);
   }
 
   @Override
   public void onDestroy() {
     LOGGER.info("Release resources to " + getClass().getCanonicalName());
-    authenticationProxy.invalidate(config.getType());
+    authenticationProxy.invalidate(settings.getType());
   }
 
   /**
@@ -315,7 +314,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
    */
   private String getWelcomeMessage(ConfigurationInstance instance, String integrationUser) {
     StreamType streamType = streamService.getStreamType(instance);
-    String appName = config.getName();
+    String appName = settings.getName();
 
     switch (streamType) {
       case IM:
@@ -442,28 +441,12 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
   @Override
   public IntegrationHealth getHealthStatus() {
-    boolean authenticated = false;
-    if (config != null) {
-      String configType = config.getType();
-
-      IntegrationFlags.ValueEnum flagStatus = getCachedConfiguratorInstalledFlag(configType);
-      healthManager.configuratorInstalled(flagStatus);
-
-      authenticated = authenticationProxy.isAuthenticated(configType);
-    }
-
-    if (authenticated) {
-      healthManager.userAuthenticated(IntegrationFlags.ValueEnum.OK);
-    } else {
-      healthManager.userAuthenticated(IntegrationFlags.ValueEnum.NOK);
-    }
-
-    return healthManager.getHealth();
+    return healthManager.updateFlags();
   }
 
   @Override
-  public V1Configuration getConfig() {
-    return config;
+  public IntegrationSettings getSettings() {
+    return settings;
   }
 
   /**
@@ -479,22 +462,25 @@ public abstract class WebHookIntegration extends BaseIntegration {
    * @throws WebHookDisabledException if the integration is not enabled.
    */
   public boolean isAvailable() {
+    String type = settings.getType();
+
     if (this.circuitClosed) {
       try {
         V1Configuration whiConfiguration =
-            this.configService.getConfigurationById(config.getConfigurationId(), config.getType());
+            this.configService.getConfigurationById(settings.getConfigurationId(), type);
+
         if (!whiConfiguration.getEnabled()) {
           openCircuit();
-          throw new WebHookDisabledException(config.getType());
+          throw new WebHookDisabledException(type);
         } else {
           return this.circuitClosed;
         }
       } catch (ForbiddenUserException e) {
         openCircuit();
-        throw new WebHookUnavailableException(config.getType(), getHealthStatus().getMessage());
+        throw new WebHookUnavailableException(type, getHealthStatus().getMessage());
       }
     } else {
-      throw new WebHookUnavailableException(config.getType(), getHealthStatus().getMessage());
+      throw new WebHookUnavailableException(type, getHealthStatus().getMessage());
     }
   }
 
@@ -522,17 +508,17 @@ public abstract class WebHookIntegration extends BaseIntegration {
    * @return Configuration instance that contains information how to handle requests.
    */
   protected ConfigurationInstance getConfigurationInstance(String instanceId) {
-    return configService.getInstanceById(config.getConfigurationId(), instanceId,
-        config.getType());
+    return configService.getInstanceById(settings.getConfigurationId(), instanceId,
+        settings.getType());
   }
 
   @Override
   public Set<String> getIntegrationWhiteList() {
-    if (config == null) {
+    if (settings == null) {
       return Collections.emptySet();
     }
 
-    Application application = properties.getApplication(config.getType());
+    Application application = properties.getApplication(settings.getType());
 
     if (application == null) {
       return Collections.emptySet();
