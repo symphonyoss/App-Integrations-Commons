@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.4.2.RELEASE</version>
+        <version>1.5.1.RELEASE</version>
     </parent>
 
     <groupId>org.symphonyoss</groupId>
@@ -176,11 +176,10 @@
         <commons-validator.version>1.5.0</commons-validator.version>
         <commons-net.version>3.5</commons-net.version>
         <guava.version>18.0</guava.version>
-        <jackson.version>2.7.3</jackson.version>
         <log4j2.version>2.5</log4j2.version>
         <lmax-disruptor.version>3.3.4</lmax-disruptor.version>
         <metrics.version>3.1.2</metrics.version>
-        <spring.boot.version>1.4.2.RELEASE</spring.boot.version>
+        <spring.boot.version>1.5.1.RELEASE</spring.boot.version>
         <symphony.sbe.version>1.44.0</symphony.sbe.version>
 
         <!-- test -->
