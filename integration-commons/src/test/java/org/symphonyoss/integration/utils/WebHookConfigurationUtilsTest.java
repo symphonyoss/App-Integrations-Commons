@@ -19,8 +19,7 @@ package org.symphonyoss.integration.utils;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.symphonyoss.integration.model.config.StreamType;
-import org.symphonyoss.integration.utils.WebHookConfigurationUtils;
+import org.symphonyoss.integration.model.stream.StreamType;
 
 import java.io.IOException;
 

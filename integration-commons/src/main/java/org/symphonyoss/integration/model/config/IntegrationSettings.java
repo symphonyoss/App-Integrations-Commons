@@ -16,10 +16,8 @@
 
 package org.symphonyoss.integration.model.config;
 
-import com.symphony.api.pod.model.V1Configuration;
-
 /**
- * Settings for the integration. This class wraps the {@link V1Configuration} data.
+ * Settings for the integration.
  * Created by rsanchez on 15/02/17.
  */
 public class IntegrationSettings {
@@ -38,43 +36,59 @@ public class IntegrationSettings {
 
   private Long owner;
 
-  public IntegrationSettings(V1Configuration configuration) {
-    if (configuration != null) {
-      this.configurationId = configuration.getConfigurationId();
-      this.type = configuration.getType();
-      this.name = configuration.getName();
-      this.description = configuration.getDescription();
-      this.enabled = configuration.getEnabled();
-      this.visible = configuration.getVisible();
-      this.owner = configuration.getOwner();
-    }
-  }
-
   public String getConfigurationId() {
     return configurationId;
+  }
+
+  public void setConfigurationId(String configurationId) {
+    this.configurationId = configurationId;
   }
 
   public String getType() {
     return type;
   }
 
+  public void setType(String type) {
+    this.type = type;
+  }
+
   public String getName() {
     return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   public String getDescription() {
     return description;
   }
 
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
   public Boolean getEnabled() {
     return enabled;
+  }
+
+  public void setEnabled(Boolean enabled) {
+    this.enabled = enabled;
   }
 
   public Boolean getVisible() {
     return visible;
   }
 
+  public void setVisible(Boolean visible) {
+    this.visible = visible;
+  }
+
   public Long getOwner() {
     return owner;
+  }
+
+  public void setOwner(Long owner) {
+    this.owner = owner;
   }
 }

@@ -16,12 +16,11 @@
 
 package org.symphonyoss.integration.webhook;
 
-import com.symphony.api.auth.client.ApiException;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.symphonyoss.integration.exception.RemoteApiException;
 import org.symphonyoss.integration.exception.authentication.ForbiddenAuthException;
 import org.symphonyoss.integration.exception.authentication.UnauthorizedUserException;
 import org.symphonyoss.integration.exception.authentication.UnexpectedAuthException;
@@ -43,20 +42,20 @@ public class WebHookExceptionHandlerTest {
   }
 
   @Test(expected = ForbiddenAuthException.class)
-  public void testFailOnCreateForbiddenException() throws ApiException {
-    ApiException exception = new ApiException(403, "");
+  public void testFailOnCreateForbiddenException() throws RemoteApiException {
+    RemoteApiException exception = new RemoteApiException(403, "");
     exceptionHandler.handleAuthenticationApiException("", exception);
   }
 
   @Test(expected = UnauthorizedUserException.class)
-  public void testFailOnCreateUnauthorizedException() throws ApiException {
-    ApiException exception = new ApiException(401, "");
+  public void testFailOnCreateUnauthorizedException() throws RemoteApiException {
+    RemoteApiException exception = new RemoteApiException(401, "");
     exceptionHandler.handleAuthenticationApiException("", exception);
   }
 
   @Test(expected = RetryLifecycleException.class)
-  public void testFailOnCreateApiException() throws ApiException {
-    ApiException exception = new ApiException(500, "");
+  public void testFailOnCreateApiException() throws RemoteApiException {
+    RemoteApiException exception = new RemoteApiException(500, "");
     exceptionHandler.handleAuthenticationApiException("", exception);
   }
 

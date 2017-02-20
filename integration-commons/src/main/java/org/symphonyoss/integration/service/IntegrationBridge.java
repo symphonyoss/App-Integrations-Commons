@@ -16,10 +16,9 @@
 
 package org.symphonyoss.integration.service;
 
-import com.symphony.api.agent.model.V2MessageList;
-import com.symphony.api.pod.model.ConfigurationInstance;
-
 import org.symphonyoss.integration.Integration;
+import org.symphonyoss.integration.model.config.IntegrationInstance;
+import org.symphonyoss.integration.model.message.Message;
 
 import java.util.List;
 
@@ -51,7 +50,7 @@ public interface IntegrationBridge {
    * @param integrationUser the user of integration
    * @param message the actual message. It's expected to be already on proper format.
    */
-  V2MessageList sendMessage(ConfigurationInstance instance, String integrationUser, String message);
+  List<Message> sendMessage(IntegrationInstance instance, String integrationUser, String message);
 
   /**
    * Sends a message through Agent API to a list of streams.
@@ -60,7 +59,7 @@ public interface IntegrationBridge {
    * @param streams List of streams.
    * @param message the actual message. It's expected to be already on proper format.
    */
-  V2MessageList sendMessage(ConfigurationInstance instance, String integrationUser, List<String>
+  List<Message> sendMessage(IntegrationInstance instance, String integrationUser, List<String>
       streams, String message);
 
   /**

@@ -16,29 +16,26 @@
 
 package org.symphonyoss.integration.service;
 
-import com.symphony.api.agent.api.MessagesApi;
-import com.symphony.api.agent.client.ApiException;
-import com.symphony.api.agent.model.V2Message;
-import com.symphony.api.agent.model.V2MessageSubmission;
-import com.symphony.api.pod.model.ConfigurationInstance;
-import com.symphony.api.pod.model.Stream;
-import com.symphony.api.pod.model.V2RoomDetail;
-
-import org.symphonyoss.integration.model.config.StreamType;
+import org.symphonyoss.integration.exception.RemoteApiException;
+import org.symphonyoss.integration.model.config.IntegrationInstance;
+import org.symphonyoss.integration.model.message.Message;
+import org.symphonyoss.integration.model.stream.StreamType;
+import org.symphonyoss.integration.model.stream.Stream;
 
 import java.util.List;
 
 /**
+ * Service class to handle with the business logic related to streams.
  * Created by rsanchez on 13/05/16.
  */
 public interface StreamService {
 
   /**
    * Retrieve the streams configured by the user
-   * @param instance Configuration instance
+   * @param instance Integration instance
    * @return List of streams configured by the user.
    */
-  List<String> getStreams(ConfigurationInstance instance);
+  List<String> getStreams(IntegrationInstance instance);
 
   /**
    * Retrieve the streams configured by the user
@@ -52,36 +49,24 @@ public interface StreamService {
    * @param instance Configuration instance
    * @return Stream type configured by user or StreamType.NONE if have no stream type configured.
    */
-  StreamType getStreamType(ConfigurationInstance instance);
+  StreamType getStreamType(IntegrationInstance instance);
 
   /**
-   * Sends a message to a specific stream using {@link MessagesApi}.
+   * Sends a message to a specific stream using Messages API.
    * @param integrationUser
    * @param stream the stream identifier.
    * @param messageSubmission the actual message. It's expected to be already on proper format.
    * @return
    */
-  V2Message postMessage(String integrationUser, String stream,
-      V2MessageSubmission messageSubmission) throws ApiException;
-
-  /**
-   * Get info about the stream
-   * @param integrationUser
-   * @param stream the stream identifier
-   * @return
-   * @throws com.symphony.api.pod.client.ApiException
-   */
-  V2RoomDetail getRoomInfo(String integrationUser, String stream)
-      throws com.symphony.api.pod.client.ApiException;
+  Message postMessage(String integrationUser, String stream, Message messageSubmission) throws RemoteApiException;
 
   /**
    * Create an instant message with an specific user.
-   * @param integrationUser
+   * @param integrationUser integration user
    * @param userId user identifier
-   * @return
-   * @throws com.symphony.api.pod.client.ApiException
+   * @return Stream object
+   * @throws RemoteApiException
    */
-  Stream createIM(String integrationUser, Long userId)
-      throws com.symphony.api.pod.client.ApiException;
+  Stream createIM(String integrationUser, Long userId) throws RemoteApiException;
 
 }

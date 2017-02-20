@@ -21,12 +21,6 @@ import static org.symphonyoss.integration.messageml.MessageMLFormatConstants.MES
 import static org.symphonyoss.integration.model.healthcheck.IntegrationFlags.ValueEnum.NOK;
 import static org.symphonyoss.integration.utils.WebHookConfigurationUtils.LAST_POSTED_DATE;
 
-import com.symphony.api.agent.model.V2BaseMessage;
-import com.symphony.api.agent.model.V2MessageList;
-import com.symphony.api.auth.client.ApiException;
-import com.symphony.api.pod.model.ConfigurationInstance;
-import com.symphony.api.pod.model.V1Configuration;
-
 import com.codahale.metrics.Timer;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.StringUtils;
@@ -37,17 +31,20 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.symphonyoss.integration.BaseIntegration;
 import org.symphonyoss.integration.entity.model.User;
 import org.symphonyoss.integration.exception.IntegrationRuntimeException;
+import org.symphonyoss.integration.exception.RemoteApiException;
 import org.symphonyoss.integration.exception.authentication.ConnectivityException;
 import org.symphonyoss.integration.exception.bootstrap.BootstrapException;
 import org.symphonyoss.integration.exception.bootstrap.RetryLifecycleException;
 import org.symphonyoss.integration.exception.bootstrap.UnexpectedBootstrapException;
 import org.symphonyoss.integration.exception.config.ForbiddenUserException;
 import org.symphonyoss.integration.exception.config.IntegrationConfigException;
+import org.symphonyoss.integration.model.config.IntegrationInstance;
 import org.symphonyoss.integration.model.config.IntegrationSettings;
-import org.symphonyoss.integration.model.config.StreamType;
+import org.symphonyoss.integration.model.message.Message;
+import org.symphonyoss.integration.model.stream.StreamType;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
 import org.symphonyoss.integration.model.yaml.Application;
-import org.symphonyoss.integration.service.ConfigurationService;
+import org.symphonyoss.integration.service.IntegrationService;
 import org.symphonyoss.integration.service.IntegrationBridge;
 import org.symphonyoss.integration.service.StreamService;
 import org.symphonyoss.integration.service.UserService;
@@ -60,6 +57,7 @@ import org.symphonyoss.integration.webhook.exception.WebHookUnavailableException
 import org.symphonyoss.integration.webhook.metrics.ParserMetricsController;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -91,8 +89,8 @@ public abstract class WebHookIntegration extends BaseIntegration {
   private static final String UNKNOWN_USER = "UNKNOWN";
 
   @Autowired
-  @Qualifier("remoteConfigurationService")
-  private ConfigurationService configService;
+  @Qualifier("remoteIntegrationService")
+  private IntegrationService integrationService;
 
   @Autowired
   private IntegrationBridge bridge;
@@ -178,7 +176,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
   private void authenticate(String integrationUser) {
     try {
       authenticationProxy.authenticate(integrationUser);
-    } catch (ApiException e) {
+    } catch (RemoteApiException e) {
       exceptionHandler.handleAuthenticationApiException(integrationUser, e);
     } catch (ConnectivityException e) {
       // Needed to rethrow this specific exception, otherwise it will endup hidden under the
@@ -190,14 +188,14 @@ public abstract class WebHookIntegration extends BaseIntegration {
   }
 
   private void updateConfiguration(String integrationUser) throws IntegrationConfigException {
-    V1Configuration config =
-        this.configService.getConfigurationByType(integrationUser, integrationUser);
-    onConfigChange(config);
+    IntegrationSettings settings =
+        this.integrationService.getIntegrationByType(integrationUser, integrationUser);
+    onConfigChange(settings);
   }
 
   @Override
-  public void onConfigChange(V1Configuration conf) {
-    this.settings = new IntegrationSettings(conf);
+  public void onConfigChange(IntegrationSettings settings) {
+    this.settings = settings;
   }
 
   @Override
@@ -210,13 +208,13 @@ public abstract class WebHookIntegration extends BaseIntegration {
    * Parse the incoming message received from third party services. It should be used to filter
    * which events the integration must handle according to user settings stored on the webhook
    * instance.
-   * @param instance Configuration instance that contains user settings
+   * @param instance Integration instance that contains user settings
    * @param input Message received from the third party services
    * @return Formatted MessageML or null if the integration doesn't handle this specific event
    * @throws WebHookParseException Reports failure to validate message received from third party
    * services.
    */
-  public String parse(ConfigurationInstance instance, WebHookPayload input)
+  public String parse(IntegrationInstance instance, WebHookPayload input)
       throws WebHookParseException {
     return parse(input);
   }
@@ -242,7 +240,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
   public void handle(String instanceId, String integrationUser, WebHookPayload input)
       throws WebHookParseException {
     if (isAvailable()) {
-      ConfigurationInstance instance = getConfigurationInstance(instanceId);
+      IntegrationInstance instance = getIntegrationInstance(instanceId);
       String message = parseRequest(instance, integrationUser, input);
       if (message != null) {
         List<String> streams = streamService.getStreams(instance);
@@ -253,12 +251,12 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
   /**
    * Wraps the parser execution and monitor the parser execution time.
-   * @param instance Configuration instance
+   * @param instance Integration instance
    * @param integrationUser Integration username
    * @param input Webhhok payload
    * @return Formatted MessageML or null if the integration doesn't handle this specific event
    */
-  private String parseRequest(ConfigurationInstance instance, String integrationUser,
+  private String parseRequest(IntegrationInstance instance, String integrationUser,
       WebHookPayload input) {
     Timer.Context context = null;
     boolean success = false;
@@ -277,12 +275,12 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
   /**
    * Post the welcome message to streams.
-   * @param instance Configuration instance
+   * @param instance Integration instance
    * @param integrationUser Integration username
    * @param payload Json Node that contains a list of streams
    * @throws IOException Reports failure to validate the payload
    */
-  public void welcome(ConfigurationInstance instance, String integrationUser, String payload) {
+  public void welcome(IntegrationInstance instance, String integrationUser, String payload) {
     List<String> instanceStreams = streamService.getStreams(instance);
     List<String> streams = streamService.getStreams(payload);
 
@@ -308,11 +306,11 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
   /**
    * Get the welcome message based on stream type configured in the instance.
-   * @param instance Configuration instance
+   * @param instance Integration instance
    * @param integrationUser Integration username
    * @return Welcome message
    */
-  private String getWelcomeMessage(ConfigurationInstance instance, String integrationUser) {
+  private String getWelcomeMessage(IntegrationInstance instance, String integrationUser) {
     StreamType streamType = streamService.getStreamType(instance);
     String appName = settings.getName();
 
@@ -351,15 +349,15 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
   /**
    * Post messages to streams and update latest post timestamp.
-   * @param instance Configuration instance
+   * @param instance Integration instance
    * @param integrationUser Integration username
    * @param streams List of streams
    * @param message Formatted MessageML
    */
-  private void postMessage(ConfigurationInstance instance, String integrationUser,
+  private void postMessage(IntegrationInstance instance, String integrationUser,
       List<String> streams, String message) {
     // Post a message
-    V2MessageList response = sendMessage(instance, integrationUser, streams, message);
+    List<Message> response = sendMessage(instance, integrationUser, streams, message);
     // Get the timestamp of the last message posted
     Long lastPostedDate = getLastPostedDate(response);
 
@@ -371,15 +369,16 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
   /**
    * Send messages to streams using Integration Bridge service.
-   * @param instance Configuration instance
+   * @param instance Integration instance
    * @param integrationUser Integration username
    * @param streams List of streams
    * @param message Formatted MessageML
    * @return List of messages posted to the streams.
    */
-  private V2MessageList sendMessage(ConfigurationInstance instance, String integrationUser,
+  private List<Message> sendMessage(IntegrationInstance instance, String integrationUser,
       List<String> streams, String message) {
-    V2MessageList response = new V2MessageList();
+    List<Message> response = new ArrayList<>();
+
     try {
       // Post a message
       response = bridge.sendMessage(instance, integrationUser, streams, message);
@@ -393,9 +392,10 @@ public abstract class WebHookIntegration extends BaseIntegration {
    * Get the most recent posted date in the provided list of responses
    * @param response
    */
-  private Long getLastPostedDate(V2MessageList response) {
+  private Long getLastPostedDate(List<Message> response) {
     Long lastPostedDate = 0L;
-    for (V2BaseMessage responseMessage : response) {
+
+    for (Message responseMessage : response) {
       // Get last posted date
       String timestamp = responseMessage.getTimestamp();
       lastPostedDate = Math.max(lastPostedDate, Long.valueOf(timestamp));
@@ -404,11 +404,11 @@ public abstract class WebHookIntegration extends BaseIntegration {
   }
 
   /**
-   * Update the configuration instance with the last posted date.
-   * @param instance Configuration instance
+   * Update the integration instance with the last posted date.
+   * @param instance Integration instance
    * @param timestamp Last posted date
    */
-  private void updateLastPostedDate(ConfigurationInstance instance, String integrationUser,
+  private void updateLastPostedDate(IntegrationInstance instance, String integrationUser,
       Long timestamp) {
     try {
       // Update posted date
@@ -416,7 +416,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
           WebHookConfigurationUtils.fromJsonString(instance.getOptionalProperties());
       whiConfigInstance.put(LAST_POSTED_DATE, timestamp);
       instance.setOptionalProperties(WebHookConfigurationUtils.toJsonString(whiConfigInstance));
-      configService.save(instance, integrationUser);
+      integrationService.save(instance, integrationUser);
 
       healthManager.updateLatestPostTimestamp(timestamp);
     } catch (IntegrationRuntimeException | IOException e) {
@@ -466,8 +466,8 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
     if (this.circuitClosed) {
       try {
-        V1Configuration whiConfiguration =
-            this.configService.getConfigurationById(settings.getConfigurationId(), type);
+        IntegrationSettings whiConfiguration =
+            this.integrationService.getIntegrationById(settings.getConfigurationId(), type);
 
         if (!whiConfiguration.getEnabled()) {
           openCircuit();
@@ -503,12 +503,12 @@ public abstract class WebHookIntegration extends BaseIntegration {
   }
 
   /**
-   * Retrieve the configuration instance based on instanceId.
-   * @param instanceId Configuration instance identifier
-   * @return Configuration instance that contains information how to handle requests.
+   * Retrieve the integration instance based on instanceId.
+   * @param instanceId Integration instance identifier
+   * @return Integration instance that contains information how to handle requests.
    */
-  protected ConfigurationInstance getConfigurationInstance(String instanceId) {
-    return configService.getInstanceById(settings.getConfigurationId(), instanceId,
+  protected IntegrationInstance getIntegrationInstance(String instanceId) {
+    return integrationService.getInstanceById(settings.getConfigurationId(), instanceId,
         settings.getType());
   }
 

@@ -18,24 +18,14 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.symphony.sbe.core</groupId>
-                <artifactId>pod-api-client</artifactId>
-                <version>${symphony.sbe.version}</version>
+                <groupId>org.glassfish.jersey.core</groupId>
+                <artifactId>jersey-client</artifactId>
+                <version>${jersey.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.symphony.sbe.core</groupId>
-                <artifactId>agent-api-client</artifactId>
-                <version>${symphony.sbe.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.symphony.sbe.core</groupId>
-                <artifactId>agent-util</artifactId>
-                <version>${symphony.sbe.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.symphony.sbe.core</groupId>
-                <artifactId>auth-api-client</artifactId>
-                <version>${symphony.sbe.version}</version>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-net</groupId>
@@ -154,6 +144,7 @@
         <module>integration-commons</module>
         <module>integration-metrics</module>
         <module>integration-webhook</module>
+        <module>integration-api-client</module>
     </modules>
 
     <properties>
@@ -175,7 +166,9 @@
         <commons.lang3.version>3.4</commons.lang3.version>
         <commons-validator.version>1.5.0</commons-validator.version>
         <commons-net.version>3.5</commons-net.version>
+        <commons-io.version>2.5</commons-io.version>
         <guava.version>18.0</guava.version>
+        <jersey.version>2.12</jersey.version>
         <log4j2.version>2.5</log4j2.version>
         <lmax-disruptor.version>3.3.4</lmax-disruptor.version>
         <metrics.version>3.1.2</metrics.version>
