@@ -1,5 +1,5 @@
-/* eslint-disable no-debugger */
 import React, { PropTypes, Component } from 'react';
+import SuggestionsRoomsContainer from './SuggestionsRooms/SuggestionsRoomsContainer';
 import './styles/styles.less';
 
 // Use named export for unconnected component (for tests)
@@ -7,10 +7,16 @@ export class PostingLocation extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      suggestions: false,
+    };
     this.onChange = this.onChange.bind(this);
   }
 
   onChange(e) {
+    this.setState({
+      suggestions: e.target.id !== 'IM',
+    });
     this.props.switchStreamType(e.target.id);
   }
 
@@ -48,6 +54,7 @@ export class PostingLocation extends Component {
             </div>
           </div>
         </div>
+        { this.state.suggestions && (<SuggestionsRoomsContainer />) }
       </div>
     );
   }

@@ -1,0 +1,114 @@
+@import '../../../../styles/lib.less';
+
+@search-height: 38px;
+@filter-box-height: 40px;
+
+.suggestions-rooms {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-top: 0;
+  max-width: @max-width-component;
+
+  .input-search-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: @max-width-component;
+    height: @search-height;
+    margin: 0;
+    border-radius: 2px;
+    box-sizing: border-box;
+
+    input {
+      height: @search-height !important;
+      border: none !important;
+      margin: 0 !important;
+      box-sizing: border-box;
+      background: none !important;
+    }
+
+    button {
+      width: 35px;
+      height: @search-height;
+      padding: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+  }
+
+  .filter-container {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border-radius: 2px;
+
+    .filter-box {
+      width: 100%;
+      min-height: @filter-box-height;
+      padding: 3px;
+      list-style: none;
+      box-sizing: border-box;
+      cursor: pointer;
+
+      .filter-box-clickable {
+        display: block;
+        width: 100%;
+        padding: 5px;
+        border-radius: 2px;
+        box-sizing: border-box;
+        text-decoration: none;
+
+        div {
+          display: flex;
+          flex-direction: row;
+        }
+
+        span { font-size: 13px; }
+
+        i {
+          padding-left: 10px;
+          font-size: 10;
+          color: #ee5555;
+        }
+
+        .room-info span { font-size: 11px; }
+      }
+    }
+  }
+}
+
+.dark, .dark-contrast {
+  .input-search-container {
+      background: rgba(0, 0, 0, 0.4);
+
+      button { color: #fff; }
+    }
+
+  .filter-container {
+      background: #333;
+
+      .filter-box {
+        border-bottom: 1px solid rgba(255,255,255,.08);
+
+        .filter-box-clickable {
+          &:hover, &:focus { background: rgba(255,255,255,.05); }
+
+          span { color: rgba(255,255,255,.8); }
+
+          .room-info span { color: rgba(255,255,255,.6); }
+        }
+      }
+  }
+}
+
+.light, .light-contrast {
+  .input-search-container {
+      background: rgba(255, 255, 255, 0.4);
+
+      button { color: #000; }
+    }
+}

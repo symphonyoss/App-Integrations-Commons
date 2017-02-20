@@ -7,6 +7,7 @@ import {
   FETCH_USER_ID_SUCCESS,
   FETCH_INSTANCE_LIST,
   FETCH_INSTANCE_LIST_SUCCESS,
+  FETCH_USER_ROOMS,
   FETCH_USER_ROOMS_SUCCESS,
   EDIT_INSTANCE,
   EDIT_INSTANCE_SUCCESS,
@@ -56,6 +57,7 @@ const integrationApp = (state = INITIAL_STATE, action) => {
       return Object.assign({}, state, {
         ...state,
         error: null,
+        loading: false,
         userId: action.payload,
       });
     case FETCH_INSTANCE_LIST: {
@@ -73,10 +75,16 @@ const integrationApp = (state = INITIAL_STATE, action) => {
         loading: false,
         error: null,
       });
+    case FETCH_USER_ROOMS:
+      return Object.assign({}, state, {
+        ...state,
+        loading: true,
+      });
     case FETCH_USER_ROOMS_SUCCESS: {
       return Object.assign({}, state, {
         ...state,
         userRooms: action.payload.slice(),
+        loading: false,
       });
     }
     case CREATE_STREAM: // this new stream will be used to create the new instance...
