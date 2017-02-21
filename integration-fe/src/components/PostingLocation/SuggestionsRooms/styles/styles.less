@@ -1,7 +1,6 @@
 @import '../../../../styles/lib.less';
 
-@search-height: 38px;
-@filter-box-height: 40px;
+@search-height: 2.375rem;
 
 .suggestions-rooms {
   display: flex;
@@ -18,7 +17,7 @@
     max-width: @max-width-component;
     height: @search-height;
     margin: 0;
-    border-radius: 2px;
+    border-radius: 0.125rem;
     box-sizing: border-box;
 
     input {
@@ -30,7 +29,7 @@
     }
 
     button {
-      width: 35px;
+      width: 2.188rem;
       height: @search-height;
       padding: 0;
       background: none;
@@ -44,12 +43,12 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    border-radius: 2px;
+    border-radius: 0.125rem;
 
     .filter-box {
       width: 100%;
       min-height: @filter-box-height;
-      padding: 3px;
+      padding: 0.1875rem;
       list-style: none;
       box-sizing: border-box;
       cursor: pointer;
@@ -57,8 +56,8 @@
       .filter-box-clickable {
         display: block;
         width: 100%;
-        padding: 5px;
-        border-radius: 2px;
+        padding:0.3125rem;
+        border-radius: 0.125rem;
         box-sizing: border-box;
         text-decoration: none;
 
@@ -67,15 +66,15 @@
           flex-direction: row;
         }
 
-        span { font-size: 13px; }
+        span { font-size: 0.8125rem; }
 
         i {
-          padding-left: 10px;
-          font-size: 10;
+          padding-left: 0.625rem;
+          font-size: 0.625rem;
           color: #ee5555;
         }
 
-        .room-info span { font-size: 11px; }
+        .room-info span { font-size: 0.75rem; }
       }
     }
   }

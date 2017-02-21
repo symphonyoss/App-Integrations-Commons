@@ -1,4 +1,5 @@
 import React, { PropTypes, Component } from 'react';
+import RoomBox from '../RoomBox/RoomBox';
 import './styles/styles.less';
 
 // Use named export for unconnected component (for tests)
@@ -7,10 +8,11 @@ export class SuggestionsRooms extends Component {
     super(props);
 
     this.state = {
-      filters: [],
-      filteredRooms: [],
-      listening: false, // check if input search has event listener
-      focused: -1,
+      filters: [],          // stores the room filtered
+      filteredRooms: [],    // rooms that appears according to user typing
+      suggestionsList: [],  // rooms available to be filtered
+      listening: false,     // check if input search has event listener
+      focused: -1,          // handles list items focus
     };
     this.container = null;
     this.input = null;
@@ -22,6 +24,7 @@ export class SuggestionsRooms extends Component {
     this.clearInput = this.clearInput.bind(this);
     this.addFilter = this.addFilter.bind(this);
     this.removeFilter = this.removeFilter.bind(this);
+    this.sort = this.sort.bind(this);
   }
 
   componentWillMount() {
@@ -34,6 +37,11 @@ export class SuggestionsRooms extends Component {
     const tmr = setInterval(() => {
       if (!this.props.loading) {
         clearInterval(tmr);
+        const _suggestions = this.props.userRooms.slice();
+        this.sort(_suggestions, 'name');
+        this.setState({
+          suggestionsList: _suggestions,
+        });
         this.input.focus();
       }
     }, 500);
@@ -47,7 +55,7 @@ export class SuggestionsRooms extends Component {
       });
       return;
     }
-    let suggestionsList = this.props.userRooms.slice();
+    let suggestionsList = this.state.suggestionsList;
     suggestionsList = suggestionsList.filter(item =>
       item.name.toLowerCase().search(e.target.value.toLowerCase()) !== -1
     );
@@ -147,12 +155,51 @@ export class SuggestionsRooms extends Component {
     this.input.focus();
   }
 
-  addFilter() {
+  addFilter(e, filter) {
+    e.preventDefault();
+    const suggestions = this.state.suggestionsList.slice();
+    suggestions.some((item, idx) => {
+      if (item.name === filter.name) {
+        suggestions.splice(idx, 1);
+      }
+    });
 
+    this.setState({
+      filteredRooms: [],
+      focused: -1,
+      filters: this.state.filters.concat([filter]),
+      suggestionsList: suggestions.slice(),
+    });
+    this.input.value = '';
+    this.input.focus();
   }
 
-  removeFilter() {
+  removeFilter(_id) {
+    const _suggestions = this.state.suggestionsList.slice();
+    const _filters = this.state.filters.slice();
 
+    _filters.some((item, idx) => {
+      if (item.threadId === _id) {
+        _suggestions.push(item);
+        _filters.splice(idx, 1);
+      }
+    });
+
+    this.sort(_suggestions, 'name');
+    this.input.value = '';
+    this.input.focus();
+    this.setState({
+      suggestionsList: _suggestions.slice(),
+      filters: _filters.slice(),
+    });
+  }
+
+  sort(_obj, key) {
+    _obj.sort((a, b) => {
+      if (a[key] < b[key]) return -1;
+      if (a[key] > b[key]) return 1;
+      return 0;
+    });
   }
 
   render() {
@@ -179,6 +226,8 @@ export class SuggestionsRooms extends Component {
                 <a
                   href='#'
                   className='filter-box-clickable'
+                  onClick={e => this.addFilter(e, filter, idx)}
+                  id={idx}
                 >
                   <div>
                     <span>{filter.name}</span>
@@ -197,6 +246,20 @@ export class SuggestionsRooms extends Component {
             )
           }
         </ul>
+        { this.state.filters.length > 0 &&
+          (
+            this.state.filters.map((room, idx) =>
+              <RoomBox
+                key={idx}
+                name={room.name}
+                threadId={room.threadId}
+                public={room.publicRoom}
+                memberCount={room.memberCount}
+                creatorPrettyName={room.creatorPrettyName}
+                removeFilter={this.removeFilter}
+              />
+          )
+        )}
       </div>
     );
   }

@@ -1,0 +1,56 @@
+@import '../../../../styles/lib.less';
+.room-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: @filter-box-height;
+    margin-top: 0.4375rem;
+    padding: 0 0 0 0.3125rem;
+    box-sizing: border-box;
+    border-radius: 0.125rem;
+
+    span {
+        padding: 0 0.3125rem 0 0;
+        font-size: 0.75rem;
+
+        i {
+          font-size: 0.625rem;
+          color: #ee5555;
+        }
+    }
+    
+    button {
+        width: 2.188rem;
+        height: @filter-box-height;
+        padding: 0;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .room-info span { font-size: 0.75rem; }
+}
+
+.dark, .dark-contrast {
+    .room-box {
+        background: #333;
+        color: rgba(255, 255, 255, .8);
+
+        button { color: #fff; }
+
+        .room-info span { color: rgba(255,255,255,.6); }
+    }
+}
+
+.light, .light-contrast {
+    .room-box {
+        background: #F9F9FA;
+        color: rgba(0, 0, 0, .8);
+
+        button { color: #000; }
+
+        .room-info span { color: rgba(0,0,0,.6); }
+    }
+}

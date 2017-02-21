@@ -1,5 +1,3 @@
-/* eslint-disable no-debugger */
-/* eslint-disable arrow-body-style */
 import { connect } from 'react-redux';
 import {
   fetchUserRooms,
@@ -9,25 +7,20 @@ import {
 
 import SuggestionsRooms from './SuggestionsRooms';
 
-const mapStateToProps = (state) => {
-  // debugger;
-  return {
-    userRooms: state.userRooms,
-    loading: state.loading,
-  };
-};
+const mapStateToProps = state => ({
+  userRooms: state.userRooms,
+  loading: state.loading,
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    fetchUserRooms: () => {
-      dispatch(fetchUserRooms()).then((rooms) => {
-        dispatch(fetchUserRoomsSuccess(rooms));
-      }, (error) => {
-        setError(error);
-      });
-    },
-  };
-};
+const mapDispatchToProps = dispatch => ({
+  fetchUserRooms: () => {
+    dispatch(fetchUserRooms()).then((rooms) => {
+      dispatch(fetchUserRoomsSuccess(rooms));
+    }, (error) => {
+      setError(error);
+    });
+  },
+});
 
 const SuggestionsRoomsContainer = connect(
   mapStateToProps,
