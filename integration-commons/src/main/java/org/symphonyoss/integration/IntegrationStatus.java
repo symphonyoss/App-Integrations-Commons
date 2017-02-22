@@ -25,7 +25,8 @@ public enum IntegrationStatus {
   INACTIVE("Inactive"),
   RETRYING_BOOTSTRAP("Retrying Bootstrap"),
   FAILED_BOOTSTRAP("Failed bootstrap"),
-  ACTIVE("Active");
+  ACTIVE("Active"),
+  OUT_OF_SERVICE("Out of service");
 
   private String value;
 

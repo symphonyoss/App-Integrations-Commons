@@ -3,6 +3,8 @@ package org.symphonyoss.integration;
 import com.symphony.api.pod.model.V1Configuration;
 
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
+import org.symphonyoss.integration.healthcheck.IntegrationHealthManager;
+import org.symphonyoss.integration.model.config.IntegrationSettings;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
 import org.symphonyoss.integration.model.yaml.IntegrationProperties;
 import org.symphonyoss.integration.utils.IntegrationUtils;
@@ -19,10 +21,11 @@ public class MockIntegration extends BaseIntegration {
   private IntegrationHealth health = new IntegrationHealth();
 
   public MockIntegration(IntegrationProperties properties, IntegrationUtils utils,
-      AuthenticationProxy authenticationProxy) {
+      AuthenticationProxy authenticationProxy, IntegrationHealthManager healthManager) {
     this.properties = properties;
     this.utils = utils;
     this.authenticationProxy = authenticationProxy;
+    this.healthManager = healthManager;
   }
 
   @Override
@@ -50,7 +53,7 @@ public class MockIntegration extends BaseIntegration {
   }
 
   @Override
-  public V1Configuration getConfig() {
+  public IntegrationSettings getSettings() {
     return null;
   }
 
