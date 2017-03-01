@@ -28,10 +28,13 @@ import javax.ws.rs.ProcessingException;
  * Base decoratar class to deal with connectivity issues.
  * Created by rsanchez on 21/02/17.
  */
-public abstract class ConnectivityApiClientDecorator extends HttpApiClientDecorator {
+public class ConnectivityApiClientDecorator extends HttpApiClientDecorator {
 
-  public ConnectivityApiClientDecorator(HttpApiClient apiClient) {
+  private String serviceName;
+
+  public ConnectivityApiClientDecorator(String serviceName, HttpApiClient apiClient) {
     super(apiClient);
+    this.serviceName = serviceName;
   }
 
   @Override
@@ -95,6 +98,8 @@ public abstract class ConnectivityApiClientDecorator extends HttpApiClientDecora
    * @param e Root cause
    * @return Specific connectivity exception
    */
-  protected abstract ConnectivityException getConnectivityException(ProcessingException e);
+  protected ConnectivityException getConnectivityException(ProcessingException e) {
+    return new ConnectivityException(serviceName, e);
+  }
 
 }

@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.symphonyoss.integration.exception.RemoteApiException;
+import org.symphonyoss.integration.exception.authentication.ConnectivityException;
 import org.symphonyoss.integration.model.config.IntegrationSettings;
 
 import java.io.IOException;
@@ -40,6 +41,8 @@ public class ConnectivityApiClientDecoratorTest {
 
   private static final String MOCK_PATH = "/v1/configuration/create";
 
+  private static final String MOCK_SERVICE = "Mock Service";
+
   @Mock
   private HttpApiClient apiClient;
 
@@ -47,7 +50,7 @@ public class ConnectivityApiClientDecoratorTest {
 
   @Before
   public void init() {
-    this.decorator = new MockConnectivityApiClientDecorator(apiClient);
+    this.decorator = new ConnectivityApiClientDecorator(MOCK_SERVICE, apiClient);
   }
 
   @Test(expected = ProcessingException.class)
@@ -62,7 +65,7 @@ public class ConnectivityApiClientDecoratorTest {
         Collections.<String, String>emptyMap(), IntegrationSettings.class);
   }
 
-  @Test(expected = MockConnectivityApiClientDecorator.MockConnectivityException.class)
+  @Test(expected = ConnectivityException.class)
   public void testDoGetConnectivityException() throws RemoteApiException {
     ProcessingException exception = new ProcessingException(new IOException());
 
@@ -86,7 +89,7 @@ public class ConnectivityApiClientDecoratorTest {
         Collections.<String, String>emptyMap(), null, IntegrationSettings.class);
   }
 
-  @Test(expected = MockConnectivityApiClientDecorator.MockConnectivityException.class)
+  @Test(expected = ConnectivityException.class)
   public void testDoPostConnectivityException() throws RemoteApiException {
     ProcessingException exception = new ProcessingException(new IOException());
 
@@ -110,7 +113,7 @@ public class ConnectivityApiClientDecoratorTest {
         Collections.<String, String>emptyMap(), null, IntegrationSettings.class);
   }
 
-  @Test(expected = MockConnectivityApiClientDecorator.MockConnectivityException.class)
+  @Test(expected = ConnectivityException.class)
   public void testDoPutConnectivityException() throws RemoteApiException {
     ProcessingException exception = new ProcessingException(new IOException());
 
@@ -134,7 +137,7 @@ public class ConnectivityApiClientDecoratorTest {
         Collections.<String, String>emptyMap(), IntegrationSettings.class);
   }
 
-  @Test(expected = MockConnectivityApiClientDecorator.MockConnectivityException.class)
+  @Test(expected = ConnectivityException.class)
   public void testDoDeleteConnectivityException() throws RemoteApiException {
     ProcessingException exception = new ProcessingException(new IOException());
 
