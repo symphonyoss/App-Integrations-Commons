@@ -173,7 +173,7 @@
         <lmax-disruptor.version>3.3.4</lmax-disruptor.version>
         <metrics.version>3.1.2</metrics.version>
         <spring.boot.version>1.5.1.RELEASE</spring.boot.version>
-        <symphony.sbe.version>1.44.4</symphony.sbe.version>
+        <symphony.sbe.version>1.44.3</symphony.sbe.version>
 
         <!-- test -->
         <symphonySkipUnitTests>false</symphonySkipUnitTests>
