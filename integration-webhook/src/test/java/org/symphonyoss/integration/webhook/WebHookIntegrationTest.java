@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -32,13 +33,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.symphonyoss.integration.utils.WebHookConfigurationUtils.LAST_POSTED_DATE;
-import static org.mockito.Matchers.anyListOf;
-
-import com.symphony.api.agent.model.V2Message;
-import com.symphony.api.agent.model.V2MessageList;
-import com.symphony.api.pod.client.ApiException;
-import com.symphony.api.pod.model.ConfigurationInstance;
-import com.symphony.api.pod.model.V1Configuration;
 
 import com.codahale.metrics.Timer;
 import com.google.common.cache.LoadingCache;
@@ -63,12 +57,15 @@ import org.symphonyoss.integration.exception.bootstrap.CertificateNotFoundExcept
 import org.symphonyoss.integration.exception.bootstrap.LoadKeyStoreException;
 import org.symphonyoss.integration.exception.bootstrap.UnexpectedBootstrapException;
 import org.symphonyoss.integration.exception.config.ForbiddenUserException;
-import org.symphonyoss.integration.model.config.StreamType;
+import org.symphonyoss.integration.model.config.IntegrationInstance;
+import org.symphonyoss.integration.model.config.IntegrationSettings;
 import org.symphonyoss.integration.model.healthcheck.IntegrationFlags;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
+import org.symphonyoss.integration.model.message.Message;
+import org.symphonyoss.integration.model.stream.StreamType;
 import org.symphonyoss.integration.model.yaml.IntegrationProperties;
-import org.symphonyoss.integration.service.ConfigurationService;
 import org.symphonyoss.integration.service.IntegrationBridge;
+import org.symphonyoss.integration.service.IntegrationService;
 import org.symphonyoss.integration.service.StreamService;
 import org.symphonyoss.integration.service.UserService;
 import org.symphonyoss.integration.utils.IntegrationUtils;
@@ -85,6 +82,7 @@ import java.net.ConnectException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -115,8 +113,8 @@ public class WebHookIntegrationTest extends MockKeystore {
   @MockBean
   private StreamService streamService;
 
-  @MockBean(name = "remoteConfigurationService")
-  private ConfigurationService configService;
+  @MockBean(name = "remoteIntegrationService")
+  private IntegrationService integrationService;
 
   @MockBean
   private AuthenticationProxy authenticationProxy;
@@ -148,7 +146,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   @Autowired
   private MockWebHookIntegration mockWHI;
 
-  private V1Configuration configuration;
+  private IntegrationSettings settings;
 
   @Before
   public void setup() {
@@ -157,28 +155,28 @@ public class WebHookIntegrationTest extends MockKeystore {
 
     when(authenticationProxy.isAuthenticated(anyString())).thenReturn(true);
 
-    configuration = new V1Configuration();
-    configuration.setConfigurationId(CONFIGURATION_ID);
-    configuration.setName("JIRA");
-    configuration.setType(INTEGRATION_USER);
-    configuration.setEnabled(true);
+    settings = new IntegrationSettings();
+    settings.setConfigurationId(CONFIGURATION_ID);
+    settings.setName("JIRA");
+    settings.setType(INTEGRATION_USER);
+    settings.setEnabled(true);
 
-    mockWHI.onConfigChange(configuration);
+    mockWHI.onConfigChange(settings);
 
-    doReturn(configuration).when(configService).getConfigurationByType(INTEGRATION_USER, INTEGRATION_USER);
+    doReturn(settings).when(integrationService).getIntegrationByType(INTEGRATION_USER, INTEGRATION_USER);
 
     doAnswer(new Answer<StreamType>() {
       @Override
       public StreamType answer(InvocationOnMock invocationOnMock) throws Throwable {
-        ConfigurationInstance instance = (ConfigurationInstance) invocationOnMock.getArguments()[0];
+        IntegrationInstance instance = (IntegrationInstance) invocationOnMock.getArguments()[0];
         return WebHookConfigurationUtils.getStreamType(instance.getOptionalProperties());
       }
-    }).when(streamService).getStreams(any(ConfigurationInstance.class));
+    }).when(streamService).getStreams(any(IntegrationInstance.class));
 
     doAnswer(new GetStreamTypeAnswer()).when(streamService)
-        .getStreamType(any(ConfigurationInstance.class));
+        .getStreamType(any(IntegrationInstance.class));
     doAnswer(new GetStreamsAnswer()).when(streamService)
-        .getStreams(any(ConfigurationInstance.class));
+        .getStreams(any(IntegrationInstance.class));
     doAnswer(new GetStreamsAnswer()).when(streamService).getStreams(any(String.class));
 
     doReturn(context).when(metricsController).startParserExecution(INTEGRATION_USER);
@@ -242,11 +240,11 @@ public class WebHookIntegrationTest extends MockKeystore {
   @Test
   public void testHandleWithUpdateTimestamp()
       throws WebHookParseException, IOException {
-    doReturn(configuration).when(configService).getConfigurationById(CONFIGURATION_ID, INTEGRATION_USER);
+    doReturn(settings).when(integrationService).getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
 
-    V2MessageList response = new V2MessageList();
-    V2Message message1 = new V2Message();
-    V2Message message2 = new V2Message();
+    List<Message> response = new ArrayList<>();
+    Message message1 = new Message();
+    Message message2 = new Message();
 
     Long timestamp1 = 1476109880000L;
     Long timestamp2 = timestamp1 + 1000;
@@ -257,7 +255,7 @@ public class WebHookIntegrationTest extends MockKeystore {
     response.add(message1);
     response.add(message2);
 
-    when(service.sendMessage(any(ConfigurationInstance.class), anyString(),
+    when(service.sendMessage(any(IntegrationInstance.class), anyString(),
         anyListOf(String.class),
         anyString())).thenReturn(response);
 
@@ -265,12 +263,12 @@ public class WebHookIntegrationTest extends MockKeystore {
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
         + ", \"owner\": \"owner\", \"streams\": [ \"stream1\", \"stream2\"] }";
 
-    ConfigurationInstance instance = new ConfigurationInstance();
+    IntegrationInstance instance = new IntegrationInstance();
     instance.setConfigurationId("jirawebhook");
     instance.setInstanceId("1234");
     instance.setOptionalProperties(optionalProperties);
 
-    doReturn(instance).when(configService).getInstanceById(anyString(), anyString(), anyString());
+    doReturn(instance).when(integrationService).getInstanceById(anyString(), anyString(), anyString());
 
     mockWHI.handle(instance.getInstanceId(), INTEGRATION_USER,
         new WebHookPayload(Collections.<String, String>emptyMap(), Collections.<String, String>emptyMap(), "{ \"webhookEvent\": \"mock\" }"));
@@ -291,22 +289,22 @@ public class WebHookIntegrationTest extends MockKeystore {
 
   @Test
   public void testHandleFailedSend() throws WebHookParseException, IOException {
-    doReturn(configuration).when(configService).getConfigurationById(CONFIGURATION_ID, INTEGRATION_USER);
+    doReturn(settings).when(integrationService).getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
 
-    doReturn(new V2MessageList()).when(service)
-        .sendMessage(any(ConfigurationInstance.class), anyString(),
+    doReturn(new ArrayList<Message>()).when(service)
+        .sendMessage(any(IntegrationInstance.class), anyString(),
             anyListOf(String.class), anyString());
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
         + ", \"owner\": \"owner\", \"streams\": [ \"stream1\", \"stream2\"] }";
 
-    ConfigurationInstance instance = new ConfigurationInstance();
+    IntegrationInstance instance = new IntegrationInstance();
     instance.setConfigurationId("jirawebhook");
     instance.setInstanceId("1234");
     instance.setOptionalProperties(optionalProperties);
 
-    doReturn(instance).when(configService).getInstanceById(anyString(), anyString(), anyString());
+    doReturn(instance).when(integrationService).getInstanceById(anyString(), anyString(), anyString());
 
     mockWHI.handle(instance.getInstanceId(), INTEGRATION_USER,
         new WebHookPayload(Collections.<String, String>emptyMap(), Collections.<String, String>emptyMap(), "{ \"webhookEvent\": \"mock\" }"));
@@ -330,23 +328,23 @@ public class WebHookIntegrationTest extends MockKeystore {
   public void testHandleSocketException() throws WebHookParseException, IOException {
     ProcessingException exception = new ProcessingException(new ConnectException());
     doThrow(exception).when(service)
-        .sendMessage(any(ConfigurationInstance.class), anyString(),
+        .sendMessage(any(IntegrationInstance.class), anyString(),
             anyListOf(String.class), anyString());
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
         + ", \"owner\": \"owner\", \"streams\": [ \"stream1\", \"stream2\"] }";
 
-    ConfigurationInstance instance = new ConfigurationInstance();
+    IntegrationInstance instance = new IntegrationInstance();
     instance.setConfigurationId("jirawebhook");
     instance.setInstanceId("1234");
     instance.setOptionalProperties(optionalProperties);
 
-    V1Configuration configuration = mock(V1Configuration.class);
-    doReturn(true).when(configuration).getEnabled();
+    IntegrationSettings settings = mock(IntegrationSettings.class);
+    doReturn(true).when(settings).getEnabled();
 
-    doReturn(instance).when(configService).getInstanceById(anyString(), anyString(), anyString());
-    doReturn(configuration).when(configService).getConfigurationById(anyString(), anyString());
+    doReturn(instance).when(integrationService).getInstanceById(anyString(), anyString(), anyString());
+    doReturn(settings).when(integrationService).getIntegrationById(anyString(), anyString());
 
     mockWHI.handle("1234", INTEGRATION_USER,
         new WebHookPayload(Collections.<String, String>emptyMap(), Collections.<String, String>emptyMap(), "{ \"webhookEvent\": \"mock\" }"));
@@ -369,23 +367,23 @@ public class WebHookIntegrationTest extends MockKeystore {
   @Test(expected = StreamTypeNotFoundException.class)
   public void testWelcomeInvalidPayload() throws IOException {
     SendMessageAnswer answer = new SendMessageAnswer();
-    doAnswer(answer).when(service).sendMessage(any(ConfigurationInstance.class), anyString(),
+    doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
         anyListOf(String.class), anyString());
 
-    mockWHI.welcome(new ConfigurationInstance(), INTEGRATION_USER, "");
+    mockWHI.welcome(new IntegrationInstance(), INTEGRATION_USER, "");
   }
 
   @Test(expected = StreamTypeNotFoundException.class)
   public void testWelcomeEmptyPayload() throws IOException {
     SendMessageAnswer answer = new SendMessageAnswer();
-    doAnswer(answer).when(service).sendMessage(any(ConfigurationInstance.class), anyString(),
+    doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
         anyListOf(String.class), anyString());
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
         + ", \"owner\": \"owner\", \"streams\": [ \"stream1\", \"stream2\"] }";
 
-    ConfigurationInstance instance = new ConfigurationInstance();
+    IntegrationInstance instance = new IntegrationInstance();
     instance.setConfigurationId("jirawebhook");
     instance.setInstanceId("1234");
     instance.setOptionalProperties(optionalProperties);
@@ -396,14 +394,14 @@ public class WebHookIntegrationTest extends MockKeystore {
   @Test(expected = StreamTypeNotFoundException.class)
   public void testWelcomeInvalidStreams() throws IOException {
     SendMessageAnswer answer = new SendMessageAnswer();
-    doAnswer(answer).when(service).sendMessage(any(ConfigurationInstance.class), anyString(),
+    doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
         anyListOf(String.class), anyString());
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
         + ", \"owner\": \"owner\", \"streams\": [ \"stream1\", \"stream2\"] }";
 
-    ConfigurationInstance instance = new ConfigurationInstance();
+    IntegrationInstance instance = new IntegrationInstance();
     instance.setConfigurationId("jirawebhook");
     instance.setInstanceId("1234");
     instance.setOptionalProperties(optionalProperties);
@@ -414,14 +412,14 @@ public class WebHookIntegrationTest extends MockKeystore {
   @Test(expected = InvalidStreamTypeException.class)
   public void testWelcomeEmptyStreamType() throws IOException {
     SendMessageAnswer answer = new SendMessageAnswer();
-    doAnswer(answer).when(service).sendMessage(any(ConfigurationInstance.class), anyString(),
+    doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
         anyListOf(String.class), anyString());
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
         + ", \"owner\": \"owner\", \"streams\": [ \"stream1\", \"stream2\"] }";
 
-    ConfigurationInstance instance = new ConfigurationInstance();
+    IntegrationInstance instance = new IntegrationInstance();
     instance.setConfigurationId("jirawebhook");
     instance.setInstanceId("1234");
     instance.setOptionalProperties(optionalProperties);
@@ -432,7 +430,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   @Test
   public void testWelcomeIMStreamType() throws IOException {
     SendMessageAnswer answer = new SendMessageAnswer();
-    doAnswer(answer).when(service).sendMessage(any(ConfigurationInstance.class), anyString(),
+    doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
         anyListOf(String.class), anyString());
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
@@ -440,7 +438,7 @@ public class WebHookIntegrationTest extends MockKeystore {
         + ", \"owner\": \"owner\", \"streams\": [ \"stream1\", \"stream2\"], \"streamType\": "
         + "\"IM\" }";
 
-    ConfigurationInstance instance = new ConfigurationInstance();
+    IntegrationInstance instance = new IntegrationInstance();
     instance.setConfigurationId("jirawebhook");
     instance.setInstanceId("1234");
     instance.setOptionalProperties(optionalProperties);
@@ -455,7 +453,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   }
 
   @Test
-  public void testWelcomeChatroomStreamType() throws IOException, ApiException {
+  public void testWelcomeChatroomStreamType() throws IOException {
     User user = new User();
     user.setDisplayName("Test user");
 
@@ -463,7 +461,7 @@ public class WebHookIntegrationTest extends MockKeystore {
     when(userService.getUserByUserId(anyString(), eq(7890L))).thenReturn(user);
 
     SendMessageAnswer answer = new SendMessageAnswer();
-    doAnswer(answer).when(service).sendMessage(any(ConfigurationInstance.class), anyString(),
+    doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
         anyListOf(String.class), anyString());
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
@@ -471,7 +469,7 @@ public class WebHookIntegrationTest extends MockKeystore {
         + ", \"owner\": \"owner\", \"streams\": [ \"stream1\", \"stream2\"], \"streamType\": "
         + "\"CHATROOM\" }";
 
-    ConfigurationInstance instance = new ConfigurationInstance();
+    IntegrationInstance instance = new IntegrationInstance();
     instance.setConfigurationId("jirawebhook");
     instance.setInstanceId("1234");
     instance.setCreatorId("7890");
@@ -490,7 +488,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   @Test
   public void testWelcomeChatroomWithoutUserStreamType() throws IOException {
     SendMessageAnswer answer = new SendMessageAnswer();
-    doAnswer(answer).when(service).sendMessage(any(ConfigurationInstance.class), anyString(),
+    doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
         anyListOf(String.class), anyString());
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
@@ -498,7 +496,7 @@ public class WebHookIntegrationTest extends MockKeystore {
         + ", \"owner\": \"owner\", \"streams\": [ \"stream1\", \"stream2\"], \"streamType\": "
         + "\"CHATROOM\" }";
 
-    ConfigurationInstance instance = new ConfigurationInstance();
+    IntegrationInstance instance = new IntegrationInstance();
     instance.setConfigurationId("jirawebhook");
     instance.setInstanceId("1234");
     instance.setOptionalProperties(optionalProperties);
@@ -514,9 +512,9 @@ public class WebHookIntegrationTest extends MockKeystore {
 
   @Test(expected = WebHookDisabledException.class)
   public void testUnavailable() {
-    configuration.setEnabled(false);
+    settings.setEnabled(false);
 
-    doReturn(configuration).when(configService).getConfigurationById(CONFIGURATION_ID, INTEGRATION_USER);
+    doReturn(settings).when(integrationService).getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
     doReturn(IntegrationFlags.ValueEnum.NOK).when(configuratorFlagsCache).getUnchecked(INTEGRATION_USER);
 
     mockWHI.isAvailable();
@@ -524,8 +522,8 @@ public class WebHookIntegrationTest extends MockKeystore {
 
   @Test(expected = WebHookUnavailableException.class)
   public void testUnavailableForbidden() {
-    doThrow(ForbiddenUserException.class).when(configService)
-        .getConfigurationById(CONFIGURATION_ID, INTEGRATION_USER);
+    doThrow(ForbiddenUserException.class).when(integrationService)
+        .getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
     doReturn(IntegrationFlags.ValueEnum.NOK).when(configuratorFlagsCache).getUnchecked
         (INTEGRATION_USER);
 
@@ -534,7 +532,7 @@ public class WebHookIntegrationTest extends MockKeystore {
 
   @Test
   public void testAvailable() {
-    doReturn(configuration).when(configService).getConfigurationById(CONFIGURATION_ID, INTEGRATION_USER);
+    doReturn(settings).when(integrationService).getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
     assertTrue(mockWHI.isAvailable());
   }
 
@@ -555,7 +553,7 @@ public class WebHookIntegrationTest extends MockKeystore {
     assertTrue(integrationWhiteList.isEmpty());
   }
 
-  public static final class SendMessageAnswer implements Answer<V2MessageList> {
+  public static final class SendMessageAnswer implements Answer<List<Message>> {
 
     private String message;
 
@@ -563,11 +561,11 @@ public class WebHookIntegrationTest extends MockKeystore {
 
     @Override
     @SuppressWarnings("unchecked")
-    public V2MessageList answer(InvocationOnMock invocationOnMock) throws Throwable {
+    public List<Message> answer(InvocationOnMock invocationOnMock) throws Throwable {
       List<String> streams = (List<String>) invocationOnMock.getArguments()[2];
       this.message = (String) invocationOnMock.getArguments()[3];
       this.count = streams.size();
-      return new V2MessageList();
+      return new ArrayList<>();
     }
 
     public String getMessage() {
@@ -584,7 +582,7 @@ public class WebHookIntegrationTest extends MockKeystore {
 
     @Override
     public StreamType answer(InvocationOnMock invocationOnMock) throws Throwable {
-      ConfigurationInstance instance = (ConfigurationInstance) invocationOnMock.getArguments()[0];
+      IntegrationInstance instance = (IntegrationInstance) invocationOnMock.getArguments()[0];
       return WebHookConfigurationUtils.getStreamType(instance.getOptionalProperties());
     }
 
@@ -597,8 +595,8 @@ public class WebHookIntegrationTest extends MockKeystore {
       String optionalProperties;
       Object firstParam = invocationOnMock.getArguments()[0];
 
-      if (firstParam instanceof ConfigurationInstance) {
-        ConfigurationInstance instance = (ConfigurationInstance) firstParam;
+      if (firstParam instanceof IntegrationInstance) {
+        IntegrationInstance instance = (IntegrationInstance) firstParam;
         optionalProperties = instance.getOptionalProperties();
       } else {
         optionalProperties = (String) firstParam;

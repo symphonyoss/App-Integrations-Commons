@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.symphonyoss.integration.model.config.StreamType;
+import org.symphonyoss.integration.model.stream.StreamType;
 
 import java.io.IOException;
 import java.util.ArrayList;

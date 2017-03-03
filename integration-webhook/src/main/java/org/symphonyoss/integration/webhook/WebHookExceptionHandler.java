@@ -16,10 +16,9 @@
 
 package org.symphonyoss.integration.webhook;
 
-import com.symphony.api.auth.client.ApiException;
-
 import org.springframework.stereotype.Component;
 import org.symphonyoss.integration.exception.ExceptionHandler;
+import org.symphonyoss.integration.exception.RemoteApiException;
 import org.symphonyoss.integration.exception.authentication.ForbiddenAuthException;
 import org.symphonyoss.integration.exception.authentication.UnauthorizedUserException;
 import org.symphonyoss.integration.exception.authentication.UnexpectedAuthException;
@@ -31,7 +30,7 @@ import org.symphonyoss.integration.exception.bootstrap.RetryLifecycleException;
 @Component
 public class WebHookExceptionHandler extends ExceptionHandler {
 
-  public void handleAuthenticationApiException(String user, ApiException e) {
+  public void handleAuthenticationApiException(String user, RemoteApiException e) {
     int code = e.getCode();
     if (unauthorizedError(code)) {
       throw new UnauthorizedUserException("Certificate authentication is unauthorized for the requested user", e);

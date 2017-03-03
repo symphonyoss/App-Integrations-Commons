@@ -22,8 +22,6 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-import com.symphony.api.pod.model.V1Configuration;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -108,10 +106,8 @@ public class IntegrationHealthManagerTest {
   public void testSuccessInvalid() {
     testFailBootstrap();
 
-    V1Configuration configuration = new V1Configuration();
-    configuration.setType(INTEGRATION_NAME);
-
-    IntegrationSettings settings = new IntegrationSettings(configuration);
+    IntegrationSettings settings = new IntegrationSettings();
+    settings.setType(INTEGRATION_NAME);
 
     healthManager.success(settings);
 
@@ -123,10 +119,8 @@ public class IntegrationHealthManagerTest {
 
   @Test
   public void testSuccess() {
-    V1Configuration configuration = new V1Configuration();
-    configuration.setType(INTEGRATION_NAME);
-
-    IntegrationSettings settings = new IntegrationSettings(configuration);
+    IntegrationSettings settings = new IntegrationSettings();
+    settings.setType(INTEGRATION_NAME);
 
     healthManager.setVersion(MOCK_VERSION);
     healthManager.success(settings);

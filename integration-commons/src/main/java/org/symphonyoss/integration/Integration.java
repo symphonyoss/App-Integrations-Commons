@@ -16,8 +16,6 @@
 
 package org.symphonyoss.integration;
 
-import com.symphony.api.pod.model.V1Configuration;
-
 import org.symphonyoss.integration.model.config.IntegrationSettings;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
 
@@ -39,9 +37,9 @@ public interface Integration {
 
   /**
    * Performs the necessary internal changes based on a Configuration update.
-   * @param conf the Configuration incoming from Symphony.
+   * @param settings the settings incoming from Symphony.
    */
-  void onConfigChange(V1Configuration conf);
+  void onConfigChange(IntegrationSettings settings);
 
   /**
    * Everything that needs to be executed when an Integration is being shutdown.

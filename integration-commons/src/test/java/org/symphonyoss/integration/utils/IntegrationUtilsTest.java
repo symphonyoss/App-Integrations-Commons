@@ -19,8 +19,8 @@ package org.symphonyoss.integration.utils;
 import static org.junit.Assert.assertEquals;
 import static org.symphonyoss.integration.utils.IntegrationUtils.CERTS_DIR;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.symphonyoss.integration.exception.bootstrap.CertificateNotFoundException;
 
 import java.io.File;
@@ -49,17 +49,18 @@ public class IntegrationUtilsTest {
 
   @Test
   public void testValidPath() throws IOException {
-    String tmpDir = System.getProperty("java.io.tmpdir");
-    Path certsPath = Paths.get(tmpDir).resolve(CERTS_DIR);
+    TemporaryFolder tmpDir = new TemporaryFolder();
+    tmpDir.create();
+    String tempPath = tmpDir.getRoot().getPath();
+
+    Path certsPath = Paths.get(tempPath).resolve(CERTS_DIR);
 
     Files.createDirectories(certsPath);
 
     IntegrationUtils utils = new IntegrationUtils(certsPath.toAbsolutePath().toString());
     String result = utils.getCertsDirectory();
 
-    FileUtils.deleteDirectory(certsPath.toFile());
-
-    String expected = tmpDir + File.separator + CERTS_DIR + File.separator;
+    String expected = tempPath + File.separator + CERTS_DIR + File.separator;
     assertEquals(expected, result);
   }
 }

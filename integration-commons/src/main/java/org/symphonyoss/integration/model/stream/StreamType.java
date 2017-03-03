@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration.model.config;
+package org.symphonyoss.integration.model.stream;
 
 /**
  * Types of stream.
