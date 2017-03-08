@@ -16,17 +16,11 @@
 
 package org.symphonyoss.integration.entity;
 
-import com.symphony.messageml.InvalidInputException;
-import com.symphony.messageml.MessageMLContext;
-import com.symphony.messageml.MessageMLVersion;
-import com.symphony.messageml.ProcessingException;
-
 import org.springframework.stereotype.Component;
 import org.symphonyoss.integration.parser.ParserUtils;
 
 import java.io.StringReader;
 
-import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -40,31 +34,6 @@ import javax.xml.bind.Unmarshaller;
  */
 @Component
 public class MessageMLParser {
-
-  private MessageMLContext messageMLContext;
-
-  @PostConstruct
-  public void init() {
-    this.messageMLContext = new MessageMLContext(MessageMLVersion.MessageML_V2, true, true);
-  }
-
-
-  /**
-   * Validates the body of the messageML using {@link com.symphony.messageml.MessageML} to parse.
-   * @param body MessageML content
-   * @return String messageML
-   * @throws MessageMLParseException
-   */
-  public String validate(String body) throws MessageMLParseException {
-    try {
-      // Parses the messageML to make sure it is properly formed.
-      com.symphony.messageml.MessageML.parseMessageML(messageMLContext, body);
-      // Body is returned as provided in the input
-      return body;
-    } catch (InvalidInputException | ProcessingException e) {
-      throw new MessageMLParseException(e.getMessage(), e);
-    }
-  }
 
   /**
    * Parses an String XML to an {@link MessageML}

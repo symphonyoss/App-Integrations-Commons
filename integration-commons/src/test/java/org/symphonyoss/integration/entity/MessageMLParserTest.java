@@ -16,18 +16,13 @@
 
 package org.symphonyoss.integration.entity;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.symphonyoss.integration.exception.EntityXMLGeneratorException;
 
 import javax.xml.bind.JAXBException;
-
-;
 
 /**
  * Unit tests for {@link MessageMLParserTest}
@@ -36,23 +31,6 @@ import javax.xml.bind.JAXBException;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class MessageMLParserTest {
-
-  private static final String INVALID_MESSAGEML = "<messageML><mention email=\"rsanchez@symphony"
-      + ".com\"/> created SAM-25 (<a href=\"https://whiteam1.atlassian.net/browse/SAM-25\"/>) "
-      + "(<b>Highest Story in Sample 1 with labels &quot;production&quot;)<br>Description: Issue "
-      + "Test<br>Assignee: <mention email=\"rsanchez@symphony.com\"/></messageML>";
-  private static final String VALID_MESSAGEML = "<messageML><mention email=\"rsanchez@symphony"
-      + ".com\"/> created SAM-25 (<a href=\"https://whiteam1.atlassian.net/browse/SAM-25\"/>) "
-      + "(<b>Highest</b> Story in Sample 1 with labels &quot;production&quot;)<br/>Description: "
-      + "Issue "
-      + "Test<br/>Assignee: <mention email=\"rsanchez@symphony.com\"/></messageML>";
-
-  private MessageMLParser parser = new MessageMLParser();
-
-  @Before
-  public void setup() {
-    this.parser.init();
-  }
 
   @Test
   public void testParse() throws JAXBException, EntityXMLGeneratorException {
@@ -111,22 +89,6 @@ public class MessageMLParserTest {
   public void testParseWithoutEntity() throws JAXBException, EntityXMLGeneratorException {
     String xml = "<messageML>simple message</messageML>";
     MessageMLParser.parse(xml);
-  }
-
-  @Test(expected = MessageMLParseException.class)
-  public void testNullBody() {
-    parser.validate(null);
-  }
-
-  @Test(expected = MessageMLParseException.class)
-  public void testInvalidBody() {
-    parser.validate(INVALID_MESSAGEML);
-  }
-
-  @Test
-  public void testValidBody() {
-    String result = parser.validate(VALID_MESSAGEML);
-    assertEquals(VALID_MESSAGEML, result);
   }
 
 }

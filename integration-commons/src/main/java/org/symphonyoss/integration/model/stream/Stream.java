@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration.model;
-
-import org.symphonyoss.integration.model.yaml.Keystore;
+package org.symphonyoss.integration.model.stream;
 
 /**
- * Default application keystore.
- * Created by rsanchez on 27/12/16.
+ * Represents a stream.
+ * Created by rsanchez on 20/02/17.
  */
-public class DefaultAppKeystore extends Keystore {
+public class Stream {
 
-  private String appId;
+  private String id;
 
-  public DefaultAppKeystore(String appId) {
-    this.appId = appId;
+  public String getId() {
+    return id;
   }
 
-  @Override
-  public String getFile() {
-    return appId + DEFAULT_KEYSTORE_TYPE_SUFFIX;
+  public void setId(String id) {
+    this.id = id;
   }
-
 }

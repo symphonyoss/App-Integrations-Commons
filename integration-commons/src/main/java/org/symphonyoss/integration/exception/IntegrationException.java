@@ -28,6 +28,15 @@ package org.symphonyoss.integration.exception;
 public class IntegrationException extends Exception {
 
   /**
+   * Constructs a new IntegrationException with the component name and the specified detail message.
+   * @param component The component where the exception was thrown.
+   * @param message The message why the exceptions happened.
+   */
+  public IntegrationException(String component, String message) {
+    super(ExceptionMessageFormatter.format(component, message));
+  }
+
+  /**
    * Constructs a new IntegrationException with the component name, the specified detail message and
    * cause.
    * @param component The component where the exception was thrown.
