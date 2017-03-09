@@ -15,8 +15,8 @@
     <version>0.9.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <description>Core components for Symphony App Integrations</description>
-    <url>https://github.com/symphonyoss/App-Integrations-Core</url>
+    <description>Common components for Symphony App Integrations</description>
+    <url>https://github.com/symphonyoss/App-Integrations-Commons</url>
 
     <licenses>
       <license>
