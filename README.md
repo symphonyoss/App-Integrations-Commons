@@ -1,5 +1,3 @@
-_Note that this project depends on internal Symphony infrastructure (repository.symphony.com), and therefore it can only be built by Symphony LLC employees/partners._
-
 # Integrations Commons Documentation
 
 This document provides a brief overview of Integration Commons components and how to build them from scratch.
@@ -20,7 +18,7 @@ Example:
     <parent>
         <artifactId>integration-parent</artifactId>
         <groupId>org.symphonyoss</groupId>
-        <version>1.45.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -52,6 +50,6 @@ Integration Commons is compatible with Apache Maven 3.0.5 or above. If you donâ€
 
 To start from scratch, do the following:
 
-1. Clone the source repository using Git: `git clone https://github.com/SymphonyOSF/App-Integrations-Commons.git`
+1. Clone the source repository using Git: `git clone git@github.com:symphonyoss/App-Integrations-Commons.git`
 2. cd into _App-Integrations-Commons_
 3. Build using maven: `mvn clean install`

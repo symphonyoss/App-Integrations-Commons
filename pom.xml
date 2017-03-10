@@ -5,18 +5,35 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.1.RELEASE</version>
+        <groupId>org.symphonyoss</groupId>
+        <artifactId>symphonyoss</artifactId>
+        <version>3</version>
     </parent>
 
     <groupId>org.symphonyoss</groupId>
     <artifactId>integration-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+
+    <description>Common components for Symphony App Integrations</description>
+    <url>https://github.com/symphonyoss/App-Integrations-Commons</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
                 <artifactId>jersey-client</artifactId>
@@ -154,9 +171,10 @@
 
         <build.helper.plugin.version>1.12</build.helper.plugin.version>
         <build.number.plugin.version>1.4</build.number.plugin.version>
-        <java.version>1.7</java.version>
         <compiler.plugin.version>3.6.0</compiler.plugin.version>
         <surefire.plugin.version>2.19.1</surefire.plugin.version>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
         <jar.plugin.version>3.0.2</jar.plugin.version>
         <rpm.plugin.version>2.1.5</rpm.plugin.version>
         <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
@@ -476,9 +494,9 @@
     </ciManagement>
 
     <scm>
-        <connection>scm:git:https://github.com/SymphonyOSF/Integration</connection>
-        <developerConnection>scm:git:https://github.com/SymphonyOSF/Integration/</developerConnection>
-        <url>scm:git:https://github.com/SymphonyOSF/Integration</url>
+        <connection>scm:git:git@github.com:symphonyoss/App-Integrations-Commons.git</connection>
+        <developerConnection>scm:git:git@github.com:symphonyoss/App-Integrations-Commons.git</developerConnection>
+        <url>https://github.com/symphonyoss/App-Integrations-Commons</url>
     </scm>
 
     <profiles>
@@ -589,40 +607,5 @@
             </build>
         </profile>
     </profiles>
-
-    <repositories>
-        <repository>
-            <id>symphony</id>
-            <name>symphony releases</name>
-            <url>https://repo.symphony.com/artifactory/libs-release</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>snapshots</id>
-            <url>https://repo.symphony.com/artifactory/libs-snapshot</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>symphony</id>
-            <name>plugins-release</name>
-            <url>https://repo.symphony.com/artifactory/plugins-release</url>
-        </pluginRepository>
-        <pluginRepository>
-            <snapshots/>
-            <id>snapshots</id>
-            <name>plugins-snapshot</name>
-            <url>https://repo.symphony.com/artifactory/plugins-snapshot</url>
-        </pluginRepository>
-    </pluginRepositories>
 
 </project>
