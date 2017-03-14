@@ -1,25 +1,18 @@
 import { connect } from 'react-redux';
 import {
-  fetchUserRooms,
-  fetchUserRoomsSuccess,
-  setError,
-} from '../../../actions/actions';
+  addStreamToInstance,
+  removeStreamFromInstance,
+} from '../../../actions/';
 
 import SuggestionsRooms from './SuggestionsRooms';
 
 const mapStateToProps = state => ({
   userRooms: state.userRooms,
-  loading: state.loading,
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchUserRooms: () => {
-    dispatch(fetchUserRooms()).then((rooms) => {
-      dispatch(fetchUserRoomsSuccess(rooms));
-    }, (error) => {
-      setError(error);
-    });
-  },
+  addStreamToInstance: (stream) => { dispatch(addStreamToInstance(stream)); },
+  removeStreamFromInstance: (stream) => { dispatch(removeStreamFromInstance(stream)); },
 });
 
 const SuggestionsRoomsContainer = connect(

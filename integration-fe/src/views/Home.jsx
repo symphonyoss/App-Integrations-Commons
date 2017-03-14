@@ -1,7 +1,7 @@
 import React from 'react';
+import IntegrationHeader from '../components/IntegrationHeader/IntegrationHeader';
 import TableInstanceContainer from '../containers/TableInstanceContainer';
 import SetupInstructions from '../components/SetupInstructions/SetupInstructions';
-import IntegrationHeader from '../components/IntegrationHeader/IntegrationHeader';
 import ConfigureNew from '../components/ConfigureNew/ConfigureNew';
 
 const Home = () => (

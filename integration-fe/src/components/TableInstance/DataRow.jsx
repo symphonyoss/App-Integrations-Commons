@@ -46,7 +46,7 @@ class DataRow extends Component {
     return (
       <tr>
         <td>
-          <span>{this.props.instance.description}</span>
+          <span>{this.props.instance.name}</span>
         </td>
         <td>
           {
@@ -102,12 +102,11 @@ class DataRow extends Component {
       </tr>
     );
   }
-
 }
 
 DataRow.propTypes = {
   instance: PropTypes.shape({
-    description: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     appName: PropTypes.string.isRequired,
     streamType: PropTypes.string.isRequired,
     instanceId: PropTypes.string.isRequired,
