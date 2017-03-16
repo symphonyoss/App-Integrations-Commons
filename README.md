@@ -18,7 +18,7 @@ Example:
     <parent>
         <artifactId>integration-parent</artifactId>
         <groupId>org.symphonyoss</groupId>
-        <version>1.0.0</version>
+        <version>0.10.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -26,7 +26,7 @@ Example:
 
     <dependencies>
         <dependency>
-            <groupId>org.symphonyoss</groupId>
+            <groupId>org.symphonyoss.symphony.integrations</groupId>
             <artifactId>integration-webhook</artifactId>
             <version>${project.version}</version>
         </dependency>

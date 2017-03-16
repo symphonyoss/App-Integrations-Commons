@@ -25,6 +25,17 @@
         </license>
     </licenses>
 
+    <repositories>
+        <repository>
+            <id>oss-sonatype</id>
+            <name>oss-sonatype</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -621,7 +632,6 @@
                 </plugins>
             </build>
         </profile>
-
         <profile>
             <id>webapp</id>
             <activation>
@@ -721,6 +731,68 @@
                 </plugins>
             </build>
         </profile>
-    </profiles>
+        <profile>
+            <id>run</id>
+            <build>
+                <finalName>integration</finalName>
+                <plugins>
+                    <plugin>
+                      <groupId>org.apache.maven.plugins</groupId>
+                      <artifactId>maven-shade-plugin</artifactId>
+                      <version>3.0.0</version>
+                      <configuration>
+                          <createDependencyReducedPom>false</createDependencyReducedPom>
+                          <artifactSet>
+                              <includes>
+                                  <include>org.symphonyoss.symphony.integrations:integration-web</include>
+                              </includes>
+                              <excludes>
+                                  <exclude>org.springframework.boot:*</exclude>
+                                  <exclude>org.symphonyoss.symphony.integrations:integration-webhook</exclude>
+                              </excludes>
+                          </artifactSet>
+                      </configuration>
+                      <executions>
+                        <execution>
+                          <phase>package</phase>
+                          <goals>
+                            <goal>shade</goal>
+                          </goals>
+                        </execution>
+                      </executions>
+                    </plugin>
 
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <version>${spring.boot.version}</version>
+                        <configuration>
+                            <layout>ZIP</layout>
+                            <mainClass>org.symphonyoss.integration.web.IntegrationBridgeApplication</mainClass>
+                            <excludes>
+                                <exclude>
+                                    <groupId>org.symphonyoss.symphony.integrations</groupId>
+                                    <artifactId>integration-web</artifactId>
+                                </exclude>
+                            </excludes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>repackage</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.symphonyoss.symphony.integrations</groupId>
+                    <artifactId>integration-web</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>
