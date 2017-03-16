@@ -616,7 +616,16 @@
                       <artifactId>maven-shade-plugin</artifactId>
                       <version>3.0.0</version>
                       <configuration>
-                        <createDependencyReducedPom>false</createDependencyReducedPom>
+                          <createDependencyReducedPom>false</createDependencyReducedPom>
+                          <artifactSet>
+                              <includes>
+                                  <include>org.symphonyoss.symphony.integrations:integration-web</include>
+                              </includes>
+                              <excludes>
+                                  <exclude>org.springframework.boot:*</exclude>
+                                  <exclude>org.symphonyoss.symphony.integrations:integration-webhook</exclude>
+                              </excludes>
+                          </artifactSet>
                       </configuration>
                       <executions>
                         <execution>
@@ -635,12 +644,12 @@
                         <configuration>
                             <layout>ZIP</layout>
                             <mainClass>org.symphonyoss.integration.web.IntegrationBridgeApplication</mainClass>
-                            <includes>
-                              <include>
-                                <groupId>org.symphonyoss</groupId>
-                                <artifactId>integration-web</artifactId>
-                              </include>
-                            </includes>
+                            <excludes>
+                                <exclude>
+                                    <groupId>org.symphonyoss.symphony.integrations</groupId>
+                                    <artifactId>integration-web</artifactId>
+                                </exclude>
+                            </excludes>
                         </configuration>
                         <executions>
                             <execution>
@@ -655,28 +664,9 @@
 
             <dependencies>
                 <dependency>
-                    <groupId>org.symphonyoss</groupId>
+                    <groupId>org.symphonyoss.symphony.integrations</groupId>
                     <artifactId>integration-web</artifactId>
                     <version>${project.version}</version>
-                    <!--
-                    TODO - would be better if integration-web defined optional deps; see more on
-                    https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html
-                    -->
-                    <exclusions>
-                        <exclusion>
-                            <groupId>*</groupId>
-                            <artifactId>*</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-                <dependency>
-                    <groupId>org.symphonyoss</groupId>
-                    <artifactId>integration-core</artifactId>
-                    <version>${project.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-web</artifactId>
                 </dependency>
             </dependencies>
         </profile>
