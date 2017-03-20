@@ -218,6 +218,10 @@
         <rpm.deployment.user>ibridge</rpm.deployment.user>
         <rpm.deployment.filemode>755</rpm.deployment.filemode>
         <rpm.type>single</rpm.type>
+
+        <!-- NPM properties -->
+        <npm.verbose></npm.verbose>
+
     </properties>
 
     <!-- Build Settings -->
@@ -662,7 +666,7 @@
                                     <executable>npm</executable>
                                     <arguments>
                                         <argument>install</argument>
-                                        <argument>--verbose</argument>
+                                        <argument>${npm.verbose}</argument>
                                     </arguments>
                                     <workingDirectory>${project.basedir}/src/main/webapp</workingDirectory>
                                 </configuration>
