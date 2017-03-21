@@ -8,3 +8,6 @@ target/
 #integration-fe
 /integration-fe/node_modules/
 
+# NPM
+integration-commons/src/main/webapp/node_modules
+
