@@ -185,6 +185,7 @@ public class EntityBuilder {
    * @return <attribute name="name" type="org.symphonyoss.string" value="value"/>
    */
   public EntityBuilder attribute(String name, SafeString value) {
+    value.replaceLineBreaks();
     String formatted = ParserUtils.markupLinks(value.toString());
     Attribute attr = new Attribute(name, "org.symphonyoss.string", formatted);
     this.entity.addAttribute(attr);
