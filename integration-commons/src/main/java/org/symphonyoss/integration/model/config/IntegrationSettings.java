@@ -36,6 +36,8 @@ public class IntegrationSettings {
 
   private Long owner;
 
+  private Boolean active;
+
   public String getConfigurationId() {
     return configurationId;
   }
@@ -90,5 +92,13 @@ public class IntegrationSettings {
 
   public void setOwner(Long owner) {
     this.owner = owner;
+  }
+
+  public Boolean getActive() {
+    return active;
+  }
+
+  public void setActive(Boolean active) {
+    this.active = active;
   }
 }
