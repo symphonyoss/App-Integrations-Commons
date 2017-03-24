@@ -24,7 +24,7 @@ sudo: required
 dist: trusty
 language: node_js
 node_js:
-  - "6.10"
+  - "6.10"  
 
 addons:
   apt:
@@ -40,7 +40,7 @@ script:
 # Validate npmjs licenses
 - "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ dev ]]; then pushd integration-commons/src/main/webapp ; npm run license-check ; popd ; fi"
 # Deploy to oss.sonatype.org
-- "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ dev ]]; then mvn clean deploy -Pversioneye --settings settings.xml ; fi"
+- "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ dev ]]; then mvn clean deploy --settings settings.xml ; fi"
 - "if [[ \"$TRAVIS_PULL_REQUEST\" != \"false\" ]]; then mvn clean install ; fi"
 
 # Deploy to npmjs.org using semantic-release; make sure that NPM_TOKEN and GH_TOKEN are set on Travis settings
