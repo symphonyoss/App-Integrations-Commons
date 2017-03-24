@@ -1,0 +1,39 @@
+@import '../../../styles/lib.less';
+
+.posting-location {
+  max-width: @max-width-component;
+  
+  .radio-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding-top: 0.3125rem;
+    
+    .radio {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: flex-start;
+      width: 100%;
+      margin-bottom: 0.75rem;
+      
+      input {
+        width: 1.25rem;
+        margin: 0 0.3125rem 0 0;
+      }
+
+      .chat-room-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: flex-start;
+
+        p {
+          font-size: 0.8125rem;
+          padding-top: 0.1875rem;
+        }
+      }
+    }
+  }
+}
