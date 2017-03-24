@@ -14,14 +14,14 @@ const InputDescription = props => (
       id="input-description"
       placeholder="Add a short description here"
       onChange={e => props.handleChange(e.target.value)}
-      defaultValue={props.description}
+      defaultValue={props.name}
       autoFocus
     />
   </div>
 );
 
 InputDescription.propTypes = {
-  description: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
   handleChange: PropTypes.func.isRequired,
 };
 

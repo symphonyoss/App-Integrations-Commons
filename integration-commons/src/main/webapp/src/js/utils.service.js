@@ -1,4 +1,3 @@
-/* eslint-disable no-console*/
 export const Utils = (function utils() {
   const pub = {};
   const userRooms = [];
@@ -41,8 +40,8 @@ export const Utils = (function utils() {
       if (obj) {
         op = JSON.parse(rawInstanceList[obj].optionalProperties);
         instances.push({
-          description: rawInstanceList[obj].name,
           instanceId: rawInstanceList[obj].instanceId,
+          name: rawInstanceList[obj].name,
           lastPosted: op.lastPostedDate ? timestampToDate(op.lastPostedDate) : 'not available',
           created: rawInstanceList[obj].createdDate ?
             timestampToDate(rawInstanceList[obj].createdDate) : 'not available',
@@ -93,10 +92,8 @@ export const Utils = (function utils() {
         }
       }
       instance.notPostingLocationRooms = aux.slice();
-      // instance.notPostingLocationRooms.concat(aux.slice());
       return instance;
     });
-
     return instances;
   };
 
@@ -106,7 +103,14 @@ export const Utils = (function utils() {
     for (const obj in rooms) {
       if (rooms[obj].userIsOwner) {
         rooms[obj].threadId = rooms[obj].threadId.replace(regExp, '_').replace('==', '');
-        userRooms.push(rooms[obj]);
+        userRooms.push({
+          threadId: rooms[obj].threadId,
+          name: rooms[obj].name,
+          creatorPrettyName: rooms[obj].creatorPrettyName,
+          memberCount: rooms[obj].memberCount,
+          publicRoom: rooms[obj].publicRoom,
+          streamType: rooms[obj].roomType,
+        });
       }
     }
     return userRooms;

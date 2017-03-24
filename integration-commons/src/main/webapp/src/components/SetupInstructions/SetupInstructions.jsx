@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import config from '../../js/config.service';
+import '../../styles/main.less';
 import './styles/styles.less';
 import Content from './template';
 

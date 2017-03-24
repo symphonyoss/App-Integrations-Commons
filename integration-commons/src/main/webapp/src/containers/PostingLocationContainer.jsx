@@ -1,15 +1,15 @@
 import { connect } from 'react-redux';
 import {
-  switchStreamType,
-} from '../actions/actions';
+  changeStreamType,
+} from '../actions/';
 import PostingLocation from '../components/PostingLocation/PostingLocation';
 
 const mapStateToProps = state => ({
-  streamType: state.streamType,
+  streamType: state.instance.streamType,
 });
 
 const mapDispatchToProps = dispatch => ({
-  switchStreamType: (st) => { dispatch(switchStreamType(st)); },
+  switchStreamType: st => dispatch(changeStreamType(st)),
 });
 
 const PostingLocationContainer = connect(

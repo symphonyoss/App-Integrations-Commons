@@ -1,23 +1,26 @@
-import { createStore, applyMiddleware, compose } from 'redux';
-import promise from 'redux-promise';
-import reducer from '../reducers/reducers';
+/* eslint-disable no-debugger */
+import createSagaMiddleware from 'redux-saga';
+import { createStore, compose, applyMiddleware } from 'redux';
+import rootReducer from '../reducers';
+import rootSaga from '../sagas';
 
+const sagaMiddleware = createSagaMiddleware();
 
 export default function configureStore(initialState) {
-  const finalCreateStore = compose(
-    applyMiddleware(promise),
+  // add support for Redux dev tools
+  const store = createStore(rootReducer, initialState, compose(
+    applyMiddleware(sagaMiddleware),
     window.devToolsExtension ? window.devToolsExtension() : f => f
-  )(createStore);
-
-  const store = finalCreateStore(reducer, initialState);
+  )
+  );
+  sagaMiddleware.run(rootSaga);
 
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
     module.hot.accept('../reducers', () => {
-      const nextReducer = require('../reducers');
+      const nextReducer = require('../reducers').default; // eslint-disable-line global-require
       store.replaceReducer(nextReducer);
     });
   }
-
   return store;
 }

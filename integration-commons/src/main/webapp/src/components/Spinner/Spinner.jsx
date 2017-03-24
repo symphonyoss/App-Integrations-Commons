@@ -5,13 +5,12 @@ import './styles/styles.less';
 export const Spinner = props => (
   <div className={props.loading ? 'spinner' : 'spinner spinner-opacity-0'}>
     <i className="fa fa-circle-o-notch fa-spin" />
-    <p>{props.loadingMessage}</p>
+    <p>Loading...</p>
   </div>
 );
 
 Spinner.propTypes = {
   loading: PropTypes.bool.isRequired,
-  loadingMessage: PropTypes.string.isRequired,
 };
 
 export default Spinner;

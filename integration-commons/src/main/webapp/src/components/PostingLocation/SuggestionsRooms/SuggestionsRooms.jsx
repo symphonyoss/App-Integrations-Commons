@@ -28,23 +28,15 @@ export class SuggestionsRooms extends Component {
   }
 
   componentWillMount() {
-    if (this.props.userRooms.length === 0) {
-      this.props.fetchUserRooms();
-    }
+    const _suggestions = this.props.userRooms.slice();
+    this.sort(_suggestions, 'name');
+    this.setState({
+      suggestionsList: _suggestions,
+    });
   }
 
   componentDidMount() {
-    const tmr = setInterval(() => {
-      if (!this.props.loading) {
-        clearInterval(tmr);
-        const _suggestions = this.props.userRooms.slice();
-        this.sort(_suggestions, 'name');
-        this.setState({
-          suggestionsList: _suggestions,
-        });
-        this.input.focus();
-      }
-    }, 500);
+    this.input.focus();
   }
 
   onChangeSearch(e) {
@@ -170,6 +162,8 @@ export class SuggestionsRooms extends Component {
       filters: this.state.filters.concat([filter]),
       suggestionsList: suggestions.slice(),
     });
+
+    this.props.addStreamToInstance(filter.threadId);
     this.input.value = '';
     this.input.focus();
   }
@@ -192,6 +186,8 @@ export class SuggestionsRooms extends Component {
       suggestionsList: _suggestions.slice(),
       filters: _filters.slice(),
     });
+
+    this.props.removeStreamFromInstance(_id);
   }
 
   sort(_obj, key) {
@@ -210,7 +206,8 @@ export class SuggestionsRooms extends Component {
             type='text'
             onChange={this.onChangeSearch}
             ref={(input) => { this.input = input; }}
-            placeholder={this.props.loading ? 'Loading...' : 'Search rooms'}
+            // placeholder={this.props.loading ? 'Loading...' : 'Search rooms'}
+            placeholder='Search rooms'
           />
           <button onClick={this.clearInput}>
             <i className='fa fa-times' />
@@ -266,9 +263,9 @@ export class SuggestionsRooms extends Component {
 }
 
 SuggestionsRooms.propTypes = {
-  fetchUserRooms: PropTypes.func.isRequired,
+  addStreamToInstance: PropTypes.func.isRequired,
+  removeStreamFromInstance: PropTypes.func.isRequired,
   userRooms: PropTypes.arrayOf(PropTypes.object).isRequired,
-  loading: PropTypes.bool.isRequired,
 };
 
 export default SuggestionsRooms;
