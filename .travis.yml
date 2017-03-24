@@ -35,6 +35,7 @@ addons:
 
 before_script:
 - npm install -g node-license-validator
+- npm install -g semantic-release
 
 script:
 # Validate npmjs licenses
