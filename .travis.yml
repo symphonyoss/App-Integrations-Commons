@@ -31,7 +31,7 @@ script:
 - "if [[ \"$TRAVIS_PULL_REQUEST\" != \"false\" ]]; then mvn clean install ; fi"
 
 # Deploy to npmjs.org using semantic-release; make sure that NPM_TOKEN and GH_TOKEN are set on Travis settings
-after_success: "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ dev ]]; then pushd src/main/webapp ; npm run semantic-release ; popd ; fi"
+after_success: "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ dev ]]; then pushd integration-commons/src/main/webapp ; npm run semantic-release ; popd ; fi"
 
 jdk:
   - oraclejdk8
