@@ -1,7 +1,7 @@
 {
   "name": "symphony-integration-commons",
   "version": "0.8.0",
-  "description": "Commons components for 3rd party applications",
+  "description": "Common components for 3rd party developers build the user facing application for Symphony Integrations.",
   "main": "index.js",
   "scripts": {
     "test": "jest",
