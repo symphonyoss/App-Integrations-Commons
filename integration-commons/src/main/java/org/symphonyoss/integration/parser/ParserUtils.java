@@ -142,6 +142,11 @@ public final class ParserUtils {
         if (args[i] instanceof String) {
           // Escapes plain text to make sure markups will not be interpreted
           formattedObjects[i] = escapeAndAddLineBreaks((String) args[i]);
+        } else if (args[i] instanceof SafeString) {
+          // Replace line-breaks on the safe string
+          SafeString safeString = (SafeString) args[i];
+          safeString.replaceLineBreaks();
+          formattedObjects[i] = safeString;
         } else if (args[i] instanceof URI) {
           // Add markups on URI's, leaving them unescaped, so that they can be interpreted
           if (args[i] != null) {
