@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import './styles/styles.less';
@@ -16,7 +15,6 @@ class MessageBox extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props !== nextProps) {
-      // debugger;
       if (nextProps.type !== '' && nextProps.type !== 'success') {
         this.setState({
           visible: true,

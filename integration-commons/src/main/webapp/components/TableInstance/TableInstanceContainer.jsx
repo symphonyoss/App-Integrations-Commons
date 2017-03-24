@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 import { connect } from 'react-redux';
 import {
   getInstanceList,
