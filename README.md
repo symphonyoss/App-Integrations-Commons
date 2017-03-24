@@ -1,3 +1,7 @@
+[![Symphony Software Foundation - Incubating](https://cdn.rawgit.com/symphonyoss/contrib-toolbox/master/images/ssf-badge-incubating.svg)](https://symphonyoss.atlassian.net/wiki/display/FM/Incubating)
+
+[![Build Status](https://travis-ci.org/symphonyoss/App-Integrations-Commons.svg?branch=dev)](https://travis-ci.org/symphonyoss/App-Integrations-Commons)
+
 # Integrations Commons Documentation
 
 This document provides a brief overview of Integration Commons components and how to build them from scratch.
