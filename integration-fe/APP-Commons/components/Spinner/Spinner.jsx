@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 import React, { Component, PropTypes } from 'react';
 import './styles/styles.less';
 
@@ -11,7 +10,6 @@ export class Spinner extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     if (this.props.loading !== nextProps.loading) {
       if (!nextProps.loading) {
         this.setState({
