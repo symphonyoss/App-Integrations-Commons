@@ -1,5 +1,5 @@
 {
-  "name": "integration-commons",
+  "name": "symphony-integration-commons",
   "version": "0.8.0",
   "description": "Commons components for 3rd party applications",
   "main": "index.js",
@@ -52,7 +52,9 @@
     "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
+    "axios": "^0.15.3",
     "babel-polyfill": "^6.23.0",
+    "jquery": "^3.2.0",
     "react": "^15.3.2",
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.2",
