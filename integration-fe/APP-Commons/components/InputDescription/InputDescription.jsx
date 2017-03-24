@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 import { connect } from 'react-redux';
 import React, { PropTypes, Component } from 'react';
 // import Spinner from '../Spinner/Spinner';
@@ -67,17 +66,10 @@ InputDescription.propTypes = {
   loading: PropTypes.bool.isRequired,
 };
 
-// const mapStateToProps = state => ({
-//   name: state.instance.name,
-//   loading: state.instance.loading,
-// });
-const mapStateToProps = (state) => {
-  debugger;
-  return {
-    name: state.instance.name,
-    loading: state.instance.loading,
-  };
-};
+const mapStateToProps = state => ({
+  name: state.instance.name,
+  loading: state.instance.loading,
+});
 
 const mapDispatchToProps = dispatch => ({
   handleChange: value => dispatch(changeInstanceName(value)),

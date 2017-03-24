@@ -77,13 +77,6 @@ const mapStateToProps = state => ({
   instanceId: state.instance.instanceId,
   baseWebHookURL: state.instance.baseWebHookURL,
 });
-// const mapStateToProps = (state) => {
-//   debugger;
-//   return {
-//     instanceId: state.instance.instanceId,
-//     baseWebHookURL: state.instance.baseWebHookURL,
-//   };
-// };
 
 export default connect(
   mapStateToProps,

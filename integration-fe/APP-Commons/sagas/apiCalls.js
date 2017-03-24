@@ -3,7 +3,7 @@ import $ from 'jquery';
 // import axios from 'axios';
 import { Utils } from '../js/utils.service';
 import config from '../js/config.service';
-/* eslint-disable no-debugger */
+
 const configurationId = Utils.getParameterByName('configurationId');
 const botUserId = Utils.getParameterByName('botUserId');
 const appName = Utils.getParameterByName('id');
