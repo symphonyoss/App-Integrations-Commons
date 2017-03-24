@@ -25,7 +25,7 @@ language: java
 install: true
 script:
 # Validate npmjs licenses
-- "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ dev ]]; then pushd src/main/webapp ; npm run integration-commons/license-check ; popd ; fi"
+- "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ dev ]]; then pushd integration-commons/src/main/webapp ; npm run license-check ; popd ; fi"
 # Deploy to oss.sonatype.org
 - "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ dev ]]; then mvn clean deploy -Pversioneye --settings settings.xml ; fi"
 - "if [[ \"$TRAVIS_PULL_REQUEST\" != \"false\" ]]; then mvn clean install ; fi"
