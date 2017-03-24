@@ -20,9 +20,19 @@
 # under the License.
 #
 
-language: java
+sudo: required
+dist: trusty
+language: node_js
+node_js:
+  - "6.10"
 
-install: true
+addons:
+  apt:
+    packages:
+      - openjdk-8-jdk
+      - maven
+      - rpm
+
 script:
 # Validate npmjs licenses
 - "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ dev ]]; then pushd integration-commons/src/main/webapp ; npm run license-check ; popd ; fi"
@@ -31,7 +41,5 @@ script:
 - "if [[ \"$TRAVIS_PULL_REQUEST\" != \"false\" ]]; then mvn clean install ; fi"
 
 # Deploy to npmjs.org using semantic-release; make sure that NPM_TOKEN and GH_TOKEN are set on Travis settings
-after_success: "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ dev ]]; then pushd integration-commons/src/main/webapp ; npm run semantic-release ; popd ; fi"
 
-jdk:
-  - oraclejdk8
+after_success: "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ dev ]]; then pushd integration-commons/src/main/webapp ; npm run semantic-release ; popd ; fi"
