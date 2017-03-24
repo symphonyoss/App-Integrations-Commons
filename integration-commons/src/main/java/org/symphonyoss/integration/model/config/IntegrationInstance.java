@@ -38,6 +38,8 @@ public class IntegrationInstance {
 
   private String optionalProperties;
 
+  private Boolean active;
+
   public String getInstanceId() {
     return instanceId;
   }
@@ -100,5 +102,13 @@ public class IntegrationInstance {
 
   public void setOptionalProperties(String optionalProperties) {
     this.optionalProperties = optionalProperties;
+  }
+
+  public Boolean getActive() {
+    return active;
+  }
+
+  public void setActive(Boolean active) {
+    this.active = active;
   }
 }
