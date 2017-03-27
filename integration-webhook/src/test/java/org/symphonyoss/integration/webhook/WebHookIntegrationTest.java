@@ -249,8 +249,8 @@ public class WebHookIntegrationTest extends MockKeystore {
     Long timestamp1 = 1476109880000L;
     Long timestamp2 = timestamp1 + 1000;
 
-    message1.setTimestamp(timestamp1.toString());
-    message2.setTimestamp(timestamp2.toString());
+    message1.setTimestamp(timestamp1);
+    message2.setTimestamp(timestamp2);
 
     response.add(message1);
     response.add(message2);
