@@ -67,5 +67,8 @@
   "repository": {
     "type" : "git",
     "url" : "https://github.com/symphonyoss/App-Integrations-Commons.git"
+  },
+  "release": {
+    "branch": "dev"
   }
 }
