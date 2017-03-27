@@ -26,23 +26,17 @@ language: node_js
 node_js:
   - "6.10"  
 
-addons:
-  apt:
-    packages:
-      - openjdk-8-jdk
-      - maven
-      - rpm
-
 before_script:
 - npm install -g node-license-validator
 - npm install -g semantic-release
 
 script:
+# Install npm dependencies
+- "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ npm-publish-webapp-repo ]]; then npm install ; fi"
+# Run tests
+- "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ npm-publish-webapp-repo ]]; then npm run test ; fi"
 # Validate npmjs licenses
-- "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ dev ]]; then pushd integration-commons/src/main/webapp ; npm run license-check ; popd ; fi"
-# Deploy to oss.sonatype.org
-- "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ dev ]]; then mvn clean deploy --settings settings.xml ; fi"
-- "if [[ \"$TRAVIS_PULL_REQUEST\" != \"false\" ]]; then mvn clean install ; fi"
+- "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ npm-publish-webapp-repo ]]; then npm run license-check ; fi"
 
 # Deploy to npmjs.org using semantic-release; make sure that NPM_TOKEN and GH_TOKEN are set on Travis settings
-after_success: "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ dev ]]; then pushd integration-commons/src/main/webapp ; npm run semantic-release ; popd ; fi"
+after_success: "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ npm-publish-webapp-repo ]]; then npm run semantic-release ; fi"
