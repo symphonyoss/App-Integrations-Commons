@@ -38,16 +38,14 @@ export class SubmitInstance extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.saved !== nextProps.saved) {
-      if (nextProps.saved) {
-        if (nextProps.operation === 'CREATE' || nextProps.operation === 'UPDATE') {
-          hashHistory.push('/instance-created');
-        } else if (nextProps.operation === 'REMOVE') {
-          hashHistory.push('/');
-        }
-      } else {
+    if (nextProps.saved) {
+      if (nextProps.operation === 'CREATE' || nextProps.operation === 'UPDATE') {
+        hashHistory.push('/instance-created');
+      } else if (nextProps.operation === 'REMOVE') {
         hashHistory.push('/');
       }
+    } else {
+      hashHistory.push('/');
     }
   }
 
