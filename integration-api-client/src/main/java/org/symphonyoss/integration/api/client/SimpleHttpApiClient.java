@@ -19,6 +19,7 @@ package org.symphonyoss.integration.api.client;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.symphonyoss.integration.api.client.json.JsonUtils;
 import org.symphonyoss.integration.exception.RemoteApiException;
 
 import java.io.UnsupportedEncodingException;
@@ -27,10 +28,8 @@ import java.util.Map;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
@@ -41,9 +40,9 @@ import javax.ws.rs.core.Response;
  *
  * Created by Milton Quilzini on 16/01/17.
  */
-public class JsonHttpApiClient implements HttpApiClient {
+public class SimpleHttpApiClient implements HttpApiClient {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(JsonHttpApiClient.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(SimpleHttpApiClient.class);
 
   /**
    * JSON helper class
@@ -54,6 +53,15 @@ public class JsonHttpApiClient implements HttpApiClient {
    * HTTP Base path
    */
   private String basePath;
+
+  /**
+   * Entity serializer
+   */
+  private EntitySerializer serializer;
+
+  public SimpleHttpApiClient(EntitySerializer serializer) {
+    this.serializer = serializer;
+  }
 
   public void setBasePath(String basePath) {
     this.basePath = basePath;
@@ -89,7 +97,7 @@ public class JsonHttpApiClient implements HttpApiClient {
     Invocation.Builder invocationBuilder =
         getInvocationBuilder(path, client, queryParams, headerParams);
 
-    Response response = invocationBuilder.post(serialize(payload));
+    Response response = invocationBuilder.post(serializer.serialize(payload));
     return handleResponse(returnType, response);
   }
 
@@ -100,7 +108,7 @@ public class JsonHttpApiClient implements HttpApiClient {
     Invocation.Builder invocationBuilder =
         getInvocationBuilder(path, client, queryParams, headerParams);
 
-    Response response = invocationBuilder.put(serialize(payload));
+    Response response = invocationBuilder.put(serializer.serialize(payload));
     return handleResponse(returnType, response);
   }
 
@@ -120,6 +128,11 @@ public class JsonHttpApiClient implements HttpApiClient {
     return ClientBuilder.newClient();
   }
 
+  @Override
+  public void setEntitySerializer(EntitySerializer serializer) {
+    this.serializer = serializer;
+  }
+
   /**
    * Retrieves the builder to perform the HTTP requests
    * @param path Resource path
@@ -131,7 +144,7 @@ public class JsonHttpApiClient implements HttpApiClient {
   private Invocation.Builder getInvocationBuilder(String path, Client client,
       Map<String, String> queryParams, Map<String, String> headerParams) {
     WebTarget target = buildWebTarget(path, client, queryParams);
-    Invocation.Builder invocationBuilder = target.request().accept(MediaType.APPLICATION_JSON);
+    Invocation.Builder invocationBuilder = target.request();
 
     for (Map.Entry<String, String> entry : headerParams.entrySet()) {
       if (entry.getValue() != null) {
@@ -193,13 +206,6 @@ public class JsonHttpApiClient implements HttpApiClient {
 
       throw new RemoteApiException(response.getStatus(), message);
     }
-  }
-
-  /**
-   * Serialize the given Java object into string entity JSON.
-   */
-  public Entity<String> serialize(Object obj) throws RemoteApiException {
-    return Entity.json(jsonUtils.serialize(obj));
   }
 
   /**
