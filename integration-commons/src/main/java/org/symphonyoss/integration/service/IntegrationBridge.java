@@ -50,7 +50,7 @@ public interface IntegrationBridge {
    * @param integrationUser the user of integration
    * @param message the actual message. It's expected to be already on proper format.
    */
-  List<Message> sendMessage(IntegrationInstance instance, String integrationUser, String message);
+  List<Message> sendMessage(IntegrationInstance instance, String integrationUser, Message message);
 
   /**
    * Sends a message through Agent API to a list of streams.
@@ -60,7 +60,7 @@ public interface IntegrationBridge {
    * @param message the actual message. It's expected to be already on proper format.
    */
   List<Message> sendMessage(IntegrationInstance instance, String integrationUser, List<String>
-      streams, String message);
+      streams, Message message);
 
   /**
    * Removes an integration based on the integration identifier.

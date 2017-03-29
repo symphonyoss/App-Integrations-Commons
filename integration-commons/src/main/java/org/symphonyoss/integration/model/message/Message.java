@@ -67,4 +67,12 @@ public class Message {
     this.format = format;
   }
 
+  @Override
+  public String toString() {
+    return "Message{" +
+        "timestamp=" + timestamp +
+        ", message='" + message + '\'' +
+        ", format=" + format +
+        '}';
+  }
 }
