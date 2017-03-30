@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration.api.client;
+package org.symphonyoss.integration.api.client.json;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

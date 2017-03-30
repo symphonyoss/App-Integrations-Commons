@@ -92,4 +92,9 @@ public interface HttpApiClient {
    */
   Client getClientForContext(Map<String, String> queryParams, Map<String, String> headerParams);
 
+  /**
+   * Set entity serializer
+   * @param serializer Entity serializer
+   */
+  void setEntitySerializer(EntitySerializer serializer);
 }

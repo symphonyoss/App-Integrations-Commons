@@ -397,8 +397,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
     for (Message responseMessage : response) {
       // Get last posted date
-      String timestamp = responseMessage.getTimestamp();
-      lastPostedDate = Math.max(lastPostedDate, Long.valueOf(timestamp));
+      lastPostedDate = Math.max(lastPostedDate, responseMessage.getTimestamp());
     }
     return lastPostedDate;
   }
