@@ -37,17 +37,17 @@ public class Message {
     }
   }
 
-  private String timestamp;
+  private Long timestamp;
 
   private String message;
 
   private FormatEnum format;
 
-  public String getTimestamp() {
+  public Long getTimestamp() {
     return timestamp;
   }
 
-  public void setTimestamp(String timestamp) {
+  public void setTimestamp(Long timestamp) {
     this.timestamp = timestamp;
   }
 
@@ -65,5 +65,14 @@ public class Message {
 
   public void setFormat(FormatEnum format) {
     this.format = format;
+  }
+
+  @Override
+  public String toString() {
+    return "Message{" +
+        "timestamp=" + timestamp +
+        ", message='" + message + '\'' +
+        ", format=" + format +
+        '}';
   }
 }

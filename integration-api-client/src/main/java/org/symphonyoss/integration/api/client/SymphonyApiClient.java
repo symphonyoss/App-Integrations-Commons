@@ -1,6 +1,7 @@
 package org.symphonyoss.integration.api.client;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.symphonyoss.integration.api.client.json.JsonEntitySerializer;
 import org.symphonyoss.integration.api.client.metrics.ApiMetricsController;
 import org.symphonyoss.integration.api.client.metrics.MetricsHttpApiClient;
 import org.symphonyoss.integration.api.client.trace.TraceLoggingApiClient;
@@ -28,8 +29,13 @@ public abstract class SymphonyApiClient implements HttpApiClient {
 
   private String serviceName;
 
+  private EntitySerializer serializer;
+
   public SymphonyApiClient(String serviceName) {
     this.serviceName = serviceName;
+
+    // Default serializer
+    this.serializer = new JsonEntitySerializer();
   }
 
   @PostConstruct
@@ -47,11 +53,11 @@ public abstract class SymphonyApiClient implements HttpApiClient {
    * @param basePath Base path
    */
   private void buildHttpClient(String basePath) {
-    AuthenticationProxyApiClient jsonClient = new AuthenticationProxyApiClient(proxy);
-    jsonClient.setBasePath(basePath);
+    AuthenticationProxyApiClient simpleClient = new AuthenticationProxyApiClient(serializer, proxy);
+    simpleClient.setBasePath(basePath);
 
     ConnectivityApiClientDecorator connectivityApiClient =
-        new ConnectivityApiClientDecorator(serviceName, jsonClient);
+        new ConnectivityApiClientDecorator(serviceName, simpleClient);
 
     ReAuthenticationApiClient reAuthApiClient =
         new ReAuthenticationApiClient(proxy, connectivityApiClient);
@@ -99,6 +105,12 @@ public abstract class SymphonyApiClient implements HttpApiClient {
 
   public HttpApiClient getClient() {
     return client;
+  }
+
+  @Override
+  public void setEntitySerializer(EntitySerializer serializer) {
+    this.serializer = serializer;
+    this.client.setEntitySerializer(serializer);
   }
 
 }

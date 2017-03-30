@@ -24,6 +24,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.context.annotation.Scope;
 import org.symphonyoss.integration.json.JsonUtils;
+import org.symphonyoss.integration.model.message.Message;
 import org.symphonyoss.integration.webhook.exception.WebHookParseException;
 
 import java.io.IOException;
@@ -37,7 +38,7 @@ import java.io.IOException;
 public class MockWebHookIntegration extends WebHookIntegration {
 
   @Override
-  public String parse(WebHookPayload input) throws WebHookParseException {
+  public Message parse(WebHookPayload input) throws WebHookParseException {
     String formattedMessage;
 
     try {
@@ -51,7 +52,11 @@ public class MockWebHookIntegration extends WebHookIntegration {
     messageBuilder.append(formattedMessage);
     messageBuilder.append(MESSAGEML_END);
 
-    return messageBuilder.toString();
+    Message message = new Message();
+    message.setMessage(messageBuilder.toString());
+    message.setFormat(Message.FormatEnum.MESSAGEML);
+
+    return message;
   }
 
 }
