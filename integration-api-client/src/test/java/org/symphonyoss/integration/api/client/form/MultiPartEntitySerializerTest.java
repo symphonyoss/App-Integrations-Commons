@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.symphonyoss.integration.exception.RemoteApiException;
 
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
 
 /**
  * Unit test for {@link MultiPartEntitySerializer}
@@ -36,6 +37,8 @@ public class MultiPartEntitySerializerTest {
   @Test
   public void testSerialize() throws RemoteApiException {
     MultiPart input = new MultiPart();
+    input.bodyPart("Form part 1", MediaType.valueOf(MediaType.TEXT_PLAIN));
+    input.bodyPart("Form part 2", MediaType.valueOf(MediaType.TEXT_PLAIN));
 
     Entity result = serializer.serialize(input);
 

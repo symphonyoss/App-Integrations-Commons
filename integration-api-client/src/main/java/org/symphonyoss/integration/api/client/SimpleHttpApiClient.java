@@ -33,7 +33,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 /**
- * HTTP API client to call JSON based APIs.
+ * API client to call HTTP based APIs.
  * It's adjusted to the necessities present at Integrations Core use cases, providing extension points to add behavior.
  * Subclasses can override the protected methods: getClientForContext to include its own client building strategy,
  * depending on the API being called.
