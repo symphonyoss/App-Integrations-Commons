@@ -44,7 +44,7 @@ If you want to create a new webhook integration you should define the __integrat
 You’ll build a simple java library that provides some useful services to build new integrations.
 
 ### What you’ll need
-* JDK 1.7
+* JDK 1.8
 * Maven 3.0.5+
 
 ### Build with maven
