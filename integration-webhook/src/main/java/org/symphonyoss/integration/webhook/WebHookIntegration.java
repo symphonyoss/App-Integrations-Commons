@@ -41,6 +41,7 @@ import org.symphonyoss.integration.exception.config.IntegrationConfigException;
 import org.symphonyoss.integration.model.config.IntegrationInstance;
 import org.symphonyoss.integration.model.config.IntegrationSettings;
 import org.symphonyoss.integration.model.message.Message;
+import org.symphonyoss.integration.model.message.MessageMLVersion;
 import org.symphonyoss.integration.model.stream.StreamType;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
 import org.symphonyoss.integration.model.yaml.Application;
@@ -437,6 +438,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
       Message messageSubmission = new Message();
       messageSubmission.setMessage(formattedMessage);
       messageSubmission.setFormat(Message.FormatEnum.MESSAGEML);
+      messageSubmission.setVersion(MessageMLVersion.V1);
 
       return messageSubmission;
     } else {
