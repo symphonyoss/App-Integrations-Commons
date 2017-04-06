@@ -238,7 +238,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
    * @throws WebHookParseException
    */
   public void handle(String instanceId, String integrationUser, WebHookPayload input)
-      throws WebHookParseException {
+      throws WebHookParseException, RemoteApiException {
     if (isAvailable()) {
       IntegrationInstance instance = getIntegrationInstance(instanceId);
       String message = parseRequest(instance, integrationUser, input);
@@ -280,7 +280,8 @@ public abstract class WebHookIntegration extends BaseIntegration {
    * @param payload Json Node that contains a list of streams
    * @throws IOException Reports failure to validate the payload
    */
-  public void welcome(IntegrationInstance instance, String integrationUser, String payload) {
+  public void welcome(IntegrationInstance instance, String integrationUser, String payload)
+      throws RemoteApiException {
     List<String> instanceStreams = streamService.getStreams(instance);
     List<String> streams = streamService.getStreams(payload);
 
@@ -355,7 +356,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
    * @param message Formatted MessageML
    */
   private void postMessage(IntegrationInstance instance, String integrationUser,
-      List<String> streams, String message) {
+      List<String> streams, String message) throws RemoteApiException {
     // Post a message
     List<Message> response = sendMessage(instance, integrationUser, streams, message);
     // Get the timestamp of the last message posted
@@ -376,7 +377,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
    * @return List of messages posted to the streams.
    */
   private List<Message> sendMessage(IntegrationInstance instance, String integrationUser,
-      List<String> streams, String message) {
+      List<String> streams, String message) throws RemoteApiException {
     List<Message> response = new ArrayList<>();
 
     try {
