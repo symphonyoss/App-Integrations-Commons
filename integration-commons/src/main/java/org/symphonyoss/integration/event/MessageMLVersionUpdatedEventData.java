@@ -7,11 +7,11 @@ import org.symphonyoss.integration.model.message.MessageMLVersion;
  *
  * Created by rsanchez on 21/03/17.
  */
-public class MessageMLVersionUpdatedEvent {
+public class MessageMLVersionUpdatedEventData {
 
   private MessageMLVersion version;
 
-  public MessageMLVersionUpdatedEvent(MessageMLVersion version) {
+  public MessageMLVersionUpdatedEventData(MessageMLVersion version) {
     this.version = version;
   }
 

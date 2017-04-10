@@ -5,11 +5,11 @@ package org.symphonyoss.integration.event;
  *
  * Created by rsanchez on 22/03/17.
  */
-public class HealthCheckServiceEvent {
+public class HealthCheckEventData {
 
   private String serviceName;
 
-  public HealthCheckServiceEvent(String serviceName) {
+  public HealthCheckEventData(String serviceName) {
     this.serviceName = serviceName;
   }
 
