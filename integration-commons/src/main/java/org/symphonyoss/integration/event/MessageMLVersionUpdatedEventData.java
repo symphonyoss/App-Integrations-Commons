@@ -5,13 +5,17 @@ import org.symphonyoss.integration.model.message.MessageMLVersion;
 /**
  * MessageML version updated event object.
  *
+ * This class holds the messageML version supported by the external services.
+ *
+ * This event might be used to notify the parsers which messageML version is available to be used.
+ *
  * Created by rsanchez on 21/03/17.
  */
-public class MessageMLVersionUpdatedEvent {
+public class MessageMLVersionUpdatedEventData {
 
   private MessageMLVersion version;
 
-  public MessageMLVersionUpdatedEvent(MessageMLVersion version) {
+  public MessageMLVersionUpdatedEventData(MessageMLVersion version) {
     this.version = version;
   }
 
