@@ -53,8 +53,7 @@ public abstract class WebHookParserResolver {
   }
 
   /**
-   * Handle events related to update MessageML version. If the new version of MessageML is V2 I can
-   * stop the scheduler to check the version, otherwise I need to reschedule the monitoring process.
+   * Handle events related to update MessageML version.
    * @param eventData MessageML version update event
    */
   @EventListener
