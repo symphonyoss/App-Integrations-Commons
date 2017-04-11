@@ -56,11 +56,14 @@ public class AuthenticationProxyApiClientTest {
   @Mock
   private Client sessionClient;
 
+  @Mock
+  private EntitySerializer serializer;
+
   private AuthenticationProxyApiClient proxyApiClient;
 
   @Before
   public void init() {
-    this.proxyApiClient = new AuthenticationProxyApiClient(proxy);
+    this.proxyApiClient = new AuthenticationProxyApiClient(serializer, proxy);
     doReturn(userClient).when(proxy).httpClientForUser(MOCK_USERNAME);
     doReturn(sessionClient).when(proxy).httpClientForSessionToken(MOCK_SESSION_TOKEN);
   }

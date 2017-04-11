@@ -16,6 +16,8 @@
 
 package org.symphonyoss.integration.model.message;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Created by rsanchez on 21/02/17.
  */
@@ -37,17 +39,21 @@ public class Message {
     }
   }
 
-  private String timestamp;
+  private Long timestamp;
 
   private String message;
 
   private FormatEnum format;
 
-  public String getTimestamp() {
+  private String data;
+
+  private MessageMLVersion version;
+
+  public Long getTimestamp() {
     return timestamp;
   }
 
-  public void setTimestamp(String timestamp) {
+  public void setTimestamp(Long timestamp) {
     this.timestamp = timestamp;
   }
 
@@ -66,4 +72,34 @@ public class Message {
   public void setFormat(FormatEnum format) {
     this.format = format;
   }
+
+  @JsonIgnore
+  public String getData() {
+    return data;
+  }
+
+  public void setData(String data) {
+    this.data = data;
+  }
+
+  @JsonIgnore
+  public MessageMLVersion getVersion() {
+    return version;
+  }
+
+  public void setVersion(MessageMLVersion version) {
+    this.version = version;
+  }
+
+  @Override
+  public String toString() {
+    return "Message{" +
+        "timestamp=" + timestamp +
+        ", message='" + message + '\'' +
+        ", format=" + format +
+        ", data='" + data + '\'' +
+        ", version=" + version +
+        '}';
+  }
+
 }

@@ -26,7 +26,7 @@ import javax.ws.rs.client.Client;
  * HTTP client class responsible to retrieve the HTTP client based on sessionToken header.
  * Created by rsanchez on 21/02/17.
  */
-public class AuthenticationProxyApiClient extends JsonHttpApiClient {
+public class AuthenticationProxyApiClient extends SimpleHttpApiClient {
 
   private static final String SESSION_TOKEN_HEADER = "sessionToken";
 
@@ -34,7 +34,8 @@ public class AuthenticationProxyApiClient extends JsonHttpApiClient {
 
   private AuthenticationProxy proxy;
 
-  public AuthenticationProxyApiClient(AuthenticationProxy proxy) {
+  public AuthenticationProxyApiClient(EntitySerializer serializer, AuthenticationProxy proxy) {
+    super(serializer);
     this.proxy = proxy;
   }
 

@@ -12,34 +12,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 
-package org.symphonyoss.integration.exception;
+package org.symphonyoss.integration.api.client;
+
+import org.symphonyoss.integration.exception.RemoteApiException;
+
+import javax.ws.rs.client.Entity;
 
 /**
- * Created by rsanchez on 09/08/16.
+ * Serialize the input object to required payload by HTTP server.
+ *
+ * Created by rsanchez on 24/03/17.
  */
-public class RemoteApiException extends IntegrationException {
+public interface EntitySerializer {
 
-  private int code;
-
-  public RemoteApiException(int code, String message) {
-    super("Commons", message);
-    this.code = code;
-  }
-
-  public RemoteApiException(int code, Exception e) {
-    super("Commons", e.getMessage(), e);
-    this.code = code;
-  }
-
-  public RemoteApiException(int code, String message, Exception e) {
-    super("Commons", message, e);
-    this.code = code;
-  }
-
-  public int getCode() {
-    return code;
-  }
+  /**
+   * Serialize the input object.
+   * @param input Input object
+   * @return Serialized entity
+   * @throws RemoteApiException Failure to serialize the given object
+   */
+  Entity serialize(Object input) throws RemoteApiException;
 
 }

@@ -12,34 +12,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 
-package org.symphonyoss.integration.exception;
+package org.symphonyoss.integration.api.client.form;
+
+import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA_TYPE;
+
+import org.symphonyoss.integration.api.client.EntitySerializer;
+import org.symphonyoss.integration.exception.RemoteApiException;
+
+import javax.ws.rs.client.Entity;
 
 /**
- * Created by rsanchez on 09/08/16.
+ * Serialize the given Java object into multipart/form-data.
+ *
+ * Created by rsanchez on 24/03/17.
  */
-public class RemoteApiException extends IntegrationException {
+public class MultiPartEntitySerializer implements EntitySerializer {
 
-  private int code;
-
-  public RemoteApiException(int code, String message) {
-    super("Commons", message);
-    this.code = code;
-  }
-
-  public RemoteApiException(int code, Exception e) {
-    super("Commons", e.getMessage(), e);
-    this.code = code;
-  }
-
-  public RemoteApiException(int code, String message, Exception e) {
-    super("Commons", message, e);
-    this.code = code;
-  }
-
-  public int getCode() {
-    return code;
+  @Override
+  public Entity serialize(Object input) throws RemoteApiException {
+    return Entity.entity(input, MULTIPART_FORM_DATA_TYPE);
   }
 
 }
