@@ -27,9 +27,9 @@ import org.symphonyoss.integration.webhook.WebHookPayload;
 public interface WebHookParserFactory {
 
   /**
-   * This factory should be used with this messageML version
-   * @param version MessageML version
-   * @return true if this factory accepts the messageML version, otherwise returns false
+   * Indicates which MessageML version the parsers of this factory accept.
+   * @param version MessageML version to be checked
+   * @return true if this factory accepts the MessageML version, otherwise returns false
    */
   boolean accept(MessageMLVersion version);
 

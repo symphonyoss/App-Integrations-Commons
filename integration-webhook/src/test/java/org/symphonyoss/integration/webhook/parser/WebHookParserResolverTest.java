@@ -21,10 +21,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.symphonyoss.integration.event.MessageMLVersionUpdatedEvent;
+import org.symphonyoss.integration.event.MessageMLVersionUpdatedEventData;
 import org.symphonyoss.integration.model.message.MessageMLVersion;
 
 import java.util.ArrayList;
@@ -61,7 +59,7 @@ public class WebHookParserResolverTest {
 
   @Test
   public void testHandleMessageMLV1() {
-    MessageMLVersionUpdatedEvent event = new MessageMLVersionUpdatedEvent(MessageMLVersion.V1);
+    MessageMLVersionUpdatedEventData event = new MessageMLVersionUpdatedEventData(MessageMLVersion.V1);
     resolver.handleMessageMLVersionUpdatedEvent(event);
 
     assertEquals(v1Factory, resolver.getFactory());
@@ -69,7 +67,7 @@ public class WebHookParserResolverTest {
 
   @Test
   public void testHandleMessageMLV2() {
-    MessageMLVersionUpdatedEvent event = new MessageMLVersionUpdatedEvent(MessageMLVersion.V2);
+    MessageMLVersionUpdatedEventData event = new MessageMLVersionUpdatedEventData(MessageMLVersion.V2);
     resolver.handleMessageMLVersionUpdatedEvent(event);
 
     assertEquals(v2Factory, resolver.getFactory());
