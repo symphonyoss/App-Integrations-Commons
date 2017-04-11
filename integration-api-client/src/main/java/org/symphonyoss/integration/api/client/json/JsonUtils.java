@@ -14,7 +14,10 @@
  * limitations under the License.
 **/
 
- package org.symphonyoss.integration.api.client;
+ package org.symphonyoss.integration.api.client.json;
+
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -49,7 +52,7 @@ public class JsonUtils {
         return null;
       }
     } catch (Exception e) {
-      throw new RemoteApiException(400, e);
+      throw new RemoteApiException(BAD_REQUEST.getStatusCode(), e);
     }
   }
 
@@ -67,7 +70,7 @@ public class JsonUtils {
       if (returnType.equals(String.class)) {
         return returnType.cast(body);
       } else {
-        throw new RemoteApiException(500, e);
+        throw new RemoteApiException(INTERNAL_SERVER_ERROR.getStatusCode(), e);
       }
     }
   }

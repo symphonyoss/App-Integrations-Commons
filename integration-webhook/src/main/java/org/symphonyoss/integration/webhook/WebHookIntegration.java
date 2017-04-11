@@ -41,6 +41,7 @@ import org.symphonyoss.integration.exception.config.IntegrationConfigException;
 import org.symphonyoss.integration.model.config.IntegrationInstance;
 import org.symphonyoss.integration.model.config.IntegrationSettings;
 import org.symphonyoss.integration.model.message.Message;
+import org.symphonyoss.integration.model.message.MessageMLVersion;
 import org.symphonyoss.integration.model.stream.StreamType;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
 import org.symphonyoss.integration.model.yaml.Application;
@@ -214,7 +215,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
    * @throws WebHookParseException Reports failure to validate message received from third party
    * services.
    */
-  public String parse(IntegrationInstance instance, WebHookPayload input)
+  public Message parse(IntegrationInstance instance, WebHookPayload input)
       throws WebHookParseException {
     return parse(input);
   }
@@ -226,7 +227,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
    * @throws WebHookParseException Reports failure to validate message received from third party
    * services.
    */
-  public String parse(WebHookPayload input) throws WebHookParseException {
+  public Message parse(WebHookPayload input) throws WebHookParseException {
     return null;
   }
 
@@ -241,7 +242,8 @@ public abstract class WebHookIntegration extends BaseIntegration {
       throws WebHookParseException, RemoteApiException {
     if (isAvailable()) {
       IntegrationInstance instance = getIntegrationInstance(instanceId);
-      String message = parseRequest(instance, integrationUser, input);
+      Message message = parseRequest(instance, integrationUser, input);
+
       if (message != null) {
         List<String> streams = streamService.getStreams(instance);
         postMessage(instance, integrationUser, streams, message);
@@ -256,11 +258,11 @@ public abstract class WebHookIntegration extends BaseIntegration {
    * @param input Webhhok payload
    * @return Formatted MessageML or null if the integration doesn't handle this specific event
    */
-  private String parseRequest(IntegrationInstance instance, String integrationUser,
+  private Message parseRequest(IntegrationInstance instance, String integrationUser,
       WebHookPayload input) {
     Timer.Context context = null;
     boolean success = false;
-    String message = null;
+    Message message = null;
 
     try {
       context = metricsController.startParserExecution(integrationUser);
@@ -300,7 +302,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
     String message = getWelcomeMessage(instance, integrationUser);
 
     if (!StringUtils.isEmpty(message)) {
-      String formattedMessage = buildMessageML(message, WELCOME_EVENT);
+      Message formattedMessage = buildMessageML(message, WELCOME_EVENT);
       postMessage(instance, integrationUser, streams, formattedMessage);
     }
   }
@@ -356,7 +358,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
    * @param message Formatted MessageML
    */
   private void postMessage(IntegrationInstance instance, String integrationUser,
-      List<String> streams, String message) throws RemoteApiException {
+      List<String> streams, Message message)  throws RemoteApiException{
     // Post a message
     List<Message> response = sendMessage(instance, integrationUser, streams, message);
     // Get the timestamp of the last message posted
@@ -377,7 +379,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
    * @return List of messages posted to the streams.
    */
   private List<Message> sendMessage(IntegrationInstance instance, String integrationUser,
-      List<String> streams, String message) throws RemoteApiException {
+      List<String> streams, Message message) throws RemoteApiException {
     List<Message> response = new ArrayList<>();
 
     try {
@@ -398,8 +400,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
     for (Message responseMessage : response) {
       // Get last posted date
-      String timestamp = responseMessage.getTimestamp();
-      lastPostedDate = Math.max(lastPostedDate, Long.valueOf(timestamp));
+      lastPostedDate = Math.max(lastPostedDate, responseMessage.getTimestamp());
     }
     return lastPostedDate;
   }
@@ -427,13 +428,20 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
   /**
    * Builds a Symphony MessageML with a given formatted message.
-   * @param formattedMessage a message properly formatted with Symphony-only tags and/or pure text.
+   * @param message a message properly formatted with Symphony-only tags and/or pure text.
    * @param webHookEvent the event being processed.
    * @return the Symphony MessageML message.
    */
-  protected String buildMessageML(String formattedMessage, String webHookEvent) {
-    if (formattedMessage != null && !formattedMessage.trim().isEmpty()) {
-      return MESSAGEML_START + formattedMessage + MESSAGEML_END;
+  protected Message buildMessageML(String message, String webHookEvent) {
+    if (message != null && !message.trim().isEmpty()) {
+      String formattedMessage = MESSAGEML_START + message + MESSAGEML_END;
+
+      Message messageSubmission = new Message();
+      messageSubmission.setMessage(formattedMessage);
+      messageSubmission.setFormat(Message.FormatEnum.MESSAGEML);
+      messageSubmission.setVersion(MessageMLVersion.V1);
+
+      return messageSubmission;
     } else {
       LOGGER.info("Unhandled event {}", webHookEvent);
       return null;

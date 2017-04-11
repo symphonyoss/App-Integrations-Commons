@@ -69,4 +69,9 @@ public class HttpApiClientDecorator implements HttpApiClient {
       Map<String, String> headerParams) {
     return apiClient.getClientForContext(queryParams, headerParams);
   }
+
+  @Override
+  public void setEntitySerializer(EntitySerializer serializer) {
+    apiClient.setEntitySerializer(serializer);
+  }
 }

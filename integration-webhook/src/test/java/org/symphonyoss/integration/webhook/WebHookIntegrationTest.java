@@ -250,15 +250,14 @@ public class WebHookIntegrationTest extends MockKeystore {
     Long timestamp1 = 1476109880000L;
     Long timestamp2 = timestamp1 + 1000;
 
-    message1.setTimestamp(timestamp1.toString());
-    message2.setTimestamp(timestamp2.toString());
+    message1.setTimestamp(timestamp1);
+    message2.setTimestamp(timestamp2);
 
     response.add(message1);
     response.add(message2);
 
-    when(service.sendMessage(any(IntegrationInstance.class), anyString(),
-        anyListOf(String.class),
-        anyString())).thenReturn(response);
+    when(service.sendMessage(any(IntegrationInstance.class), anyString(), anyListOf(String.class),
+        any(Message.class))).thenReturn(response);
 
     Long optionalPropertiesTimestamp = timestamp1 - 1000;
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
@@ -293,8 +292,8 @@ public class WebHookIntegrationTest extends MockKeystore {
     doReturn(settings).when(integrationService).getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
 
     doReturn(new ArrayList<Message>()).when(service)
-        .sendMessage(any(IntegrationInstance.class), anyString(),
-            anyListOf(String.class), anyString());
+        .sendMessage(any(IntegrationInstance.class), anyString(), anyListOf(String.class),
+            any(Message.class));
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
@@ -329,8 +328,8 @@ public class WebHookIntegrationTest extends MockKeystore {
   public void testHandleSocketException() throws WebHookParseException, IOException, RemoteApiException {
     ProcessingException exception = new ProcessingException(new ConnectException());
     doThrow(exception).when(service)
-        .sendMessage(any(IntegrationInstance.class), anyString(),
-            anyListOf(String.class), anyString());
+        .sendMessage(any(IntegrationInstance.class), anyString(), anyListOf(String.class),
+            any(Message.class));
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
@@ -368,8 +367,9 @@ public class WebHookIntegrationTest extends MockKeystore {
   @Test(expected = StreamTypeNotFoundException.class)
   public void testWelcomeInvalidPayload() throws IOException, RemoteApiException {
     SendMessageAnswer answer = new SendMessageAnswer();
-    doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
-        anyListOf(String.class), anyString());
+    doAnswer(answer).when(service)
+        .sendMessage(any(IntegrationInstance.class), anyString(), anyListOf(String.class),
+            any(Message.class));
 
     mockWHI.welcome(new IntegrationInstance(), INTEGRATION_USER, "");
   }
@@ -378,7 +378,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   public void testWelcomeEmptyPayload() throws IOException, RemoteApiException {
     SendMessageAnswer answer = new SendMessageAnswer();
     doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
-        anyListOf(String.class), anyString());
+        anyListOf(String.class), any(Message.class));
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
@@ -396,7 +396,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   public void testWelcomeInvalidStreams() throws IOException, RemoteApiException {
     SendMessageAnswer answer = new SendMessageAnswer();
     doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
-        anyListOf(String.class), anyString());
+        anyListOf(String.class), any(Message.class));
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
@@ -414,7 +414,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   public void testWelcomeEmptyStreamType() throws IOException, RemoteApiException {
     SendMessageAnswer answer = new SendMessageAnswer();
     doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
-        anyListOf(String.class), anyString());
+        anyListOf(String.class), any(Message.class));
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
@@ -432,7 +432,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   public void testWelcomeIMStreamType() throws IOException, RemoteApiException {
     SendMessageAnswer answer = new SendMessageAnswer();
     doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
-        anyListOf(String.class), anyString());
+        anyListOf(String.class), any(Message.class));
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
@@ -463,7 +463,7 @@ public class WebHookIntegrationTest extends MockKeystore {
 
     SendMessageAnswer answer = new SendMessageAnswer();
     doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
-        anyListOf(String.class), anyString());
+        anyListOf(String.class), any(Message.class));
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
@@ -490,7 +490,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   public void testWelcomeChatroomWithoutUserStreamType() throws IOException, RemoteApiException {
     SendMessageAnswer answer = new SendMessageAnswer();
     doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
-        anyListOf(String.class), anyString());
+        anyListOf(String.class), any(Message.class));
 
     Long optionalPropertiesTimestamp = System.currentTimeMillis();
     String optionalProperties = "{ \"lastPostedDate\": " + optionalPropertiesTimestamp
@@ -556,7 +556,7 @@ public class WebHookIntegrationTest extends MockKeystore {
 
   public static final class SendMessageAnswer implements Answer<List<Message>> {
 
-    private String message;
+    private Message message;
 
     private int count;
 
@@ -564,13 +564,13 @@ public class WebHookIntegrationTest extends MockKeystore {
     @SuppressWarnings("unchecked")
     public List<Message> answer(InvocationOnMock invocationOnMock) throws Throwable {
       List<String> streams = (List<String>) invocationOnMock.getArguments()[2];
-      this.message = (String) invocationOnMock.getArguments()[3];
+      this.message = (Message) invocationOnMock.getArguments()[3];
       this.count = streams.size();
       return new ArrayList<>();
     }
 
     public String getMessage() {
-      return message;
+      return message.getMessage();
     }
 
     public int getCount() {

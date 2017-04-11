@@ -18,6 +18,8 @@ public class MockIntegration extends BaseIntegration {
 
   private IntegrationHealth health = new IntegrationHealth();
 
+  public MockIntegration() {}
+
   public MockIntegration(IntegrationProperties properties, IntegrationUtils utils,
       AuthenticationProxy authenticationProxy, IntegrationHealthManager healthManager) {
     this.properties = properties;

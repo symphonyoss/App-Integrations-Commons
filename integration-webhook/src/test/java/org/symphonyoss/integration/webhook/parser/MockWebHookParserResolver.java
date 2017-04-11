@@ -14,32 +14,25 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration.exception;
+package org.symphonyoss.integration.webhook.parser;
+
+import java.util.List;
 
 /**
- * Created by rsanchez on 09/08/16.
+ * Mock implementation for ${@link WebHookParserResolver}
+ * Created by rsanchez on 05/04/17.
  */
-public class RemoteApiException extends IntegrationException {
+public class MockWebHookParserResolver extends WebHookParserResolver {
 
-  private int code;
+  private List<WebHookParserFactory> factories;
 
-  public RemoteApiException(int code, String message) {
-    super("Commons", message);
-    this.code = code;
+  public MockWebHookParserResolver(List<WebHookParserFactory> factories) {
+    this.factories = factories;
   }
 
-  public RemoteApiException(int code, Exception e) {
-    super("Commons", e.getMessage(), e);
-    this.code = code;
-  }
-
-  public RemoteApiException(int code, String message, Exception e) {
-    super("Commons", message, e);
-    this.code = code;
-  }
-
-  public int getCode() {
-    return code;
+  @Override
+  protected List<WebHookParserFactory> getFactories() {
+    return factories;
   }
 
 }

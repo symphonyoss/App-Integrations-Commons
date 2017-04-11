@@ -51,8 +51,7 @@ public interface IntegrationBridge {
    * @param integrationUser the user of integration
    * @param message the actual message. It's expected to be already on proper format.
    */
-  List<Message> sendMessage(IntegrationInstance instance, String integrationUser, String message)
-      throws RemoteApiException;
+  List<Message> sendMessage(IntegrationInstance instance, String integrationUser, Message message) throws RemoteApiException;
 
   /**
    * Sends a message through Agent API to a list of streams.
@@ -62,7 +61,7 @@ public interface IntegrationBridge {
    * @param message the actual message. It's expected to be already on proper format.
    */
   List<Message> sendMessage(IntegrationInstance instance, String integrationUser, List<String>
-      streams, String message) throws RemoteApiException;
+      streams, Message message) throws RemoteApiException;
 
   /**
    * Removes an integration based on the integration identifier.
