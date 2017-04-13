@@ -20,13 +20,17 @@
 # under the License.
 #
 
+env:
+  global:
+    # Versioneye API key
+    - secure: "RPz6ijt0eKMcOZWoKTUEhFQfhudO/M+3EndiwHPW4HJhyccUG/eqL0RUZ37Oh4sTRM/YIsZOVPDEJQHo165BD02sNYN10oTYSpOO7ojGvcpFVN0HtwWXkaS22GDtXVsZCW5bP0q8HXAxwZQBKt/pq42Z2ainiiaIZRinEZaPfpO14mwsTZc00RuC+1diG5ObsSbp7/4UNl7X1miCLrKHGgNP9crNq3j61ko5tzAZkBBnWxdGIxpJJGEDEXNFucx2MSovswbIJQzHd0PrpSqZz3rvhOoTleoho/U4BKzAJHTOpsEFDRQMxZ8rIB27gIrPXhFy71JRf0NTYNg6CthLX3wRecllnoAcnANXazdEfN2jX2SZqrVkxQImOl1qcsqaPv8QRDunrjUiF+S8sghWJscjGnGXtJh+fpmJmj+/79GAAQYvmCYjfAQ/4zpzo/nX+Mhb7LioHSXgacGMHR3VFldXiscLrbJG4xPn85rNMZB6fPCgw7NcBOdFnBYqQI5Zk49IMFESvOBLPgKnAzbfrj6hPCgZJ7H8EfQ8d/vhhggRXuZU4S7pqs4xKkhR6womd45jx38sEMvi8NDR8MPtuxSPoBGllyHE+YO04rPsbhKi0pfkm2Gt/WwbuHiibxD2V74+IRt43Egvfz/1kfJIzY7WWNhqTL48TQrzSOFlx6o="
+
 language: java
 
 install: true
 script:
-- "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ dev ]]; then mvn clean deploy --settings settings.xml; fi"
+- "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ dev ]]; then mvn clean deploy -Pversioneye -DtransitiveDependencies=true --settings settings.xml; fi"
 - "if [[ \"$TRAVIS_PULL_REQUEST\" != \"false\" ]]; then mvn clean install ; fi"
 
 jdk:
   - oraclejdk8
-
