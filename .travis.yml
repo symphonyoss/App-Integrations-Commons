@@ -20,11 +20,6 @@
 # under the License.
 #
 
-env:
-  global:
-    # Versioneye API key
-    - secure: "LaOAmAu1/ASaL9SO1leWU4ypI+qWJ7h9v0GbFZHLU6f4FbVHxvjKgS5jfBufpGqTKlsfbVFACYCmnE6aF2knsw0gx3eT+r5gQT1Qt8yF+4XOC5d+jJv4KJKMnebAfMsfkghEIoLlFxCzdHZMT2Q7QeHKVKRhp8ESeGg71fErJMccmVD3niymoPyUIT6hPcdAAbLSoqIVjqzPqc6zFbXFEd1AaVdgxMgaPRCxf4YplEGnYzKo3d3K7nmP5fR1zDRZe1gJ6XmvldYVUlnYb2HKcCETiyB1dcU5FvYua1plXc3iXDQpsaWgd0Nb1g/C4laLsDAHmWlKm5NmdS390EXfniS9COkR3J8yP7jF7jBT7EnEopHhGTLXtNcDvMm9s238BSi00LfcwNNOCTxrZRUBk+XMG2OzqtaC+HzP1tAesFDjpW47p3qcF/Ca5nak5sBvIouPm9pBLHmO28huwaN/RX6kc3XZrc0oQJTGN4hLqEmzpGZ3LDNkersImxlhwYgXKFOgm8/3IV8jIKWDnqmGwSSpQHZiTLidaW87SE1HUjl8dLQLZGRy01W4DIfrcsaQpLJdD/kYgJG/hLQbo1+2NLhXF0gMmIA78ohEqPgV9Pma1P46HwtHU5ih+/1lXkqQrouku09sJz1DJI6uvz2MdO43SaUDpdtyjX2Wpu7O7FM="
-
 language: java
 
 install: true
