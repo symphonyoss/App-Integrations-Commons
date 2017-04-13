@@ -442,7 +442,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
       return messageSubmission;
     } else {
-      LOGGER.info("Unhandled event {}", webHookEvent);
+      LOGGER.debug("Unhandled event {}", webHookEvent);
       return null;
     }
   }
