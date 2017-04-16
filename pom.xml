@@ -656,7 +656,7 @@
             <activation>
                 <activeByDefault>false</activeByDefault>
                 <file>
-                    <exists>./src/main/webapp/package.json</exists>
+                    <exists>${basedir}/src/main/webapp/package.json</exists>
                 </file>
                 <property>
                     <name>env</name>
@@ -672,7 +672,7 @@
                         <version>1.6.0</version>
                         <executions>
                             <execution>
-                                <id>exec-npm</id>
+                                <id>webapp-exec-npm</id>
                                 <phase>generate-resources</phase>
                                 <goals>
                                     <goal>exec</goal>
@@ -697,7 +697,7 @@
             <activation>
                 <activeByDefault>false</activeByDefault>
                 <file>
-                    <exists>./src/main/webapp/gulpfile.js</exists>
+                    <exists>${basedir}/src/main/webapp/gulpfile.js</exists>
                 </file>
             </activation>
 
@@ -756,7 +756,7 @@
             <activation>
                 <activeByDefault>false</activeByDefault>
                 <file>
-                    <exists>package.json</exists>
+                    <exists>${basedir}/package.json</exists>
                 </file>
                 <property>
                     <name>env</name>
@@ -797,7 +797,7 @@
             <activation>
                 <activeByDefault>false</activeByDefault>
                 <file>
-                    <exists>webpack.config.js</exists>
+                    <exists>${basedir}/webpack.config.js</exists>
                 </file>
             </activation>
 
