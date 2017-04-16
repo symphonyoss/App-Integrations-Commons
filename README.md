@@ -1,4 +1,4 @@
-[![Symphony Software Foundation - Incubating](https://cdn.rawgit.com/symphonyoss/contrib-toolbox/master/images/ssf-badge-incubating.svg)](https://symphonyoss.atlassian.net/wiki/display/FM/Incubating) [![Build Status](https://travis-ci.org/symphonyoss/App-Integrations-Commons.svg?branch=dev)](https://travis-ci.org/symphonyoss/App-Integrations-Commons)
+[![Symphony Software Foundation - Incubating](https://cdn.rawgit.com/symphonyoss/contrib-toolbox/master/images/ssf-badge-incubating.svg)](https://symphonyoss.atlassian.net/wiki/display/FM/Incubating) [![Build Status](https://travis-ci.org/symphonyoss/App-Integrations-Commons.svg?branch=dev)](https://travis-ci.org/symphonyoss/App-Integrations-Commons) [![Dependencies](https://www.versioneye.com/user/projects/58efec768fa4273d16f6d1da/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/58efec768fa4273d16f6d1da)
 
 # Integrations Commons Documentation
 
