@@ -17,6 +17,7 @@
 package org.symphonyoss.integration.service;
 
 import org.symphonyoss.integration.Integration;
+import org.symphonyoss.integration.exception.RemoteApiException;
 import org.symphonyoss.integration.model.config.IntegrationInstance;
 import org.symphonyoss.integration.model.message.Message;
 
@@ -50,7 +51,7 @@ public interface IntegrationBridge {
    * @param integrationUser the user of integration
    * @param message the actual message. It's expected to be already on proper format.
    */
-  List<Message> sendMessage(IntegrationInstance instance, String integrationUser, Message message);
+  List<Message> sendMessage(IntegrationInstance instance, String integrationUser, Message message) throws RemoteApiException;
 
   /**
    * Sends a message through Agent API to a list of streams.
@@ -60,7 +61,7 @@ public interface IntegrationBridge {
    * @param message the actual message. It's expected to be already on proper format.
    */
   List<Message> sendMessage(IntegrationInstance instance, String integrationUser, List<String>
-      streams, Message message);
+      streams, Message message) throws RemoteApiException;
 
   /**
    * Removes an integration based on the integration identifier.
