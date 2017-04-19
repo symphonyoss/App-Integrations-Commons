@@ -40,7 +40,9 @@ import javax.xml.bind.Unmarshaller;
 
 /**
  * Abstract parser class responsible to read an XML input file that contains metadata objects to
- * be used to create an Entity JSON.
+ * be used to create an Entity JSON and also read MessageML template file.
+ *
+ * This class should be extended by all the parsers that produces messageML v2.
  *
  * Created by rsanchez on 29/03/17.
  */
@@ -71,6 +73,9 @@ public abstract class MetadataParser {
     }
   }
 
+  /**
+   * Callback method to read the metadata objects and MessageML template only once.
+   */
   @PostConstruct
   public void init() {
     readMetadataFile();
@@ -78,7 +83,9 @@ public abstract class MetadataParser {
   }
 
   /**
-   * Read metadata file.
+   * Read XML document which contains metadata objects.
+   *
+   * This document must follow the specification from {@link Metadata}
    */
   private void readMetadataFile() {
     try {
@@ -97,7 +104,10 @@ public abstract class MetadataParser {
   }
 
   /**
-   * Read template file.
+   * Read a MessageML template file.
+   *
+   * This template file must be inside the directory templates on the classpath and should have
+   * the MessageML v2 tags used to render integration messages.
    */
   private void readTemplateFile() {
     String fileLocation = BASE_TEMPLATE_PATH + getTemplateFile();
@@ -124,6 +134,13 @@ public abstract class MetadataParser {
     }
   }
 
+  /**
+   * Generates MessageML V2 object according to the messageML template file and generated entity JSON
+   * parsing the JSON input payload.
+   *
+   * @param node JSON node received from the third-party service
+   * @return MessageML v2 object
+   */
   public Message parse(JsonNode node) {
     if (StringUtils.isEmpty(messageMLTemplate)) {
       return null;
@@ -145,8 +162,9 @@ public abstract class MetadataParser {
 
   /**
    * Retrieves the Entity JSON based on metadata objects.
-   * @param node JSON input data
-   * @return Entity JSON
+   *
+   * @param node JSON input payload
+   * @return Entity JSON or null if there are no metadata objects to be processed.
    */
   private String getEntityJSON(JsonNode node) {
     if (metadata == null) {
@@ -172,8 +190,19 @@ public abstract class MetadataParser {
   }
 
   /**
-   * Perform a pre-processing on the input data
-   * @param input JSON input data
+   * Perform a pre-processing on the input data.
+   *
+   * This method must be implemented by the concrete parser classes to perform any data manipulation
+   * on the JSON input payload or augment the payload received with internal Symphony data retrieved
+   * through the Symphony API's.
+   *
+   * Examples:
+   * - Replace '\n' to '<br/>' tags
+   * - Uppercase JSON field content
+   * - Scape characters
+   * - Include user ID and username retrieved from the User API
+   *
+   * @param input JSON input payload
    */
   protected abstract void preProcessInputData(JsonNode input);
 
@@ -181,6 +210,13 @@ public abstract class MetadataParser {
    * Process metadata objects to generate Entity JSON. This method is called recursively for
    * the nested metadata objects. The metadata fields inside each metadata object have your own
    * logic to build the corresponding field into Entity JSON.
+   *
+   * Basically, this method gets the JSON object received from the third-party service and generates
+   * the Entity JSON intended according to the metadata objects defined in a XML document.
+   *
+   * Each metadata object defined must generate a JSON object inside the Entity JSON and the metadata
+   * fields must generate fields inside those JSON objects.
+   *
    * @param root Root object from Entity JSON
    * @param node JSON node received from the third-party service
    * @param objects List of metadata objects
@@ -207,20 +243,27 @@ public abstract class MetadataParser {
 
   /**
    * Perform a post-processing on the output data.
-   * @param output Output data
-   * @param input JSON input data
+   *
+   * This method must be implemented by the concrete parser classes to include additional fields
+   * on the output Entity JSON which weren't be processed directly from the JSON input payload.
+   *
+   * Example:
+   * - Array of JSON objects
+   *
+   * @param output Output Entity JSON
+   * @param input JSON input payload
    */
   protected abstract void postProcessOutputData(EntityObject output, JsonNode input);
 
   /**
-   * Get the template file inside the classpath
-   * @return Template filename
+   * Get the MessageML template filename that must be read by the parser during the bootstrap.
+   * @return MessageML template filename
    */
   protected abstract String getTemplateFile();
 
   /**
-   * Get the metadata file inside the classpath
-   * @return Metadata filename
+   * Get the XML filename that contains the metadata objects.
+   * @return XML filename
    */
   protected abstract String getMetadataFile();
 

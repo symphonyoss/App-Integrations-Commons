@@ -23,6 +23,22 @@ import javax.xml.bind.annotation.XmlElement;
 
 /**
  * Model class that represents the tag <object> inside the metadata.
+ *
+ * Each object has the attributes: id, type, and version.
+ *
+ * This object may have a list of fields and nested objects.
+ *
+ * Example:
+ *
+ * <pre>
+ *   <object id="key" type="com.symphony.integration.test" version="1.0">
+ *     <field key="header" value="content.header" />
+ *
+ *     <object id="nested" type="com.symphony.integration.test.nested" version="1.0">
+ *     </object>
+ *   </object>
+ * </pre>
+ *
  * Created by rsanchez on 30/03/17.
  */
 public class MetadataObject {

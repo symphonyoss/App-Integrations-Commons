@@ -23,8 +23,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Represents the XML document as a whole that contains the metadata to used to generate the
- * EntityJSON.
+ * Represents the XML document as a whole that contains the metadata objects which be used to
+ * generate the EntityJSON.
+ *
+ * The XML root element has the attributes: name, type and version.
+ *
+ * The XML document may have a set of <object> tags.
  *
  * Created by rsanchez on 30/03/17.
  */

@@ -23,6 +23,14 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 /**
  * Field that represents a pure text without any markup.
+ *
+ * Each field has the attributes key and value.
+ *
+ * Example:
+ * <pre>
+ *   <field key="header" value="content.header" />
+ * </pre>
+ *
  * Created by rsanchez on 30/03/17.
  */
 public class MetadataField {
@@ -49,6 +57,14 @@ public class MetadataField {
     this.value = value;
   }
 
+  /**
+   * Get the content from the input JSON according to the value attribute using dot notation.
+   *
+   * This value must be included as content to the {@link EntityObject} received as parameter.
+   *
+   * @param root Entity Object to store the content retrieved from the input JSON
+   * @param node Input JSON node
+   */
   public void process(EntityObject root, JsonNode node) {
     JsonNode resultNode = getResultNode(node, value);
     String value = resultNode.asText(StringUtils.EMPTY);
@@ -58,6 +74,28 @@ public class MetadataField {
     }
   }
 
+  /**
+   * Navigates to the JSON node according to the key using dot notation.
+   *
+   * Example:
+   *
+   * JSON node
+   * <pre>
+   *   {
+   *     "content": {
+   *       "header": "hello",
+   *       "body": "world"
+   *     }
+   *   }
+   * </pre>
+   *
+   * To query the header field should be used the key 'content.header'
+   *
+   * @param node Input JSON node
+   * @param jsonKey JSON key using dot notation
+   * @return JSON node intended or {@link com.fasterxml.jackson.databind.node.MissingNode} if the node
+   * wasn't found
+   */
   private JsonNode getResultNode(JsonNode node, String jsonKey) {
     String[] nodeKeys = jsonKey.split("\\.");
 

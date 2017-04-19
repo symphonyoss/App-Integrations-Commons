@@ -26,7 +26,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * JSON object used internally in a entity JSON.
+ * Model class that represents each JSON node of Entity JSON.
+ *
+ * Each node must have the required fields type and version.
+ *
+ * Each node may have {@link String} objects and nested {@link EntityObject} objects
+ *
  * Created by rsanchez on 30/03/17.
  */
 @JsonInclude(NON_NULL)
