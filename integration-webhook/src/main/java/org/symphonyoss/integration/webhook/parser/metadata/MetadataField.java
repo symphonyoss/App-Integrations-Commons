@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 /**
  * Field that represents a pure text without any markup.
  *
- * Each field has the attributes key and value.
+ * Each field has the attributes key, value and blank (optional).
  *
  * Example:
  * <pre>
@@ -38,6 +38,8 @@ public class MetadataField {
   private String key;
 
   private String value;
+
+  private boolean blank;
 
   @XmlAttribute
   public String getKey() {
@@ -57,6 +59,15 @@ public class MetadataField {
     this.value = value;
   }
 
+  @XmlAttribute
+  public boolean isBlank() {
+    return blank;
+  }
+
+  public void setBlank(boolean blank) {
+    this.blank = blank;
+  }
+
   /**
    * Get the content from the input JSON according to the value attribute using dot notation.
    *
@@ -69,7 +80,7 @@ public class MetadataField {
     JsonNode resultNode = getResultNode(node, value);
     String value = resultNode.asText(StringUtils.EMPTY);
 
-    if (StringUtils.isNotEmpty(value)) {
+    if (StringUtils.isNotEmpty(value) || isBlank()) {
       root.addContent(getKey(), value);
     }
   }
