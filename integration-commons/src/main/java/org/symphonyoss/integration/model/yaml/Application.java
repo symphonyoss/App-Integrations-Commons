@@ -56,6 +56,8 @@ public class Application {
 
   private String avatar;
 
+  private String avatarUrl;
+
   private WhiteList whiteList = new WhiteList();
 
   public String getId() {
@@ -165,6 +167,14 @@ public class Application {
 
   public void setAvatar(String avatar) {
     this.avatar = avatar;
+  }
+
+  public String getAvatarUrl() {
+    return avatarUrl;
+  }
+
+  public void setAvatarUrl(String avatarUrl) {
+    this.avatarUrl = avatarUrl;
   }
 
   /**
