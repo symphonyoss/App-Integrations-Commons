@@ -34,16 +34,6 @@ public class MockMetadataParser extends MetadataParser {
   }
 
   @Override
-  protected void preProcessInputData(JsonNode input) {
-    // Do nothing
-  }
-
-  @Override
-  protected void postProcessOutputData(EntityObject output, JsonNode input) {
-    // Do nothing
-  }
-
-  @Override
   protected String getTemplateFile() {
     return templateFile;
   }

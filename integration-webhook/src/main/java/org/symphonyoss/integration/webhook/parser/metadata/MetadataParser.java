@@ -192,7 +192,7 @@ public abstract class MetadataParser {
   /**
    * Perform a pre-processing on the input data.
    *
-   * This method must be implemented by the concrete parser classes to perform any data manipulation
+   * This method can be overridden by the concrete parser classes to perform any data manipulation
    * on the JSON input payload or augment the payload received with internal Symphony data retrieved
    * through the Symphony API's.
    *
@@ -204,7 +204,9 @@ public abstract class MetadataParser {
    *
    * @param input JSON input payload
    */
-  protected abstract void preProcessInputData(JsonNode input);
+  protected void preProcessInputData(JsonNode input) {
+    // Do nothing
+  }
 
   /**
    * Process metadata objects to generate Entity JSON. This method is called recursively for
@@ -244,7 +246,7 @@ public abstract class MetadataParser {
   /**
    * Perform a post-processing on the output data.
    *
-   * This method must be implemented by the concrete parser classes to include additional fields
+   * This method can be overridden by the concrete parser classes to include additional fields
    * on the output Entity JSON which weren't be processed directly from the JSON input payload.
    *
    * Example:
@@ -253,7 +255,9 @@ public abstract class MetadataParser {
    * @param output Output Entity JSON
    * @param input JSON input payload
    */
-  protected abstract void postProcessOutputData(EntityObject output, JsonNode input);
+  protected void postProcessOutputData(EntityObject output, JsonNode input) {
+    // Do nothing
+  }
 
   /**
    * Get the MessageML template filename that must be read by the parser during the bootstrap.
