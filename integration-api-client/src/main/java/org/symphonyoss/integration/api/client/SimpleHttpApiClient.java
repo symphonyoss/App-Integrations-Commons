@@ -86,7 +86,7 @@ public class SimpleHttpApiClient implements HttpApiClient {
         getInvocationBuilder(path, client, queryParams, headerParams);
 
     Response response = invocationBuilder.get();
-    return handleResponse(returnType, response);
+    return handleResponseAndClose(returnType, response);
   }
 
   @Override
@@ -98,7 +98,7 @@ public class SimpleHttpApiClient implements HttpApiClient {
         getInvocationBuilder(path, client, queryParams, headerParams);
 
     Response response = invocationBuilder.post(serializer.serialize(payload));
-    return handleResponse(returnType, response);
+    return handleResponseAndClose(returnType, response);
   }
 
   @Override
@@ -109,7 +109,7 @@ public class SimpleHttpApiClient implements HttpApiClient {
         getInvocationBuilder(path, client, queryParams, headerParams);
 
     Response response = invocationBuilder.put(serializer.serialize(payload));
-    return handleResponse(returnType, response);
+    return handleResponseAndClose(returnType, response);
   }
 
   @Override
@@ -120,7 +120,7 @@ public class SimpleHttpApiClient implements HttpApiClient {
         getInvocationBuilder(path, client, queryParams, headerParams);
 
     Response response = invocationBuilder.delete();
-    return handleResponse(returnType, response);
+    return handleResponseAndClose(returnType, response);
   }
 
   @Override
@@ -174,6 +174,21 @@ public class SimpleHttpApiClient implements HttpApiClient {
     }
 
     return target;
+  }
+
+  /**
+   * Handles the HTTP response and subsequently makes sure it is closed.
+   * @param returnType Expected return type
+   * @param response HTTP response
+   * @return HTTP response payload wrapped in the expected type or null if have no response
+   * @throws RemoteApiException
+   */
+  private <T> T handleResponseAndClose(Class<T> returnType, Response response) throws RemoteApiException {
+    try {
+      return handleResponse(returnType, response);
+    } finally {
+      response.close();
+    }
   }
 
   /**
