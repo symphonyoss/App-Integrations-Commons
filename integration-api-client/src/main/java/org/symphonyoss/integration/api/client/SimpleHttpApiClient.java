@@ -81,46 +81,74 @@ public class SimpleHttpApiClient implements HttpApiClient {
   @Override
   public <T> T doGet(String path, Map<String, String> headerParams, Map<String, String> queryParams,
       Class<T> returnType) throws RemoteApiException {
-    Client client = getClientForContext(queryParams, headerParams);
-    Invocation.Builder invocationBuilder =
-        getInvocationBuilder(path, client, queryParams, headerParams);
+    Response response = null;
+    try {
+      Client client = getClientForContext(queryParams, headerParams);
+      Invocation.Builder invocationBuilder =
+          getInvocationBuilder(path, client, queryParams, headerParams);
 
-    Response response = invocationBuilder.get();
-    return handleResponseAndClose(returnType, response);
+      response = invocationBuilder.get();
+      return handleResponse(returnType, response);
+    } finally {
+      if (response != null) {
+        response.close();
+      }
+    }
   }
 
   @Override
   public <T> T doPost(String path, Map<String, String> headerParams,
       Map<String, String> queryParams, Object payload, Class<T> returnType)
       throws RemoteApiException {
-    Client client = getClientForContext(queryParams, headerParams);
-    Invocation.Builder invocationBuilder =
-        getInvocationBuilder(path, client, queryParams, headerParams);
+    Response response = null;
+    try {
+      Client client = getClientForContext(queryParams, headerParams);
+      Invocation.Builder invocationBuilder =
+          getInvocationBuilder(path, client, queryParams, headerParams);
 
-    Response response = invocationBuilder.post(serializer.serialize(payload));
-    return handleResponseAndClose(returnType, response);
+      response = invocationBuilder.post(serializer.serialize(payload));
+      return handleResponse(returnType, response);
+    } finally {
+      if (response != null) {
+        response.close();
+      }
+    }
   }
 
   @Override
   public <T> T doPut(String path, Map<String, String> headerParams, Map<String, String> queryParams,
       Object payload, Class<T> returnType) throws RemoteApiException {
-    Client client = getClientForContext(queryParams, headerParams);
-    Invocation.Builder invocationBuilder =
-        getInvocationBuilder(path, client, queryParams, headerParams);
+    Response response = null;
+    try {
+      Client client = getClientForContext(queryParams, headerParams);
+      Invocation.Builder invocationBuilder =
+          getInvocationBuilder(path, client, queryParams, headerParams);
 
-    Response response = invocationBuilder.put(serializer.serialize(payload));
-    return handleResponseAndClose(returnType, response);
+      response = invocationBuilder.put(serializer.serialize(payload));
+      return handleResponse(returnType, response);
+    } finally {
+      if (response != null) {
+        response.close();
+      }
+    }
   }
 
   @Override
   public <T> T doDelete(String path, Map<String, String> headerParams,
       Map<String, String> queryParams, Class<T> returnType) throws RemoteApiException {
-    Client client = getClientForContext(queryParams, headerParams);
-    Invocation.Builder invocationBuilder =
-        getInvocationBuilder(path, client, queryParams, headerParams);
+    Response response = null;
+    try {
+      Client client = getClientForContext(queryParams, headerParams);
+      Invocation.Builder invocationBuilder =
+          getInvocationBuilder(path, client, queryParams, headerParams);
 
-    Response response = invocationBuilder.delete();
-    return handleResponseAndClose(returnType, response);
+      response = invocationBuilder.delete();
+      return handleResponse(returnType, response);
+    } finally {
+      if (response != null) {
+        response.close();
+      }
+    }
   }
 
   @Override
@@ -174,21 +202,6 @@ public class SimpleHttpApiClient implements HttpApiClient {
     }
 
     return target;
-  }
-
-  /**
-   * Handles the HTTP response and subsequently makes sure it is closed.
-   * @param returnType Expected return type
-   * @param response HTTP response
-   * @return HTTP response payload wrapped in the expected type or null if have no response
-   * @throws RemoteApiException
-   */
-  private <T> T handleResponseAndClose(Class<T> returnType, Response response) throws RemoteApiException {
-    try {
-      return handleResponse(returnType, response);
-    } finally {
-      response.close();
-    }
   }
 
   /**
