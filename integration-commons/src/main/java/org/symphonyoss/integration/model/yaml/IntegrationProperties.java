@@ -49,6 +49,8 @@ public class IntegrationProperties {
 
   private ConnectionInfo keyManagerAuth;
 
+  private ApiClientConfig apiClientConfig;
+
   private Map<String, Application> applications = new HashMap<>();
 
   private IntegrationBridge integrationBridge;
@@ -101,6 +103,15 @@ public class IntegrationProperties {
 
   public void setKeyManagerAuth(ConnectionInfo keyManagerAuth) {
     this.keyManagerAuth = keyManagerAuth;
+  }
+
+
+  public ApiClientConfig getApiClientConfig() {
+    return apiClientConfig;
+  }
+
+  public void setApiClientConfig(ApiClientConfig apiClientConfig) {
+    this.apiClientConfig = apiClientConfig;
   }
 
   public Map<String, Application> getApplications() {
