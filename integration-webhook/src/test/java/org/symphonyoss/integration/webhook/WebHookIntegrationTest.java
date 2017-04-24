@@ -53,6 +53,7 @@ import org.symphonyoss.integration.IntegrationStatus;
 import org.symphonyoss.integration.MockKeystore;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
 import org.symphonyoss.integration.entity.model.User;
+import org.symphonyoss.integration.exception.RemoteApiException;
 import org.symphonyoss.integration.exception.bootstrap.CertificateNotFoundException;
 import org.symphonyoss.integration.exception.bootstrap.LoadKeyStoreException;
 import org.symphonyoss.integration.exception.bootstrap.UnexpectedBootstrapException;
@@ -239,7 +240,7 @@ public class WebHookIntegrationTest extends MockKeystore {
 
   @Test
   public void testHandleWithUpdateTimestamp()
-      throws WebHookParseException, IOException {
+      throws WebHookParseException, IOException, RemoteApiException {
     doReturn(settings).when(integrationService).getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
 
     List<Message> response = new ArrayList<>();
@@ -287,7 +288,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   }
 
   @Test
-  public void testHandleFailedSend() throws WebHookParseException, IOException {
+  public void testHandleFailedSend() throws WebHookParseException, IOException, RemoteApiException {
     doReturn(settings).when(integrationService).getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
 
     doReturn(new ArrayList<Message>()).when(service)
@@ -324,7 +325,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   }
 
   @Test
-  public void testHandleSocketException() throws WebHookParseException, IOException {
+  public void testHandleSocketException() throws WebHookParseException, IOException, RemoteApiException {
     ProcessingException exception = new ProcessingException(new ConnectException());
     doThrow(exception).when(service)
         .sendMessage(any(IntegrationInstance.class), anyString(), anyListOf(String.class),
@@ -364,7 +365,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   }
 
   @Test(expected = StreamTypeNotFoundException.class)
-  public void testWelcomeInvalidPayload() throws IOException {
+  public void testWelcomeInvalidPayload() throws IOException, RemoteApiException {
     SendMessageAnswer answer = new SendMessageAnswer();
     doAnswer(answer).when(service)
         .sendMessage(any(IntegrationInstance.class), anyString(), anyListOf(String.class),
@@ -374,7 +375,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   }
 
   @Test(expected = StreamTypeNotFoundException.class)
-  public void testWelcomeEmptyPayload() throws IOException {
+  public void testWelcomeEmptyPayload() throws IOException, RemoteApiException {
     SendMessageAnswer answer = new SendMessageAnswer();
     doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
         anyListOf(String.class), any(Message.class));
@@ -392,7 +393,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   }
 
   @Test(expected = StreamTypeNotFoundException.class)
-  public void testWelcomeInvalidStreams() throws IOException {
+  public void testWelcomeInvalidStreams() throws IOException, RemoteApiException {
     SendMessageAnswer answer = new SendMessageAnswer();
     doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
         anyListOf(String.class), any(Message.class));
@@ -410,7 +411,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   }
 
   @Test(expected = InvalidStreamTypeException.class)
-  public void testWelcomeEmptyStreamType() throws IOException {
+  public void testWelcomeEmptyStreamType() throws IOException, RemoteApiException {
     SendMessageAnswer answer = new SendMessageAnswer();
     doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
         anyListOf(String.class), any(Message.class));
@@ -428,7 +429,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   }
 
   @Test
-  public void testWelcomeIMStreamType() throws IOException {
+  public void testWelcomeIMStreamType() throws IOException, RemoteApiException {
     SendMessageAnswer answer = new SendMessageAnswer();
     doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
         anyListOf(String.class), any(Message.class));
@@ -453,7 +454,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   }
 
   @Test
-  public void testWelcomeChatroomStreamType() throws IOException {
+  public void testWelcomeChatroomStreamType() throws IOException, RemoteApiException {
     User user = new User();
     user.setDisplayName("Test user");
 
@@ -486,7 +487,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   }
 
   @Test
-  public void testWelcomeChatroomWithoutUserStreamType() throws IOException {
+  public void testWelcomeChatroomWithoutUserStreamType() throws IOException, RemoteApiException {
     SendMessageAnswer answer = new SendMessageAnswer();
     doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
         anyListOf(String.class), any(Message.class));
