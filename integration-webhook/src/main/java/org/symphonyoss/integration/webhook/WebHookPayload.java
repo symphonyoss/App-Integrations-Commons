@@ -19,6 +19,7 @@ package org.symphonyoss.integration.webhook;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.core.MediaType;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,84 +30,79 @@ import java.util.Map;
  */
 public class WebHookPayload {
 
-    /**
-     * Header attribute used to get the payload's content type.
-     */
-    private static final String CONTENT_TYPE = "content-type";
+  /**
+   * Header attribute used to get the payload's content type.
+   */
+  private static final String CONTENT_TYPE = "content-type";
 
-    /**
-     * Holds parameters from one's request.
-     */
-    private Map<String, String> parameters = new HashMap<>();
+  /**
+   * Holds parameters from one's request.
+   */
+  private Map<String, String> parameters = new HashMap<>();
 
-    /**
-     * Holds headers from one's request.
-     */
-    private Map<String, String> headers = new HashMap<>();
+  /**
+   * Holds headers from one's request.
+   */
+  private Map<String, String> headers = new HashMap<>();
 
-    /**
-     * Payload body.
-     */
-    private String body;
+  /**
+   * Payload body.
+   */
+  private String body;
 
-    /**
-     * Initializes the class attributes.
-     *
-     * @param parameters from the request.
-     * @param headers    from the request.
-     * @param body       from the payload.
-     */
-    public WebHookPayload(Map<String, String> parameters, Map<String, String> headers, String body) {
-        this.parameters = parameters;
-        this.headers = headers;
-        this.body = body;
+  /**
+   * Initializes the class attributes.
+   * @param parameters from the request.
+   * @param headers from the request.
+   * @param body from the payload.
+   */
+  public WebHookPayload(Map<String, String> parameters, Map<String, String> headers, String body) {
+    this.parameters = parameters;
+    this.headers = headers;
+    this.body = body;
+  }
+
+  /**
+   * Returns the payload parameters.
+   * @return request parameters.
+   */
+  public Map<String, String> getParameters() {
+    return parameters;
+  }
+
+  /**
+   * Returns the payload body.
+   * @return the payload body.
+   */
+  public String getBody() {
+    return body;
+  }
+
+  /**
+   * Returns the request headers.
+   * @return request headers.
+   */
+  public Map<String, String> getHeaders() {
+    return headers;
+  }
+
+  /**
+   * Returns the content type.
+   * @return the content type.
+   */
+  public MediaType getContentType() {
+    String contentType = null;
+    if (headers != null) {
+      contentType = headers.get(CONTENT_TYPE);
     }
-
-    /**
-     * Returns the payload parameters.
-     *
-     * @return request parameters.
-     */
-    public Map<String, String> getParameters() {
-        return parameters;
-    }
-
-    /**
-     * Returns the payload body.
-     *
-     * @return the payload body.
-     */
-    public String getBody() {
-        return body;
-    }
-
-    /**
-     * Returns the request headers.
-     *
-     * @return request headers.
-     */
-    public Map<String, String> getHeaders() {
-        return headers;
-    }
-
-    /**
-     * Returns the content type.
-     *
-     * @return the content type.
-     */
-    public MediaType getContentType() {
-        String contentType = null;
-        if (headers != null) {
-            contentType = headers.get(CONTENT_TYPE);
-        }
-        if (!StringUtils.isEmpty(contentType)) {
-            try {
-                return MediaType.valueOf(contentType);
-            } catch (Exception e) {
-                // Passed content type is invalid, we use default one
-                return MediaType.WILDCARD_TYPE;
-            }
-        }
+    if (!StringUtils.isEmpty(contentType)) {
+      try {
+        return MediaType.valueOf(contentType);
+      } catch (Exception e) {
+        // Passed content type is invalid, we use default one
         return MediaType.WILDCARD_TYPE;
+      }
     }
+    return MediaType.WILDCARD_TYPE;
+  }
 }
