@@ -1,0 +1,11 @@
+{
+  "testEvent": {
+    "type": "com.symphony.integration.test",
+    "version": "1.0",
+    "header": {
+      "type": "com.symphony.integration.test.header",
+      "version": "1.0",
+      "value":"hello"
+    }
+  }
+}
