@@ -26,22 +26,22 @@ public class ApiClientConfig {
   /**
    * Default timeout for socket read.
    */
-  public static final long DEFAULT_READ_TIMEOUT = 4000;
+  public static final int DEFAULT_READ_TIMEOUT = 4000;
 
   /**
    * Default timeout for socket connection.
    */
-  public static final long DEFAULT_CONNECT_TIMEOUT = 2000;
+  public static final int DEFAULT_CONNECT_TIMEOUT = 2000;
 
   /**
    * Max timeout for socket read.
    */
-  public static final long MAX_READ_TIMEOUT = 30000;
+  public static final int MAX_READ_TIMEOUT = 30000;
 
   /**
    * Max timeout for socket connection.
    */
-  public static final long MAX_CONNECT_TIMEOUT = 10000;
+  public static final int MAX_CONNECT_TIMEOUT = 10000;
 
   /**
    * Connection pool - default total connections.
@@ -63,19 +63,19 @@ public class ApiClientConfig {
    */
   public static final int MAX_TOTAL_CONNECTIONS_PER_ROUTE = 200;
 
-  private Long connectTimeout = DEFAULT_CONNECT_TIMEOUT;
+  private Integer connectTimeout = DEFAULT_CONNECT_TIMEOUT;
 
-  private Long readTimeout = DEFAULT_READ_TIMEOUT;
+  private Integer readTimeout = DEFAULT_READ_TIMEOUT;
 
   private Integer maxConnections = DEFAULT_TOTAL_CONNECTIONS;
 
   private Integer maxConnectionsPerRoute = DEFAULT_TOTAL_CONNECTIONS_PER_ROUTE;
 
-  public Long getConnectTimeout() {
+  public Integer getConnectTimeout() {
     return connectTimeout;
   }
 
-  public void setConnectTimeout(Long connectTimeout) {
+  public void setConnectTimeout(Integer connectTimeout) {
     if (connectTimeout == null || connectTimeout <= 0) {
       connectTimeout = DEFAULT_CONNECT_TIMEOUT;
     } else if (connectTimeout > MAX_CONNECT_TIMEOUT) {
@@ -84,11 +84,11 @@ public class ApiClientConfig {
     this.connectTimeout = connectTimeout;
   }
 
-  public Long getReadTimeout() {
+  public Integer getReadTimeout() {
     return readTimeout;
   }
 
-  public void setReadTimeout(Long readTimeout) {
+  public void setReadTimeout(Integer readTimeout) {
     if (readTimeout == null || readTimeout <= 0) {
       readTimeout = DEFAULT_READ_TIMEOUT;
     } else if (readTimeout > MAX_READ_TIMEOUT) {
