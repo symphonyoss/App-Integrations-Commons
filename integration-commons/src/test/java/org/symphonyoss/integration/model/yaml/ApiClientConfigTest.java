@@ -30,8 +30,8 @@ public class ApiClientConfigTest {
   public void testDefaultInitialValues() {
     ApiClientConfig apiClientConfig = new ApiClientConfig();
 
-    assertEquals(apiClientConfig.getReadTimeout(), (Long) ApiClientConfig.DEFAULT_READ_TIMEOUT);
-    assertEquals(apiClientConfig.getConnectTimeout(), (Long) ApiClientConfig.DEFAULT_CONNECT_TIMEOUT);
+    assertEquals(apiClientConfig.getReadTimeout(), (Integer) ApiClientConfig.DEFAULT_READ_TIMEOUT);
+    assertEquals(apiClientConfig.getConnectTimeout(), (Integer) ApiClientConfig.DEFAULT_CONNECT_TIMEOUT);
     assertEquals(apiClientConfig.getMaxConnections(), (Integer) ApiClientConfig.DEFAULT_TOTAL_CONNECTIONS);
     assertEquals(apiClientConfig.getMaxConnectionsPerRoute(), (Integer) ApiClientConfig.DEFAULT_TOTAL_CONNECTIONS_PER_ROUTE);
   }
@@ -45,8 +45,8 @@ public class ApiClientConfigTest {
     apiClientConfig.setMaxConnectionsPerRoute(ApiClientConfig.DEFAULT_TOTAL_CONNECTIONS_PER_ROUTE - 1);
 
 
-    assertEquals(apiClientConfig.getReadTimeout(), (Long) (ApiClientConfig.DEFAULT_READ_TIMEOUT - 1));
-    assertEquals(apiClientConfig.getConnectTimeout(), (Long) (ApiClientConfig.DEFAULT_CONNECT_TIMEOUT - 1));
+    assertEquals(apiClientConfig.getReadTimeout(), (Integer) (ApiClientConfig.DEFAULT_READ_TIMEOUT - 1));
+    assertEquals(apiClientConfig.getConnectTimeout(), (Integer) (ApiClientConfig.DEFAULT_CONNECT_TIMEOUT - 1));
     assertEquals(apiClientConfig.getMaxConnections(), (Integer) (ApiClientConfig.DEFAULT_TOTAL_CONNECTIONS - 1));
     assertEquals(apiClientConfig.getMaxConnectionsPerRoute(), (Integer) (ApiClientConfig.DEFAULT_TOTAL_CONNECTIONS_PER_ROUTE - 1));
   }
@@ -60,8 +60,8 @@ public class ApiClientConfigTest {
     apiClientConfig.setMaxConnectionsPerRoute(null);
 
 
-    assertEquals(apiClientConfig.getReadTimeout(), (Long) ApiClientConfig.DEFAULT_READ_TIMEOUT);
-    assertEquals(apiClientConfig.getConnectTimeout(), (Long) ApiClientConfig.DEFAULT_CONNECT_TIMEOUT);
+    assertEquals(apiClientConfig.getReadTimeout(), (Integer) ApiClientConfig.DEFAULT_READ_TIMEOUT);
+    assertEquals(apiClientConfig.getConnectTimeout(), (Integer) ApiClientConfig.DEFAULT_CONNECT_TIMEOUT);
     assertEquals(apiClientConfig.getMaxConnections(), (Integer) ApiClientConfig.DEFAULT_TOTAL_CONNECTIONS);
     assertEquals(apiClientConfig.getMaxConnectionsPerRoute(), (Integer) ApiClientConfig.DEFAULT_TOTAL_CONNECTIONS_PER_ROUTE);
   }
@@ -69,13 +69,13 @@ public class ApiClientConfigTest {
   @Test
   public void testDefaultValuesOnZeroAssignment() {
     ApiClientConfig apiClientConfig = new ApiClientConfig();
-    apiClientConfig.setReadTimeout(0L);
-    apiClientConfig.setConnectTimeout(0L);
+    apiClientConfig.setReadTimeout(0);
+    apiClientConfig.setConnectTimeout(0);
     apiClientConfig.setMaxConnections(0);
     apiClientConfig.setMaxConnectionsPerRoute(0);
 
-    assertEquals(apiClientConfig.getReadTimeout(), (Long) ApiClientConfig.DEFAULT_READ_TIMEOUT);
-    assertEquals(apiClientConfig.getConnectTimeout(), (Long) ApiClientConfig.DEFAULT_CONNECT_TIMEOUT);
+    assertEquals(apiClientConfig.getReadTimeout(), (Integer) ApiClientConfig.DEFAULT_READ_TIMEOUT);
+    assertEquals(apiClientConfig.getConnectTimeout(), (Integer) ApiClientConfig.DEFAULT_CONNECT_TIMEOUT);
     assertEquals(apiClientConfig.getMaxConnections(), (Integer) ApiClientConfig.DEFAULT_TOTAL_CONNECTIONS);
     assertEquals(apiClientConfig.getMaxConnectionsPerRoute(), (Integer) ApiClientConfig.DEFAULT_TOTAL_CONNECTIONS_PER_ROUTE);
   }
@@ -83,13 +83,13 @@ public class ApiClientConfigTest {
   @Test
   public void testDefaultValuesOnNegativeAssignment() {
     ApiClientConfig apiClientConfig = new ApiClientConfig();
-    apiClientConfig.setReadTimeout(-1L);
-    apiClientConfig.setConnectTimeout(-1L);
+    apiClientConfig.setReadTimeout(-1);
+    apiClientConfig.setConnectTimeout(-1);
     apiClientConfig.setMaxConnections(-1);
     apiClientConfig.setMaxConnectionsPerRoute(-1);
 
-    assertEquals(apiClientConfig.getReadTimeout(), (Long) ApiClientConfig.DEFAULT_READ_TIMEOUT);
-    assertEquals(apiClientConfig.getConnectTimeout(), (Long) ApiClientConfig.DEFAULT_CONNECT_TIMEOUT);
+    assertEquals(apiClientConfig.getReadTimeout(), (Integer) ApiClientConfig.DEFAULT_READ_TIMEOUT);
+    assertEquals(apiClientConfig.getConnectTimeout(), (Integer) ApiClientConfig.DEFAULT_CONNECT_TIMEOUT);
     assertEquals(apiClientConfig.getMaxConnections(), (Integer) ApiClientConfig.DEFAULT_TOTAL_CONNECTIONS);
     assertEquals(apiClientConfig.getMaxConnectionsPerRoute(), (Integer) ApiClientConfig.DEFAULT_TOTAL_CONNECTIONS_PER_ROUTE);
   }
@@ -102,8 +102,8 @@ public class ApiClientConfigTest {
     apiClientConfig.setMaxConnections(ApiClientConfig.MAX_TOTAL_CONNECTIONS + 1);
     apiClientConfig.setMaxConnectionsPerRoute(ApiClientConfig.MAX_TOTAL_CONNECTIONS_PER_ROUTE + 1);
 
-    assertEquals(apiClientConfig.getReadTimeout(), (Long) ApiClientConfig.MAX_READ_TIMEOUT);
-    assertEquals(apiClientConfig.getConnectTimeout(), (Long) ApiClientConfig.MAX_CONNECT_TIMEOUT);
+    assertEquals(apiClientConfig.getReadTimeout(), (Integer) ApiClientConfig.MAX_READ_TIMEOUT);
+    assertEquals(apiClientConfig.getConnectTimeout(), (Integer) ApiClientConfig.MAX_CONNECT_TIMEOUT);
     assertEquals(apiClientConfig.getMaxConnections(), (Integer) ApiClientConfig.MAX_TOTAL_CONNECTIONS);
     assertEquals(apiClientConfig.getMaxConnectionsPerRoute(), (Integer) ApiClientConfig.MAX_TOTAL_CONNECTIONS_PER_ROUTE);
   }
