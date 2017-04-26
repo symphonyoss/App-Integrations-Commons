@@ -16,9 +16,6 @@
 
 package org.symphonyoss.integration.webhook;
 
-import static org.symphonyoss.integration.messageml.MessageMLFormatConstants.MESSAGEML_END;
-import static org.symphonyoss.integration.messageml.MessageMLFormatConstants.MESSAGEML_START;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.test.context.TestComponent;
@@ -27,7 +24,13 @@ import org.symphonyoss.integration.json.JsonUtils;
 import org.symphonyoss.integration.model.message.Message;
 import org.symphonyoss.integration.webhook.exception.WebHookParseException;
 
+import javax.ws.rs.core.MediaType;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.symphonyoss.integration.messageml.MessageMLFormatConstants.MESSAGEML_END;
+import static org.symphonyoss.integration.messageml.MessageMLFormatConstants.MESSAGEML_START;
 
 /**
  * Mock class for {@link WebHookIntegration}
@@ -59,4 +62,13 @@ public class MockWebHookIntegration extends WebHookIntegration {
     return message;
   }
 
+  /**
+   * @see WebHookIntegration#getSupportedContentTypes()
+   */
+  @Override
+  public List<MediaType> getSupportedContentTypes() {
+    List<MediaType> supportedContentTypes = new ArrayList<>();
+    supportedContentTypes.add(MediaType.WILDCARD_TYPE);
+    return supportedContentTypes;
+  }
 }

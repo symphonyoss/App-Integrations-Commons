@@ -57,6 +57,8 @@ import org.symphonyoss.integration.webhook.exception.WebHookParseException;
 import org.symphonyoss.integration.webhook.exception.WebHookUnavailableException;
 import org.symphonyoss.integration.webhook.metrics.ParserMetricsController;
 
+import javax.ws.rs.core.MediaType;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -288,7 +290,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
     List<String> streams = streamService.getStreams(payload);
 
     // Remove unexpected streams
-    for (Iterator<String> it = streams.iterator(); it.hasNext();) {
+    for (Iterator<String> it = streams.iterator(); it.hasNext(); ) {
       String stream = it.next();
       if (!instanceStreams.contains(stream)) {
         it.remove();
@@ -296,7 +298,8 @@ public abstract class WebHookIntegration extends BaseIntegration {
     }
 
     if (streams.isEmpty()) {
-      throw new StreamTypeNotFoundException("Cannot determine the stream type of the configuration instance");
+      throw new StreamTypeNotFoundException(
+          "Cannot determine the stream type of the configuration instance");
     }
 
     String message = getWelcomeMessage(instance, integrationUser);
@@ -358,7 +361,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
    * @param message Formatted MessageML
    */
   private void postMessage(IntegrationInstance instance, String integrationUser,
-      List<String> streams, Message message)  throws RemoteApiException{
+      List<String> streams, Message message) throws RemoteApiException {
     // Post a message
     List<Message> response = sendMessage(instance, integrationUser, streams, message);
     // Get the timestamp of the last message posted
@@ -536,4 +539,27 @@ public abstract class WebHookIntegration extends BaseIntegration {
     return application.getWhiteList();
   }
 
+  /**
+   * Retrieve the supported content types of the Integration.
+   * @return List with all the supported types by that integration.
+   */
+  public abstract List<MediaType> getSupportedContentTypes();
+
+  /**
+   * Checks if a payload content type is supported by the integration.
+   * @param contentType to check if it is supported.
+   * @return boolean indicating if it is supported.
+   */
+  public boolean isSupportedContentType(MediaType contentType) {
+    // If none information can be found about supported content-types, all types will be accepted
+    // then
+    List<MediaType> supportedContentTypes = getSupportedContentTypes();
+    if (supportedContentTypes == null
+        || supportedContentTypes.isEmpty()
+        || supportedContentTypes.contains(MediaType.WILDCARD_TYPE)) {
+      return true;
+    }
+    // Supported types are specified, so, let's check they match
+    return supportedContentTypes.contains(contentType);
+  }
 }
