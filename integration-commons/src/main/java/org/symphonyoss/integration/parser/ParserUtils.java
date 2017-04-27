@@ -58,9 +58,13 @@ public final class ParserUtils {
   /**
    * Regular expression strings for markupLinks method.
    */
+  private static final String URL_HEADER_REGEX = "((http|ftp|https)://|www\\.)";
+  private static final String URL_DOMAIN_REGEX = "([\\w_-]+(?:(?:\\.[\\w_-]+)+))";
+  private static final String URL_ADDRESS_REGEX = "[\\w.,@?^=!$%:/*~+#()_-]*(&amp;)*";
   private static final String URL_REGEX =
-      "((http|ftp|https)://|www\\.)([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,"
-          + "@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])?";
+      URL_HEADER_REGEX + URL_DOMAIN_REGEX + "((/)*" + URL_ADDRESS_REGEX + ")*";
+
+
   private static final String LINK_MARKUP_BEGIN = "<[\\s]*[a][\\s]*href[\\s]*=[\\s]*";
   private static final String LINK_MARKUP_END = "[\\s]*>.*?</a>";
   private static final String MARKED_UP_LINK =
@@ -89,6 +93,7 @@ public final class ParserUtils {
   private static final String A_HREF_BEGIN = "<a href=\"";
   private static final String A_HREF_END = "\"/>";
 
+
   /**
    * Declaring a private constructor to avoid class instantiation.
    */
@@ -102,7 +107,7 @@ public final class ParserUtils {
    * @return modified message containing all needed links.
    */
   public static String markupLinks(String message) {
-    final Matcher m = linkPattern.matcher(message);
+    Matcher m = linkPattern.matcher(message);
 
     while (m.find()) {
 
@@ -110,8 +115,20 @@ public final class ParserUtils {
       final Boolean end = m.group().endsWith("/>");
 
       if (!begin && !end) {
+
         String finalUrl = m.group().startsWith("www") ? "http://" + m.group() : m.group();
-        message = message.replace(m.group(), "<a href=\"" + finalUrl + "\">" + finalUrl + "</a>");
+
+        //Find the substring to replace
+        int startIndex = m.start();
+        int endIndex = m.end();
+        int stringLength = message.length();
+
+        //Rebuilds string
+        message =
+            message.substring(0, startIndex) + "<a href=\"" + finalUrl + "\">" + finalUrl + "</a>"
+                + message.substring(endIndex, stringLength);
+        //Resets the matcher with the new message
+        m = linkPattern.matcher(message);
       }
     }
     return message;
