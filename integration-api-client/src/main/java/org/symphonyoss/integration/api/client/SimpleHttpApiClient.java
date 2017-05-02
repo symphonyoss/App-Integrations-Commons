@@ -44,6 +44,10 @@ public class SimpleHttpApiClient implements HttpApiClient {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SimpleHttpApiClient.class);
 
+  private static final String DEFAULT_MIME_VERSION_HEADER = "1.0";
+
+  private static final String MIME_VERSION_HEADER = "MIME-Version";
+
   /**
    * JSON helper class
    */
@@ -179,6 +183,8 @@ public class SimpleHttpApiClient implements HttpApiClient {
         invocationBuilder = invocationBuilder.header(entry.getKey(), entry.getValue());
       }
     }
+
+    invocationBuilder.header(MIME_VERSION_HEADER, DEFAULT_MIME_VERSION_HEADER);
 
     return invocationBuilder;
   }
