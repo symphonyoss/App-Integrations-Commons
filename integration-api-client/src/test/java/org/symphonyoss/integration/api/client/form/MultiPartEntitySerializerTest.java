@@ -18,7 +18,9 @@ package org.symphonyoss.integration.api.client.form;
 
 import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA_TYPE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
+import org.glassfish.jersey.media.multipart.Boundary;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.junit.Test;
 import org.symphonyoss.integration.exception.RemoteApiException;
@@ -42,8 +44,10 @@ public class MultiPartEntitySerializerTest {
 
     Entity result = serializer.serialize(input);
 
-    Entity<MultiPart> expected = Entity.entity(input, MULTIPART_FORM_DATA_TYPE);
+    MediaType mediaType = result.getMediaType();
 
-    assertEquals(expected, result);
+    assertEquals(MULTIPART_FORM_DATA_TYPE, new MediaType(mediaType.getType(), mediaType.getSubtype()));
+    assertNotNull(mediaType.getParameters().get(Boundary.BOUNDARY_PARAMETER));
+    assertEquals(input, result.getEntity());
   }
 }

@@ -18,6 +18,7 @@ package org.symphonyoss.integration.api.client.form;
 
 import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA_TYPE;
 
+import org.glassfish.jersey.media.multipart.Boundary;
 import org.symphonyoss.integration.api.client.EntitySerializer;
 import org.symphonyoss.integration.exception.RemoteApiException;
 
@@ -32,7 +33,7 @@ public class MultiPartEntitySerializer implements EntitySerializer {
 
   @Override
   public Entity serialize(Object input) throws RemoteApiException {
-    return Entity.entity(input, MULTIPART_FORM_DATA_TYPE);
+    return Entity.entity(input, Boundary.addBoundary(MULTIPART_FORM_DATA_TYPE));
   }
 
 }
