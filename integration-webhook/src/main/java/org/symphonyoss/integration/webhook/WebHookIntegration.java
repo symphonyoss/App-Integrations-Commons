@@ -91,6 +91,8 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
   private static final String UNKNOWN_USER = "UNKNOWN";
 
+  private static final String PROLOG_ML_REGEX = "((<\\?xml version =\\\")[\\d].[\\d]\\\"[\\s\\w\\d=\"\\?-]*>)";
+
   @Autowired
   @Qualifier("remoteIntegrationService")
   private IntegrationService integrationService;
@@ -436,8 +438,10 @@ public abstract class WebHookIntegration extends BaseIntegration {
    * @return the Symphony MessageML message.
    */
   protected Message buildMessageML(String message, String webHookEvent) {
-    if (message != null && !message.trim().isEmpty()) {
-      String formattedMessage = MESSAGEML_START + message + MESSAGEML_END;
+    if (!StringUtils.isBlank(message)) {
+      //Remove XML prolog
+      String formattedMessage = message.replaceAll(PROLOG_ML_REGEX,"");
+      formattedMessage = MESSAGEML_START + formattedMessage + MESSAGEML_END;
 
       Message messageSubmission = new Message();
       messageSubmission.setMessage(formattedMessage);

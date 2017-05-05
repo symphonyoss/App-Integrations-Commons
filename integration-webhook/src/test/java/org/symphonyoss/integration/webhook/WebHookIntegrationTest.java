@@ -108,6 +108,20 @@ public class WebHookIntegrationTest extends MockKeystore {
 
   private static final String INTEGRATION_USER = "jiraWebHookIntegration";
 
+  private static final String XML_WITH_PROLOG =
+      "<?xml version =\"1.0\" encoding=\"UTF-8\"?><mention"
+          + " email=\"rsanchez@symphony.com\"/> created SAM-25 "
+          + "(<a href=\"https://whiteam1.atlassian.net/browse/SAM-25\"/>) "
+          + "(<b>Highest</b> Story in Sample 1 with labels &quot;production&quot;)"
+          + "<br/>Description: Issue "
+          + "Test<br/>Assignee: <mention email=\"rsanchez@symphony.com\"/>";
+
+  private static final String VALID_MESSAGEML = "<messageML><mention email=\"rsanchez@symphony"
+      + ".com\"/> created SAM-25 (<a href=\"https://whiteam1.atlassian.net/browse/SAM-25\"/>) "
+      + "(<b>Highest</b> Story in Sample 1 with labels &quot;production&quot;)<br/>Description: "
+      + "Issue "
+      + "Test<br/>Assignee: <mention email=\"rsanchez@symphony.com\"/></messageML>";
+
   @MockBean
   private IntegrationBridge service;
 
@@ -164,7 +178,8 @@ public class WebHookIntegrationTest extends MockKeystore {
 
     mockWHI.onConfigChange(settings);
 
-    doReturn(settings).when(integrationService).getIntegrationByType(INTEGRATION_USER, INTEGRATION_USER);
+    doReturn(settings).when(integrationService)
+        .getIntegrationByType(INTEGRATION_USER, INTEGRATION_USER);
 
     doAnswer(new Answer<StreamType>() {
       @Override
@@ -204,7 +219,7 @@ public class WebHookIntegrationTest extends MockKeystore {
       mockWHI.onConfigChange(null);
       mockWHI.onCreate(INTEGRATION_USER);
     } catch (CertificateNotFoundException e) {
-      IntegrationHealth health  = mockWHI.getHealthStatus();
+      IntegrationHealth health = mockWHI.getHealthStatus();
       assertEquals(IntegrationStatus.FAILED_BOOTSTRAP.name(), health.getStatus());
       assertEquals(IntegrationFlags.ValueEnum.NOK, health.getFlags().getCertificateInstalled());
     }
@@ -219,7 +234,7 @@ public class WebHookIntegrationTest extends MockKeystore {
       mockWHI.onConfigChange(null);
       mockWHI.onCreate(INTEGRATION_USER);
     } catch (LoadKeyStoreException e) {
-      IntegrationHealth health  = mockWHI.getHealthStatus();
+      IntegrationHealth health = mockWHI.getHealthStatus();
       assertEquals(IntegrationStatus.FAILED_BOOTSTRAP.name(), health.getStatus());
       assertEquals(IntegrationFlags.ValueEnum.NOK, health.getFlags().getCertificateInstalled());
     }
@@ -233,7 +248,7 @@ public class WebHookIntegrationTest extends MockKeystore {
 
     mockWHI.onCreate(INTEGRATION_USER);
 
-    IntegrationHealth health  = mockWHI.getHealthStatus();
+    IntegrationHealth health = mockWHI.getHealthStatus();
     assertEquals(IntegrationStatus.ACTIVE.name(), health.getStatus());
     assertEquals(IntegrationFlags.ValueEnum.OK, health.getFlags().getCertificateInstalled());
   }
@@ -241,7 +256,8 @@ public class WebHookIntegrationTest extends MockKeystore {
   @Test
   public void testHandleWithUpdateTimestamp()
       throws WebHookParseException, IOException, RemoteApiException {
-    doReturn(settings).when(integrationService).getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
+    doReturn(settings).when(integrationService)
+        .getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
 
     List<Message> response = new ArrayList<>();
     Message message1 = new Message();
@@ -268,10 +284,12 @@ public class WebHookIntegrationTest extends MockKeystore {
     instance.setInstanceId("1234");
     instance.setOptionalProperties(optionalProperties);
 
-    doReturn(instance).when(integrationService).getInstanceById(anyString(), anyString(), anyString());
+    doReturn(instance).when(integrationService)
+        .getInstanceById(anyString(), anyString(), anyString());
 
     mockWHI.handle(instance.getInstanceId(), INTEGRATION_USER,
-        new WebHookPayload(Collections.<String, String>emptyMap(), Collections.<String, String>emptyMap(), "{ \"webhookEvent\": \"mock\" }"));
+        new WebHookPayload(Collections.<String, String>emptyMap(),
+            Collections.<String, String>emptyMap(), "{ \"webhookEvent\": \"mock\" }"));
 
     Long lastPostedDate = WebHookConfigurationUtils.fromJsonString(instance.getOptionalProperties())
         .path(LAST_POSTED_DATE).asLong();
@@ -289,7 +307,8 @@ public class WebHookIntegrationTest extends MockKeystore {
 
   @Test
   public void testHandleFailedSend() throws WebHookParseException, IOException, RemoteApiException {
-    doReturn(settings).when(integrationService).getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
+    doReturn(settings).when(integrationService)
+        .getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
 
     doReturn(new ArrayList<Message>()).when(service)
         .sendMessage(any(IntegrationInstance.class), anyString(), anyListOf(String.class),
@@ -304,10 +323,12 @@ public class WebHookIntegrationTest extends MockKeystore {
     instance.setInstanceId("1234");
     instance.setOptionalProperties(optionalProperties);
 
-    doReturn(instance).when(integrationService).getInstanceById(anyString(), anyString(), anyString());
+    doReturn(instance).when(integrationService)
+        .getInstanceById(anyString(), anyString(), anyString());
 
     mockWHI.handle(instance.getInstanceId(), INTEGRATION_USER,
-        new WebHookPayload(Collections.<String, String>emptyMap(), Collections.<String, String>emptyMap(), "{ \"webhookEvent\": \"mock\" }"));
+        new WebHookPayload(Collections.<String, String>emptyMap(),
+            Collections.<String, String>emptyMap(), "{ \"webhookEvent\": \"mock\" }"));
 
     Long lastPostedDate = WebHookConfigurationUtils.fromJsonString(instance.getOptionalProperties())
         .path(LAST_POSTED_DATE).asLong();
@@ -325,7 +346,8 @@ public class WebHookIntegrationTest extends MockKeystore {
   }
 
   @Test
-  public void testHandleSocketException() throws WebHookParseException, IOException, RemoteApiException {
+  public void testHandleSocketException()
+      throws WebHookParseException, IOException, RemoteApiException {
     ProcessingException exception = new ProcessingException(new ConnectException());
     doThrow(exception).when(service)
         .sendMessage(any(IntegrationInstance.class), anyString(), anyListOf(String.class),
@@ -343,11 +365,13 @@ public class WebHookIntegrationTest extends MockKeystore {
     IntegrationSettings settings = mock(IntegrationSettings.class);
     doReturn(true).when(settings).getEnabled();
 
-    doReturn(instance).when(integrationService).getInstanceById(anyString(), anyString(), anyString());
+    doReturn(instance).when(integrationService)
+        .getInstanceById(anyString(), anyString(), anyString());
     doReturn(settings).when(integrationService).getIntegrationById(anyString(), anyString());
 
     mockWHI.handle("1234", INTEGRATION_USER,
-        new WebHookPayload(Collections.<String, String>emptyMap(), Collections.<String, String>emptyMap(), "{ \"webhookEvent\": \"mock\" }"));
+        new WebHookPayload(Collections.<String, String>emptyMap(),
+            Collections.<String, String>emptyMap(), "{ \"webhookEvent\": \"mock\" }"));
 
     Long lastPostedDate = WebHookConfigurationUtils.fromJsonString(instance.getOptionalProperties())
         .path(LAST_POSTED_DATE).asLong();
@@ -515,8 +539,10 @@ public class WebHookIntegrationTest extends MockKeystore {
   public void testUnavailable() {
     settings.setEnabled(false);
 
-    doReturn(settings).when(integrationService).getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
-    doReturn(IntegrationFlags.ValueEnum.NOK).when(configuratorFlagsCache).getUnchecked(INTEGRATION_USER);
+    doReturn(settings).when(integrationService)
+        .getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
+    doReturn(IntegrationFlags.ValueEnum.NOK).when(configuratorFlagsCache)
+        .getUnchecked(INTEGRATION_USER);
 
     mockWHI.isAvailable();
   }
@@ -533,7 +559,8 @@ public class WebHookIntegrationTest extends MockKeystore {
 
   @Test
   public void testAvailable() {
-    doReturn(settings).when(integrationService).getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
+    doReturn(settings).when(integrationService)
+        .getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
     assertTrue(mockWHI.isAvailable());
   }
 
@@ -552,6 +579,14 @@ public class WebHookIntegrationTest extends MockKeystore {
     integrationWhiteList = mockWHI.getIntegrationWhiteList();
     assertNotNull(integrationWhiteList);
     assertTrue(integrationWhiteList.isEmpty());
+  }
+
+  @Test
+  public void testMessageMLWithProlog() throws IOException {
+    String rawMessage = XML_WITH_PROLOG;
+    String expected = VALID_MESSAGEML;
+    Message result = mockWHI.buildMessageML(rawMessage, "");
+    assertEquals(expected, result.getMessage());
   }
 
   public static final class SendMessageAnswer implements Answer<List<Message>> {
@@ -579,6 +614,7 @@ public class WebHookIntegrationTest extends MockKeystore {
 
   }
 
+
   public static final class GetStreamTypeAnswer implements Answer<StreamType> {
 
     @Override
@@ -588,6 +624,7 @@ public class WebHookIntegrationTest extends MockKeystore {
     }
 
   }
+
 
   public static final class GetStreamsAnswer implements Answer<List<String>> {
 
