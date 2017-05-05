@@ -20,8 +20,8 @@ package org.symphonyoss.integration.webhook.exception;
  * The content sent by third-party service can't be processed by the integration parser.
  *
  * This means the integration understands the content type of the request entity (hence a 415
- * (Unsupported Media Type) status code is inappropriate) and the syntax of the request entity is
- * correct (thus a 400 (Bad Request) status code is inappropriate) but was unable to process the
+ * Unsupported Media Type status code is inappropriate) and the syntax of the request entity is
+ * correct (thus a 400 Bad Request status code is inappropriate) but was unable to process the
  * HTTP payload.
  *
  * This exception may be used to identify the unknown events.
