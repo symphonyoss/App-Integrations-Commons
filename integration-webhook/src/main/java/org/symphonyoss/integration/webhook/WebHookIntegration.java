@@ -55,6 +55,7 @@ import org.symphonyoss.integration.webhook.exception.StreamTypeNotFoundException
 import org.symphonyoss.integration.webhook.exception.WebHookDisabledException;
 import org.symphonyoss.integration.webhook.exception.WebHookParseException;
 import org.symphonyoss.integration.webhook.exception.WebHookUnavailableException;
+import org.symphonyoss.integration.webhook.exception.WebHookUnprocessableEntityException;
 import org.symphonyoss.integration.webhook.metrics.ParserMetricsController;
 
 import javax.ws.rs.core.MediaType;
@@ -251,6 +252,9 @@ public abstract class WebHookIntegration extends BaseIntegration {
       if (message != null) {
         List<String> streams = streamService.getStreams(instance);
         postMessage(instance, integrationUser, streams, message);
+      } else {
+        String erroMessage = String.format("Event not handled by the %s", integrationUser);
+        throw new WebHookUnprocessableEntityException(erroMessage);
       }
     }
   }
