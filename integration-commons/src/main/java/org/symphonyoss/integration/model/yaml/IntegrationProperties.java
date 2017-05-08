@@ -37,6 +37,8 @@ public class IntegrationProperties {
 
   private static final String DEFAULT_HTTPS_PORT = "443";
 
+  private static final String APPS_CONTEXT = "apps";
+
   private AdminUser adminUser;
 
   private ConnectionInfo pod;
@@ -267,6 +269,12 @@ public class IntegrationProperties {
     }
 
     return String.format("https://%s:%s/agent", agent.getHost(), port);
+  }
+
+  public String getApplicationUrl(String appId) {
+    Application application = getApplications().get(appId);
+
+    return String.format("https://%s/%s/%s", getIntegrationBridge().getHost(), APPS_CONTEXT, application.getContext());
   }
 
   @Override
