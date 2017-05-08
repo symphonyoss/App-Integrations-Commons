@@ -274,6 +274,10 @@ public class IntegrationProperties {
   public String getApplicationUrl(String appId) {
     Application application = getApplications().get(appId);
 
+    if (getIntegrationBridge() == null || application == null) {
+      return StringUtils.EMPTY;
+    }
+
     return String.format("https://%s/%s/%s", getIntegrationBridge().getHost(), APPS_CONTEXT, application.getContext());
   }
 
