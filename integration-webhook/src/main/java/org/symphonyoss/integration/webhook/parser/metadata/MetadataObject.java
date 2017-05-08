@@ -49,6 +49,8 @@ public class MetadataObject {
 
   private String version;
 
+  private boolean list;
+
   private List<MetadataField> fields;
 
   private List<MetadataObject> children;
@@ -80,6 +82,15 @@ public class MetadataObject {
     this.version = version;
   }
 
+  @XmlAttribute
+  public boolean isList() {
+    return list;
+  }
+
+  public void setList(boolean list) {
+    this.list = list;
+  }
+
   @XmlElement(name = "field")
   public List<MetadataField> getFields() {
     return fields;
@@ -104,6 +115,7 @@ public class MetadataObject {
         "id='" + id + '\'' +
         ", type='" + type + '\'' +
         ", version='" + version + '\'' +
+        ", list='" + list + '\'' +
         ", fields=" + fields +
         ", children=" + children +
         '}';
