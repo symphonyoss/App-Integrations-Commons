@@ -41,6 +41,8 @@ public class Metadata {
 
   private String version;
 
+  private List<MetadataField> fields;
+
   private List<MetadataObject> objects;
 
   @XmlAttribute
@@ -79,6 +81,15 @@ public class Metadata {
     this.objects = objects;
   }
 
+  @XmlElement(name = "field")
+  public List<MetadataField> getFields() {
+    return fields;
+  }
+
+  public void setFields(List<MetadataField> fields) {
+    this.fields = fields;
+  }
+
   @Override
   public String toString() {
     return "Metadata{" +
@@ -86,6 +97,7 @@ public class Metadata {
         ", type='" + type + '\'' +
         ", version='" + version + '\'' +
         ", objects=" + objects +
+        ", fields=" + fields +
         '}';
   }
 }
