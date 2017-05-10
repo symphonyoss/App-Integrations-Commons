@@ -87,6 +87,15 @@ public class WebHookPayload {
   }
 
   /**
+   * Add a new parameter
+   * @param key Parameter key
+   * @param value Parameter value
+   */
+  public void addParameter(String key, String value) {
+    parameters.put(key, value);
+  }
+
+  /**
    * Returns the content type.
    * @return the content type.
    */
