@@ -12,7 +12,7 @@
 
     <groupId>org.symphonyoss.symphony.integrations</groupId>
     <artifactId>integration-parent</artifactId>
-    <version>0.12.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <description>Common components for Symphony App Integrations</description>
@@ -231,7 +231,7 @@
         <rpm.name>${project.artifactId}</rpm.name>
         <rpm.deployment.folder>${rpm.deployment.prefix}/ib/libs</rpm.deployment.folder>
         <rpm.deployment.user>ibridge</rpm.deployment.user>
-        <rpm.deployment.filemode>755</rpm.deployment.filemode>
+        <rpm.deployment.filemode>750</rpm.deployment.filemode>
         <rpm.type>single</rpm.type>
 
         <!-- NPM properties -->
