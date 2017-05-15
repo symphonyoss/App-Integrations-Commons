@@ -275,7 +275,7 @@ public final class ParserUtils {
    * string
    * or the string could not be parsed.
    */
-  private static String buildEncodedUrl(String urlTemplate) throws MalformedURLException {
+  public static String buildEncodedUrl(String urlTemplate) throws MalformedURLException {
     return UriBuilder.fromUri(urlTemplate).build().toURL().toString();
   }
 
