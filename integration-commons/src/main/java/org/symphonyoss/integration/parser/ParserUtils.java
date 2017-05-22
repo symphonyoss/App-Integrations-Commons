@@ -28,6 +28,8 @@ import org.symphonyoss.integration.parser.model.HashTag;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -107,7 +109,22 @@ public final class ParserUtils {
    * @return modified message containing all needed links.
    */
   public static String markupLinks(String message) {
+    StringFormatterContainer formatterContainer = buildStringFormatForLinks(message, true);
+    return formatterContainer.format();
+  }
+
+  /**
+   * This method changes all links in the {@code message} parameter for {@code %s}, to be used in a
+   * {@code String.format} interpolation.
+   * To retrieve the link list as html link markups, the method {@code retrieveLinksAsMarkupLinks}
+   * can be used.
+   * @param message message to be analyzed and modified.
+   * @return modified message containing %s instead of links.
+   */
+  public static StringFormatterContainer buildStringFormatForLinks(String message,
+      boolean buildMarkupLinks) {
     Matcher m = linkPattern.matcher(message);
+    List<String> parameters = new ArrayList<>();
 
     while (m.find()) {
 
@@ -123,15 +140,18 @@ public final class ParserUtils {
         int endIndex = m.end();
         int stringLength = message.length();
 
+        String linkMarkup =
+            buildMarkupLinks ? "<a href=\"" + finalUrl + "\">" + finalUrl + "</a>" : finalUrl;
+        parameters.add(linkMarkup);
+
         //Rebuilds string
         message =
-            message.substring(0, startIndex) + "<a href=\"" + finalUrl + "\">" + finalUrl + "</a>"
-                + message.substring(endIndex, stringLength);
+            message.substring(0, startIndex) + "%s" + message.substring(endIndex, stringLength);
         //Resets the matcher with the new message
         m = linkPattern.matcher(message);
       }
     }
-    return message;
+    return new StringFormatterContainer(message, parameters);
   }
 
   /**
