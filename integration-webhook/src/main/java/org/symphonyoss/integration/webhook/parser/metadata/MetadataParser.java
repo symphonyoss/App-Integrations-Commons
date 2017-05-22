@@ -240,15 +240,10 @@ public abstract class MetadataParser {
         }
       }
 
-      if (object.getChildren() != null || object.isList()) {
-
-        if (object.isList()) {
-          List itemsList = processListMetadataObjects(node, object, entity);
-          root.addContent(object.getId(), itemsList);
-
-        } else {
-          processMetadataObjects(entity, node, object.getChildren());
-        }
+      if (object.isList()) {
+        processListMetadataObjects(root, node, object, entity);
+      } else if (object.getChildren() != null) {
+        processMetadataObjects(entity, node, object.getChildren());
       }
 
       if (!entity.getContent().isEmpty()) {
@@ -259,37 +254,35 @@ public abstract class MetadataParser {
 
   /**
    * Process objects that have N items (a list).
+   * @param root Root object from Entity JSON
    * @param node Input JSON containing values to be processed.
    * @param object Metadata object used to match template with JSON values.
    * @param entity Where values are created during the process.
-   * @return A list of entity-objects containing the JSON values.
    */
-  private List processListMetadataObjects(JsonNode node, MetadataObject object,
+  private void processListMetadataObjects(EntityObject root, JsonNode node, MetadataObject object,
       EntityObject entity) {
     List itemsList = new ArrayList();
 
-    if (node.path(object.getId()) instanceof ArrayNode) {
-      // List of values in the input JSON
-      ArrayNode listNode = (ArrayNode) node.path(object.getId());
-      for (JsonNode listItemNode : listNode) {
+    // List of values in the input JSON
+    ArrayNode listNode = (ArrayNode) node.path(object.getId());
+    for (JsonNode listItemNode : listNode) {
 
-        // If there is no children and is a TextNode, there's nothing to process, just add the text
-        if (object.getChildren() == null && listItemNode instanceof TextNode) {
-          itemsList.add(listItemNode.asText(StringUtils.EMPTY));
+      // If there is no children and is a TextNode, there's nothing to process, just add the text
+      if (object.getChildren() == null && listItemNode.isValueNode()) {
+        itemsList.add(listItemNode.asText(StringUtils.EMPTY));
 
-        } else {
-          processMetadataObjects(entity, listItemNode, object.getChildren());
-          // This entity is used only as a transport object, we have to add these values to the list
-          if (!entity.getContent().isEmpty()) {
-            Map.Entry<String, Object> entry = entity.getContent().entrySet().iterator().next();
-            itemsList.add(entry.getValue());
-            // Clear this map to be used in the next iteration
-            entity.getContent().clear();
-          }
+      } else {
+        processMetadataObjects(entity, listItemNode, object.getChildren());
+        // This entity is used only as a transport object, we have to add these values to the list
+        if (!entity.getContent().isEmpty()) {
+          Map.Entry<String, Object> entry = entity.getContent().entrySet().iterator().next();
+          itemsList.add(entry.getValue());
+          // Clear this map to be used in the next iteration
+          entity.getContent().clear();
         }
       }
     }
-    return itemsList;
+    root.addContent(object.getId(), itemsList);
   }
 
   /**
