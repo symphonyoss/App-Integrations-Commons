@@ -18,6 +18,8 @@ package org.symphonyoss.integration.webhook.parser.metadata;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,7 +122,7 @@ public abstract class MetadataParser {
       return;
     }
 
-    try(BufferedReader reader = new BufferedReader(new InputStreamReader(resource))) {
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource))) {
       String line;
       StringBuilder responseData = new StringBuilder();
 
@@ -135,9 +138,9 @@ public abstract class MetadataParser {
   }
 
   /**
-   * Generates MessageML V2 object according to the messageML template file and generated entity JSON
+   * Generates MessageML V2 object according to the messageML template file and generated entity
+   * JSON
    * parsing the JSON input payload.
-   *
    * @param node JSON node received from the third-party service
    * @return MessageML v2 object
    */
@@ -162,7 +165,6 @@ public abstract class MetadataParser {
 
   /**
    * Retrieves the Entity JSON based on metadata objects.
-   *
    * @param node JSON input payload
    * @return Entity JSON or null if there are no metadata objects to be processed.
    */
@@ -171,11 +173,15 @@ public abstract class MetadataParser {
       return null;
     }
 
-    EntityObject root = new EntityObject(metadata.getType(), getVersion());
-    List<MetadataObject> objects = metadata.getObjects();
-
     preProcessInputData(node);
+
+    EntityObject root = new EntityObject(metadata.getType(), getVersion());
+    List<MetadataField> fields = metadata.getFields();
+    processMetadataFields(root, node, fields);
+
+    List<MetadataObject> objects = metadata.getObjects();
     processMetadataObjects(root, node, objects);
+
     postProcessOutputData(root, node);
 
     try {
@@ -201,7 +207,6 @@ public abstract class MetadataParser {
    * - Uppercase JSON field content
    * - Scape characters
    * - Include user ID and username retrieved from the User API
-   *
    * @param input JSON input payload
    */
   protected void preProcessInputData(JsonNode input) {
@@ -213,17 +218,19 @@ public abstract class MetadataParser {
    * the nested metadata objects. The metadata fields inside each metadata object have your own
    * logic to build the corresponding field into Entity JSON.
    *
-   * Basically, this method gets the JSON object received from the third-party service and generates
+   * Basically, this method gets the JSON object received from the third-party service and
+   * generates
    * the Entity JSON intended according to the metadata objects defined in a XML document.
    *
-   * Each metadata object defined must generate a JSON object inside the Entity JSON and the metadata
+   * Each metadata object defined must generate a JSON object inside the Entity JSON and the
+   * metadata
    * fields must generate fields inside those JSON objects.
-   *
    * @param root Root object from Entity JSON
    * @param node JSON node received from the third-party service
    * @param objects List of metadata objects
    */
-  private void processMetadataObjects(EntityObject root, JsonNode node, List<MetadataObject> objects) {
+  private void processMetadataObjects(EntityObject root, JsonNode node,
+      List<MetadataObject> objects) {
     for (MetadataObject object : objects) {
       EntityObject entity = new EntityObject(object.getType(), object.getVersion());
 
@@ -233,12 +240,63 @@ public abstract class MetadataParser {
         }
       }
 
-      if (object.getChildren() != null) {
+      if (object.isList()) {
+        processListMetadataObjects(root, node, object, entity);
+      } else if (object.getChildren() != null) {
         processMetadataObjects(entity, node, object.getChildren());
       }
 
       if (!entity.getContent().isEmpty()) {
         root.addContent(object.getId(), entity);
+      }
+    }
+  }
+
+  /**
+   * Process objects that have N items (a list).
+   * @param root Root object from Entity JSON
+   * @param node Input JSON containing values to be processed.
+   * @param object Metadata object used to match template with JSON values.
+   * @param entity Where values are created during the process.
+   */
+  private void processListMetadataObjects(EntityObject root, JsonNode node, MetadataObject object,
+      EntityObject entity) {
+    List itemsList = new ArrayList();
+
+    // List of values in the input JSON
+    ArrayNode listNode = (ArrayNode) node.path(object.getId());
+    for (JsonNode listItemNode : listNode) {
+
+      // If there is no children and is a TextNode, there's nothing to process, just add the text
+      if (object.getChildren() == null && listItemNode.isValueNode()) {
+        itemsList.add(listItemNode.asText(StringUtils.EMPTY));
+
+      } else {
+        processMetadataObjects(entity, listItemNode, object.getChildren());
+        // This entity is used only as a transport object, we have to add these values to the list
+        if (!entity.getContent().isEmpty()) {
+          Map.Entry<String, Object> entry = entity.getContent().entrySet().iterator().next();
+          itemsList.add(entry.getValue());
+          // Clear this map to be used in the next iteration
+          entity.getContent().clear();
+        }
+      }
+    }
+    root.addContent(object.getId(), itemsList);
+  }
+
+  /**
+   * Process fields that don't belong to any Json Object but the root. These fields are
+   * attributes of the root, that is why there is no reason to have recursive calls like
+   * @param root Root object from Entity JSON
+   * @param node JSON node received from the third-party service
+   * @param fields List of metadata fields
+   * @see {MetadataParser.injection.processMetadataFields}, but both have the same purpose.
+   */
+  private void processMetadataFields(EntityObject root, JsonNode node, List<MetadataField> fields) {
+    if (fields != null && !fields.isEmpty()) {
+      for (MetadataField field : fields) {
+        field.process(root, node);
       }
     }
   }
@@ -251,7 +309,6 @@ public abstract class MetadataParser {
    *
    * Example:
    * - Array of JSON objects
-   *
    * @param output Output Entity JSON
    * @param input JSON input payload
    */
