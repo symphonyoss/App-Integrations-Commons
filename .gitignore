@@ -4,6 +4,12 @@ target/
 # Intellij
 .idea
 *.iml
+*/bin
+
+# Eclipse
+.project
+.settings
+.classpath
 
 #integration-fe
 /integration-fe/node_modules/
