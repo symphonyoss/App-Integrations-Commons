@@ -16,22 +16,43 @@
 
 package org.symphonyoss.integration.parser;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
+import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.IllegalFormatException;
-import java.util.List;
+import java.util.LinkedHashMap;
 
 /**
  * Created by apimentel on 22/05/17.
  */
 public class StringFormatterContainerTest {
 
-  private String expected;
+  private static final String KEY_WALRUS = "fe587af6-3ff5-11e7-a919-92ebcb67fe33";
+  private static final String KEY_PLUTO = "fe587d6c-3ff5-11e7-a919-92ebcb67fe33";
+  private static final String VALUE_WALRUS = "I'm the walrus";
+  private static final String VALUE_PLUTO = "Who am I?";
 
-  private String testFormat(String formatString, List<String> values, String expected) {
+  private static final String FORMAT_STRING_TWO_PARAMETERS =
+      "The real quote was:" + KEY_WALRUS + "; or: " + KEY_PLUTO;
+  private static final String FORMAT_STRING_ONE_PARAMETER = "The real quote was: " + KEY_WALRUS;
+  private static final String EXPECTED_TWO_VALUES =
+      "The real quote was:" + VALUE_WALRUS + "; or: " + VALUE_PLUTO;
+  ;
+  private static final String EXPECTED_ONE_VALUE = "The real quote was: " + VALUE_WALRUS;;
+  private String expected;
+  private LinkedHashMap<String, String> values = null;
+
+  @Before
+  public void setUp() {
+    values = new LinkedHashMap<>();
+    values.put(KEY_WALRUS, VALUE_WALRUS);
+    values.put(KEY_PLUTO, VALUE_PLUTO);
+  }
+
+  private String testFormat(String formatString, LinkedHashMap<String, String> values,
+      String expected) {
     this.expected = expected;
 
     StringFormatterContainer formatterContainer =
@@ -42,21 +63,19 @@ public class StringFormatterContainerTest {
 
   @Test
   public void format() throws Exception {
-    String result = testFormat("valid string, with %s, %s parameters", Arrays.asList("1", "2"),
-        "valid string, with 1, 2 parameters");
+    String result = testFormat(FORMAT_STRING_TWO_PARAMETERS, values, EXPECTED_TWO_VALUES);
     assertEquals(expected, result);
   }
 
   @Test
   public void formatInvalidFormatString() throws Exception {
-    String result = testFormat("valid string, with %s parameters", Arrays.asList("1", "2"),
-        "valid string, with 1 parameters");
+    String result = testFormat(FORMAT_STRING_ONE_PARAMETER, values, EXPECTED_ONE_VALUE);
     assertEquals(expected, result);
   }
 
   @Test(expected = IllegalFormatException.class)
   public void formatInvalidArguments() throws Exception {
-    testFormat("valid string, with %s, %s parameters", Arrays.asList("1"), null);
+    testFormat(FORMAT_STRING_TWO_PARAMETERS, values, null);
   }
 
 }

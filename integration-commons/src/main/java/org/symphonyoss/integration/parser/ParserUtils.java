@@ -28,8 +28,9 @@ import org.symphonyoss.integration.parser.model.HashTag;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -114,17 +115,17 @@ public final class ParserUtils {
   }
 
   /**
-   * This method changes all links in the {@code message} parameter for {@code %s}, to be used in a
-   * {@code String.format} interpolation.
-   * To retrieve the link list as html link markups, the method {@code retrieveLinksAsMarkupLinks}
-   * can be used.
+   * This method changes all links in the {@code message} parameter for {@code UUIDs}, to be used in
+   * string interpolation (method {@code StringFormatterContainer.format}). <br/>
+   * The UUIDs are generated as a string of just hexadecimal characters, to avoid any wrong
+   * manipulation on the StringFormatterContainer.format string.
    * @param message message to be analyzed and modified.
    * @return modified message containing %s instead of links.
    */
   public static StringFormatterContainer buildStringFormatForLinks(String message,
       boolean buildMarkupLinks) {
     Matcher m = linkPattern.matcher(message);
-    List<String> parameters = new ArrayList<>();
+    Map<String, String> parameters = new LinkedHashMap<>();
 
     while (m.find()) {
 
@@ -140,13 +141,18 @@ public final class ParserUtils {
         int endIndex = m.end();
         int stringLength = message.length();
 
+        // It generates an unique UUID without formatting - just hex characters
+        String parameterKey = UUID.randomUUID().toString().replaceAll("-", StringUtils.EMPTY);
+
         String linkMarkup =
             buildMarkupLinks ? "<a href=\"" + finalUrl + "\">" + finalUrl + "</a>" : finalUrl;
-        parameters.add(linkMarkup);
+        parameters.put(parameterKey, linkMarkup);
 
         //Rebuilds string
         message =
-            message.substring(0, startIndex) + "%s" + message.substring(endIndex, stringLength);
+            message.substring(0, startIndex) + parameterKey + message.substring(endIndex,
+                stringLength);
+
         //Resets the matcher with the new message
         m = linkPattern.matcher(message);
       }

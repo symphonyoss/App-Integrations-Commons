@@ -18,7 +18,7 @@ package org.symphonyoss.integration.parser;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * Class used to encapsulate the logic from {@code String.format} and its parameters.
@@ -27,16 +27,27 @@ import java.util.List;
  */
 public class StringFormatterContainer {
   private String formatString;
-  private List<String> values;
+  private Map<String, String> values;
 
-  public StringFormatterContainer(String formatString, List<String> values) {
+  public StringFormatterContainer(String formatString, Map<String, String> values) {
     this.formatString = formatString;
     this.values = values;
   }
 
+  /**
+   * This method iterates over the {@code values} entrySet and replaces the occurrence of each key
+   * for its corresponding value.
+   * The substitution is done for one occurrence, i.e., the method String.replace is used to do the
+   * interpolation.
+   * @return The string with the values in the {@code values} map interpolated in the {@code
+   * formatString} string
+   */
   public String format() {
     if (StringUtils.isNotEmpty(formatString)) {
-      return String.format(formatString, values.toArray());
+      for (Map.Entry<String, String> entry : values.entrySet()) {
+        formatString = formatString.replace(entry.getKey(), entry.getValue());
+      }
+      return formatString;
     }
     return StringUtils.EMPTY;
   }
@@ -49,11 +60,11 @@ public class StringFormatterContainer {
     this.formatString = formatString;
   }
 
-  public List<String> getValues() {
+  public Map<String, String> getValues() {
     return values;
   }
 
-  public void setValues(List<String> values) {
+  public void setValues(Map<String, String> values) {
     this.values = values;
   }
 }
