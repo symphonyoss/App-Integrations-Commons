@@ -35,9 +35,28 @@ import javax.xml.bind.annotation.XmlAttribute;
  */
 public class MetadataField {
 
+  private enum Type {
+    BOOLEAN {
+      @Override
+      public Object getValue(JsonNode node) {
+        return node.asBoolean(Boolean.FALSE);
+      }
+    },
+    DEFAULT {
+      @Override
+      public Object getValue(JsonNode node) {
+        return node.asText(StringUtils.EMPTY);
+      }
+    };
+
+    public abstract Object getValue(JsonNode node);
+  }
+
   private String key;
 
   private String value;
+
+  private Type type = Type.DEFAULT;
 
   private boolean blank;
 
@@ -68,6 +87,15 @@ public class MetadataField {
     this.blank = blank;
   }
 
+  @XmlAttribute
+  public Type getType() {
+    return type;
+  }
+
+  public void setType(Type type) {
+    this.type = type;
+  }
+
   /**
    * Get the content from the input JSON according to the value attribute using dot notation.
    *
@@ -78,9 +106,10 @@ public class MetadataField {
    */
   public void process(EntityObject root, JsonNode node) {
     JsonNode resultNode = getResultNode(node, value);
-    String value = resultNode.asText(StringUtils.EMPTY);
 
-    if (StringUtils.isNotEmpty(value) || isBlank()) {
+    Object value = type.getValue(resultNode);
+
+    if ((value != null && StringUtils.isNotEmpty(value.toString())) || isBlank()) {
       root.addContent(getKey(), value);
     }
   }
