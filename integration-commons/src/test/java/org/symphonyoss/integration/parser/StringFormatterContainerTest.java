@@ -73,7 +73,7 @@ public class StringFormatterContainerTest {
     assertEquals(expected, result);
   }
 
-  @Test(expected = IllegalFormatException.class)
+  @Test
   public void formatInvalidArguments() throws Exception {
     testFormat(FORMAT_STRING_TWO_PARAMETERS, values, null);
   }
