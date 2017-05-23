@@ -41,6 +41,8 @@ public class StringFormatterContainerTest {
       "The real quote was:" + VALUE_WALRUS + "; or: " + VALUE_PLUTO;
   ;
   private static final String EXPECTED_ONE_VALUE = "The real quote was: " + VALUE_WALRUS;;
+  private static final String EXPECTED_MISSING_INTERPOLATION =
+      "The real quote was:fe587af6-3ff5-11e7-a919-92ebcb67fe33; or: Who am I?";
   private String expected;
   private LinkedHashMap<String, String> values = null;
 
@@ -75,7 +77,13 @@ public class StringFormatterContainerTest {
 
   @Test
   public void formatInvalidArguments() throws Exception {
-    testFormat(FORMAT_STRING_TWO_PARAMETERS, values, null);
+    values.remove(KEY_WALRUS);
+    testFormat(FORMAT_STRING_TWO_PARAMETERS, values, EXPECTED_MISSING_INTERPOLATION);
   }
 
+  @Test
+  public void formatEmpty() throws Exception {
+    values.remove(KEY_WALRUS);
+    testFormat(null, values, "");
+  }
 }
