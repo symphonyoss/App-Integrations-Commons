@@ -76,6 +76,13 @@ public class ParserUtilsTest {
       + "<a href=\"ftp://corporate.symphony.com\">ftp://corporate.symphony.com</a> and this "
       + "<a href=\"ftp://nexus.symphony.com\">ftp://nexus.symphony.com</a>";
 
+  private static final String ONE_FTP_MARKED_ONE_FTP_FORMAT =
+      "See this <a href=\"ftp://corporate.symphony.com\">ftp://corporate.symphony"
+          + ".com</a> and this %s";
+
+  private static final String ONE_FTP_EXPECTED =
+      "<a href=\"ftp://nexus.symphony.com\">ftp://nexus.symphony.com</a>";
+
   private static final String ONE_WWW_NOT_MARKED = "See this www.corporate.symphony.com ... "
       + "an http link";
 
@@ -233,6 +240,16 @@ public class ParserUtilsTest {
         ONE_FTP_MARKED_ONE_FTP_MARKED);
     assertEquals(ParserUtils.markupLinks(ONE_FTP_MARKED_ONE_FTP_MARKED),
         ONE_FTP_MARKED_ONE_FTP_MARKED);
+  }
+
+  @Test
+  public void testStringFormatForMarkupLinks() {
+    StringFormatterContainer container =
+        ParserUtils.buildStringFormatForLinks(ONE_FTP_MARKED_ONE_FTP_NOT_MARKED, true);
+
+    assertEquals(ONE_FTP_MARKED_ONE_FTP_FORMAT, container.getFormatString());
+    assertEquals(1, container.getValues().size());
+    assertEquals(ONE_FTP_EXPECTED, container.getValues().get(0));
   }
 
   @Test
