@@ -381,13 +381,9 @@ public abstract class WebHookIntegration extends BaseIntegration {
    */
   private List<Message> sendMessage(IntegrationInstance instance, String integrationUser,
       List<String> streams, Message message) throws RemoteApiException {
-    try {
-      // Post a message
-      List<Message> response = bridge.sendMessage(instance, integrationUser, streams, message);
-      return response;
-    } catch (ProcessingException e) {
-      throw new UnexpectedAuthException("Failed to process certificate login", e);
-    }
+    // Post a message
+    List<Message> response = bridge.sendMessage(instance, integrationUser, streams, message);
+    return response;
   }
 
   /**
