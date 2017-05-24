@@ -18,6 +18,8 @@ package org.symphonyoss.integration.webhook.parser.metadata;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.lang3.StringUtils;
+import org.symphonyoss.integration.webhook.exception.MetadataParserException;
+import org.symphonyoss.integration.webhook.exception.WebHookParseException;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
@@ -34,6 +36,8 @@ import javax.xml.bind.annotation.XmlAttribute;
  * Created by rsanchez on 30/03/17.
  */
 public class MetadataField {
+
+  private static final String COMPONENT = "Common Webhook Dispatcher";
 
   private enum Type {
     BOOLEAN {
@@ -106,6 +110,10 @@ public class MetadataField {
    */
   public void process(EntityObject root, JsonNode node) {
     JsonNode resultNode = getResultNode(node, value);
+
+    if (type == null) {
+      throw new MetadataParserException(COMPONENT, "Invalid type in metadata.");
+    }
 
     Object value = type.getValue(resultNode);
 
