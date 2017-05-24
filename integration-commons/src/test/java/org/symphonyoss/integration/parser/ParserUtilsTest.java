@@ -25,6 +25,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Created by ecarrenho on 8/24/16.
@@ -246,10 +248,15 @@ public class ParserUtilsTest {
   public void testStringFormatForMarkupLinks() {
     StringFormatterContainer container =
         ParserUtils.buildStringFormatForLinks(ONE_FTP_MARKED_ONE_FTP_NOT_MARKED, true);
-
-    assertEquals(ONE_FTP_MARKED_ONE_FTP_FORMAT, container.getFormatString());
     assertEquals(1, container.getValues().size());
-    assertEquals(ONE_FTP_EXPECTED, container.getValues().get(0));
+
+    Entry<String, String> entry = container.getValues().entrySet().iterator().next();
+
+    String id = entry.getKey();
+    assertEquals(String.format(ONE_FTP_MARKED_ONE_FTP_FORMAT, id), container.getFormatString());
+
+    String link = entry.getValue();
+    assertEquals(ONE_FTP_EXPECTED, link);
   }
 
   @Test
