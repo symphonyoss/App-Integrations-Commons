@@ -92,7 +92,7 @@ public class DistributedTracingUtils {
    * Clears the MDC for the current thread.
    */
   public static void clearMDC() {
-    MDC.put(TRACE_ID, StringUtils.EMPTY);
+    MDC.put(TRACE_ID, null);
   }
 
   /**
