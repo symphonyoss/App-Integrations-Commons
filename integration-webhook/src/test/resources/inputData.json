@@ -1,5 +1,6 @@
 {
   "content": {
-    "header": "hello"
+    "header": "hello",
+    "boolean": true
   }
 }

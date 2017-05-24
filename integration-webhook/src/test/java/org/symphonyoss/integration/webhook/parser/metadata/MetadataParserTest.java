@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.symphonyoss.integration.json.JsonUtils;
 import org.symphonyoss.integration.model.message.Message;
+import org.symphonyoss.integration.webhook.exception.MetadataParserException;
 
 import java.io.IOException;
 
@@ -39,13 +40,19 @@ public class MetadataParserTest {
 
   private static final String INVALID_METADATA_FILE = "invalidMetadata.xml";
 
-  private static final String TEST_INPUT_FILE = "inputData.json";
+  private static final String INPUT_FILE = "inputData.json";
 
-  private static final String TEST_TEMPLATE = "templateMessageML.xml";
+  private static final String TEMPLATE = "templateMessageML.xml";
 
-  private static final String TEST_SIMPLE_METADATA = "simpleMetadata.xml";
+  private static final String SIMPLE_METADATA = "simpleMetadata.xml";
+
+  private static final String SIMPLE_METADATA_WITH_TYPE_FIELD_BOOLEAN = "simpleMetadataWithTypeFieldBoolean.xml";
+
+  private static final String SIMPLE_METADATA_WITH_TYPE_FIELD_INVALID = "simpleMetadataWithTypeFieldInvalid.xml";
 
   private static final String EXPECTED_ENTITY_JSON_FILE = "expectedEntityJson.json";
+
+  private static final String EXPECTED_ENTITY_JSON_FILE_WITH_TYPE_FIELD_BOOLEAN = "expectedEntityJsonWithTypeFieldBoolean.json";
 
   private static final String EXPECTED_TEMPLATE = "<messageML>\n"
       + "    <div class=\"entity\">\n"
@@ -55,32 +62,54 @@ public class MetadataParserTest {
 
   @Test
   public void testInvalidTemplateFile() throws IOException {
-    MetadataParser parser = new MockMetadataParser(INVALID_TEMPLATE_FILE, TEST_SIMPLE_METADATA);
+    MetadataParser parser = new MockMetadataParser(INVALID_TEMPLATE_FILE, SIMPLE_METADATA);
     parser.init();
 
-    JsonNode node = readJsonFromFile(TEST_INPUT_FILE);
+    JsonNode node = readJsonFromFile(INPUT_FILE);
     assertNull(parser.parse(node));
   }
 
   @Test
   public void testInvalidMetadataFile() throws IOException {
-    MetadataParser parser = new MockMetadataParser(TEST_TEMPLATE, INVALID_METADATA_FILE);
+    MetadataParser parser = new MockMetadataParser(TEMPLATE, INVALID_METADATA_FILE);
     parser.init();
 
-    JsonNode node = readJsonFromFile(TEST_INPUT_FILE);
+    JsonNode node = readJsonFromFile(INPUT_FILE);
     assertNull(parser.parse(node));
   }
 
   @Test
   public void testParser() throws IOException {
-    MetadataParser parser = new MockMetadataParser(TEST_TEMPLATE, TEST_SIMPLE_METADATA);
+    MetadataParser parser = new MockMetadataParser(TEMPLATE, SIMPLE_METADATA);
     parser.init();
 
-    JsonNode node = readJsonFromFile(TEST_INPUT_FILE);
+    JsonNode node = readJsonFromFile(INPUT_FILE);
     JsonNode expectedEntityJson = readJsonFromFile(EXPECTED_ENTITY_JSON_FILE);
 
     Message result = parser.parse(node);
     assertEquals(EXPECTED_TEMPLATE, result.getMessage());
+    assertEquals(JsonUtils.writeValueAsString(expectedEntityJson), result.getData());
+  }
+
+  @Test(expected = MetadataParserException.class)
+  public void testInvalidTypeInMetadataFile() throws IOException {
+    MetadataParser parser = new MockMetadataParser(TEMPLATE, SIMPLE_METADATA_WITH_TYPE_FIELD_INVALID);
+    parser.init();
+
+    JsonNode node = readJsonFromFile(INPUT_FILE);
+    assertNull(parser.parse(node));
+  }
+
+  @Test
+  public void testParserWithTypeFieldBoolean() throws IOException {
+    MetadataParser parser = new MockMetadataParser(TEMPLATE, SIMPLE_METADATA_WITH_TYPE_FIELD_BOOLEAN);
+    parser.init();
+
+    JsonNode node = readJsonFromFile(INPUT_FILE);
+    JsonNode expectedEntityJson = readJsonFromFile(EXPECTED_ENTITY_JSON_FILE_WITH_TYPE_FIELD_BOOLEAN);
+
+    Message result = parser.parse(node);
+
     assertEquals(JsonUtils.writeValueAsString(expectedEntityJson), result.getData());
   }
 
