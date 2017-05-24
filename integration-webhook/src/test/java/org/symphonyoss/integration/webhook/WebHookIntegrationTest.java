@@ -135,9 +135,6 @@ public class WebHookIntegrationTest extends MockKeystore {
   private AuthenticationProxy authenticationProxy;
 
   @MockBean
-  private WebHookExceptionHandler exceptionHandler;
-
-  @MockBean
   private UserService userService;
 
   @SpyBean
