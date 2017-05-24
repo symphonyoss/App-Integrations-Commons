@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<metadata name="testEvent" type="com.symphony.integration.test" version="1.0">
+
+    <object id="header" type="com.symphony.integration.test.header" version="1.0">
+        <field key="value" value="content.header" />
+        <field key="boolean" type="BOOLEAN" value="content.boolean" />
+    </object>
+
+</metadata>
