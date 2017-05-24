@@ -33,6 +33,7 @@ import org.symphonyoss.integration.entity.model.User;
 import org.symphonyoss.integration.exception.IntegrationRuntimeException;
 import org.symphonyoss.integration.exception.RemoteApiException;
 import org.symphonyoss.integration.exception.authentication.ConnectivityException;
+import org.symphonyoss.integration.exception.authentication.UnexpectedAuthException;
 import org.symphonyoss.integration.exception.bootstrap.BootstrapException;
 import org.symphonyoss.integration.exception.bootstrap.RetryLifecycleException;
 import org.symphonyoss.integration.exception.bootstrap.UnexpectedBootstrapException;
@@ -103,9 +104,6 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
   @Autowired
   private StreamService streamService;
-
-  @Autowired
-  private WebHookExceptionHandler exceptionHandler;
 
   @Autowired
   private UserService userService;
@@ -183,13 +181,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
     try {
       authenticationProxy.authenticate(integrationUser);
     } catch (RemoteApiException e) {
-      exceptionHandler.handleAuthenticationApiException(integrationUser, e);
-    } catch (ConnectivityException e) {
-      // Needed to rethrow this specific exception, otherwise it will endup hidden under the
-      // catch bellow.
-      throw e;
-    } catch (Exception e) {
-      exceptionHandler.handleAuthException(e);
+      throw new RetryLifecycleException("Unexpected error when authenticating", e);
     }
   }
 
@@ -389,15 +381,13 @@ public abstract class WebHookIntegration extends BaseIntegration {
    */
   private List<Message> sendMessage(IntegrationInstance instance, String integrationUser,
       List<String> streams, Message message) throws RemoteApiException {
-    List<Message> response = new ArrayList<>();
-
     try {
       // Post a message
-      response = bridge.sendMessage(instance, integrationUser, streams, message);
+      List<Message> response = bridge.sendMessage(instance, integrationUser, streams, message);
+      return response;
     } catch (ProcessingException e) {
-      exceptionHandler.handleAuthException(e);
+      throw new UnexpectedAuthException("Failed to process certificate login", e);
     }
-    return response;
   }
 
   /**
