@@ -38,6 +38,8 @@ public class IntegrationSettings {
 
   private Boolean active;
 
+  private String username;
+
   public String getConfigurationId() {
     return configurationId;
   }
@@ -100,5 +102,13 @@ public class IntegrationSettings {
 
   public void setActive(Boolean active) {
     this.active = active;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
   }
 }
