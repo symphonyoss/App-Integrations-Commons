@@ -33,7 +33,6 @@ import org.symphonyoss.integration.entity.model.User;
 import org.symphonyoss.integration.exception.IntegrationRuntimeException;
 import org.symphonyoss.integration.exception.RemoteApiException;
 import org.symphonyoss.integration.exception.authentication.ConnectivityException;
-import org.symphonyoss.integration.exception.authentication.UnexpectedAuthException;
 import org.symphonyoss.integration.exception.bootstrap.BootstrapException;
 import org.symphonyoss.integration.exception.bootstrap.RetryLifecycleException;
 import org.symphonyoss.integration.exception.bootstrap.UnexpectedBootstrapException;
@@ -62,7 +61,6 @@ import org.symphonyoss.integration.webhook.metrics.ParserMetricsController;
 import javax.ws.rs.core.MediaType;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -70,8 +68,6 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import javax.ws.rs.ProcessingException;
 
 /**
  * WebHook based Integrations, implementing common methods for WebHookIntegrations and defining
