@@ -61,7 +61,6 @@ import org.symphonyoss.integration.webhook.metrics.ParserMetricsController;
 import javax.ws.rs.core.MediaType;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -69,8 +68,6 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import javax.ws.rs.ProcessingException;
 
 /**
  * WebHook based Integrations, implementing common methods for WebHookIntegrations and defining
@@ -103,9 +100,6 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
   @Autowired
   private StreamService streamService;
-
-  @Autowired
-  private WebHookExceptionHandler exceptionHandler;
 
   @Autowired
   private UserService userService;
@@ -183,13 +177,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
     try {
       authenticationProxy.authenticate(integrationUser);
     } catch (RemoteApiException e) {
-      exceptionHandler.handleAuthenticationApiException(integrationUser, e);
-    } catch (ConnectivityException e) {
-      // Needed to rethrow this specific exception, otherwise it will endup hidden under the
-      // catch bellow.
-      throw e;
-    } catch (Exception e) {
-      exceptionHandler.handleAuthException(e);
+      throw new RetryLifecycleException("Unexpected error when authenticating", e);
     }
   }
 
@@ -389,14 +377,8 @@ public abstract class WebHookIntegration extends BaseIntegration {
    */
   private List<Message> sendMessage(IntegrationInstance instance, String integrationUser,
       List<String> streams, Message message) throws RemoteApiException {
-    List<Message> response = new ArrayList<>();
-
-    try {
-      // Post a message
-      response = bridge.sendMessage(instance, integrationUser, streams, message);
-    } catch (ProcessingException e) {
-      exceptionHandler.handleAuthException(e);
-    }
+    // Post a message
+    List<Message> response = bridge.sendMessage(instance, integrationUser, streams, message);
     return response;
   }
 

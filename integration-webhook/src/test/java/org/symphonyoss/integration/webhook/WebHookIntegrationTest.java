@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
@@ -133,9 +134,6 @@ public class WebHookIntegrationTest extends MockKeystore {
 
   @MockBean
   private AuthenticationProxy authenticationProxy;
-
-  @MockBean
-  private WebHookExceptionHandler exceptionHandler;
 
   @MockBean
   private UserService userService;
@@ -369,23 +367,27 @@ public class WebHookIntegrationTest extends MockKeystore {
         .getInstanceById(anyString(), anyString(), anyString());
     doReturn(settings).when(integrationService).getIntegrationById(anyString(), anyString());
 
-    mockWHI.handle("1234", INTEGRATION_USER,
-        new WebHookPayload(Collections.<String, String>emptyMap(),
-            Collections.<String, String>emptyMap(), "{ \"webhookEvent\": \"mock\" }"));
+    try {
+      mockWHI.handle("1234", INTEGRATION_USER,
+          new WebHookPayload(Collections.<String, String>emptyMap(),
+              Collections.<String, String>emptyMap(), "{ \"webhookEvent\": \"mock\" }"));
+      fail();
+    } catch (ProcessingException e) {
 
-    Long lastPostedDate = WebHookConfigurationUtils.fromJsonString(instance.getOptionalProperties())
-        .path(LAST_POSTED_DATE).asLong();
+      Long lastPostedDate = WebHookConfigurationUtils.fromJsonString(instance.getOptionalProperties())
+          .path(LAST_POSTED_DATE).asLong();
 
-    // no update to lastPostedDate
-    assertEquals(optionalPropertiesTimestamp, lastPostedDate);
+      // no update to lastPostedDate
+      assertEquals(optionalPropertiesTimestamp, lastPostedDate);
 
-    mockWHI.onConfigChange(null);
+      mockWHI.onConfigChange(null);
 
-    IntegrationHealth integrationHealth = mockWHI.getHealthStatus();
-    assertNull(integrationHealth.getLatestPostTimestamp());
+      IntegrationHealth integrationHealth = mockWHI.getHealthStatus();
+      assertNull(integrationHealth.getLatestPostTimestamp());
 
-    verify(metricsController, times(1)).startParserExecution(INTEGRATION_USER);
-    verify(metricsController, times(1)).finishParserExecution(context, INTEGRATION_USER, true);
+      verify(metricsController, times(1)).startParserExecution(INTEGRATION_USER);
+      verify(metricsController, times(1)).finishParserExecution(context, INTEGRATION_USER, true);
+    }
   }
 
   @Test(expected = StreamTypeNotFoundException.class)
