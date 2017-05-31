@@ -809,6 +809,10 @@
                 <file>
                     <exists>${basedir}/webpack.config.js</exists>
                 </file>
+                <property>
+                    <name>env</name>
+                    <value>!dev</value>
+                </property>
             </activation>
 
             <build>
