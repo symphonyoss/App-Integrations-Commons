@@ -22,6 +22,7 @@ import static org.symphonyoss.integration.model.healthcheck.IntegrationFlags.Val
 import static org.symphonyoss.integration.utils.WebHookConfigurationUtils.LAST_POSTED_DATE;
 
 import com.codahale.metrics.Timer;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -38,6 +39,7 @@ import org.symphonyoss.integration.exception.bootstrap.RetryLifecycleException;
 import org.symphonyoss.integration.exception.bootstrap.UnexpectedBootstrapException;
 import org.symphonyoss.integration.exception.config.ForbiddenUserException;
 import org.symphonyoss.integration.exception.config.IntegrationConfigException;
+import org.symphonyoss.integration.json.JsonUtils;
 import org.symphonyoss.integration.model.config.IntegrationInstance;
 import org.symphonyoss.integration.model.config.IntegrationSettings;
 import org.symphonyoss.integration.model.message.Message;
@@ -59,6 +61,7 @@ import org.symphonyoss.integration.webhook.exception.WebHookUnprocessableEntityE
 import org.symphonyoss.integration.webhook.metrics.ParserMetricsController;
 
 import javax.ws.rs.core.MediaType;
+import javax.xml.parsers.ParserConfigurationException;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -89,7 +92,8 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
   private static final String UNKNOWN_USER = "UNKNOWN";
 
-  private static final String PROLOG_ML_REGEX = "((<\\?xml version =\\\")[\\d].[\\d]\\\"[\\s\\w\\d=\"\\?-]*>)";
+  private static final String PROLOG_ML_REGEX =
+      "((<\\?xml version =\\\")[\\d].[\\d]\\\"[\\s\\w\\d=\"\\?-]*>)";
 
   @Autowired
   @Qualifier("remoteIntegrationService")
@@ -130,6 +134,8 @@ public abstract class WebHookIntegration extends BaseIntegration {
    * Used to control the timeout for the circuit breaker mechanism used by this integration.
    */
   private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+  private static final String OWNERSHIP = "Ownership";
 
   @Override
   public void onCreate(String integrationUser) {
@@ -236,14 +242,37 @@ public abstract class WebHookIntegration extends BaseIntegration {
     if (isAvailable()) {
       IntegrationInstance instance = getIntegrationInstance(instanceId);
       Message message = parseRequest(instance, integrationUser, input);
-
       if (message != null) {
+        includeOwnershipOnMessageData(message, instance.getCreatorId(), instance.getCreatorName());
         List<String> streams = streamService.getStreams(instance);
         postMessage(instance, integrationUser, streams, message);
       } else {
         String erroMessage = String.format("Event not handled by the %s", integrationUser);
         throw new WebHookUnprocessableEntityException(erroMessage);
       }
+    }
+  }
+
+  private void includeOwnershipOnMessageData(Message message, String creatorId,
+      String creatorName) {
+    try {
+      if (StringUtils.isEmpty(message.getData())) {
+        String erroMessage = String.format("The message data is empty");
+        throw new ParserConfigurationException(erroMessage);
+      }
+      ObjectNode data = (ObjectNode) JsonUtils.readTree(message.getData());
+
+      ObjectNode ownership = data.putObject(OWNERSHIP);
+      ownership.put("creatorId", creatorId);
+      ownership.put("creatorName", creatorName);
+
+      String newMessage = JsonUtils.writeValueAsString(data);
+      message.setData(newMessage);
+
+    } catch (IOException e) {
+      e.getMessage();
+    } catch (ParserConfigurationException e) {
+      e.getMessage();
     }
   }
 
@@ -426,7 +455,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
   protected Message buildMessageML(String message, String webHookEvent) {
     if (!StringUtils.isBlank(message)) {
       //Remove XML prolog
-      String formattedMessage = message.replaceAll(PROLOG_ML_REGEX,"");
+      String formattedMessage = message.replaceAll(PROLOG_ML_REGEX, "");
       formattedMessage = MESSAGEML_START + formattedMessage + MESSAGEML_END;
 
       Message messageSubmission = new Message();
