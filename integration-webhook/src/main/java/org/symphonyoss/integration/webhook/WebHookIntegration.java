@@ -23,6 +23,7 @@ import static org.symphonyoss.integration.utils.WebHookConfigurationUtils.LAST_P
 
 import com.codahale.metrics.Timer;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -135,7 +136,12 @@ public abstract class WebHookIntegration extends BaseIntegration {
    */
   private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
+  /**
+   * Ownership fields
+   */
   private static final String OWNERSHIP = "Ownership";
+  private static final String USER_ID = "userId";
+  private static final String USER_NAME = "username";
 
   @Override
   public void onCreate(String integrationUser) {
@@ -242,9 +248,14 @@ public abstract class WebHookIntegration extends BaseIntegration {
     if (isAvailable()) {
       IntegrationInstance instance = getIntegrationInstance(instanceId);
       Message message = parseRequest(instance, integrationUser, input);
+
       if (message != null) {
-        includeOwnershipOnMessageData(message, instance.getCreatorId(), instance.getCreatorName());
         List<String> streams = streamService.getStreams(instance);
+
+        if (MessageMLVersion.V2.equals(message.getVersion())) {
+          includeOwnershipOnMessageData(message, instance);
+        }
+
         postMessage(instance, integrationUser, streams, message);
       } else {
         String erroMessage = String.format("Event not handled by the %s", integrationUser);
@@ -253,26 +264,45 @@ public abstract class WebHookIntegration extends BaseIntegration {
     }
   }
 
-  private void includeOwnershipOnMessageData(Message message, String creatorId,
-      String creatorName) {
+  /**
+   * Add ownership info into the EntityJSON. It's required for auditing process.
+   * @param message Message to be posted
+   * @param instance Integration instance
+   */
+  private void includeOwnershipOnMessageData(Message message, IntegrationInstance instance) {
+    String creatorId = instance.getCreatorId();
+    String creatorName = instance.getCreatorName();
+
+    if ((StringUtils.isEmpty(creatorId)) && (StringUtils.isEmpty(creatorName))) {
+      LOGGER.info("No ownership info for instance {}", instance.getInstanceId());
+      return;
+    }
+
+    String data = message.getData();
+
     try {
-      if (StringUtils.isEmpty(message.getData())) {
-        String erroMessage = String.format("The message data is empty");
-        throw new ParserConfigurationException(erroMessage);
+      ObjectNode dataNode;
+
+      if (StringUtils.isEmpty(data)) {
+        dataNode = JsonNodeFactory.instance.objectNode();
+      } else {
+        dataNode = (ObjectNode) JsonUtils.readTree(message.getData());
       }
-      ObjectNode data = (ObjectNode) JsonUtils.readTree(message.getData());
 
-      ObjectNode ownership = data.putObject(OWNERSHIP);
-      ownership.put("creatorId", creatorId);
-      ownership.put("creatorName", creatorName);
+      ObjectNode ownership = dataNode.putObject(OWNERSHIP);
 
-      String newMessage = JsonUtils.writeValueAsString(data);
-      message.setData(newMessage);
+      if (StringUtils.isNotEmpty(creatorId)) {
+        ownership.put(USER_ID, creatorId);
+      }
 
-    } catch (IOException e) {
-      e.getMessage();
-    } catch (ParserConfigurationException e) {
-      e.getMessage();
+      if (StringUtils.isNotEmpty(creatorName)) {
+        ownership.put(USER_NAME, creatorName);
+      }
+
+      String newData = JsonUtils.writeValueAsString(data);
+      message.setData(newData);
+    } catch (Exception e) {
+      LOGGER.warn("Fail to set ownership info for instance " + instance.getInstanceId(), e);
     }
   }
 
