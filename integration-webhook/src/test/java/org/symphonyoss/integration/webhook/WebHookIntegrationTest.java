@@ -85,6 +85,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -102,12 +103,16 @@ import javax.ws.rs.ProcessingException;
 @SpringBootTest
 @EnableConfigurationProperties
 @ContextConfiguration(classes = {IntegrationProperties.class, MockWebHookIntegration.class,
-    MockIntegrationHealthManager.class})
+    MockIntegrationHealthManager.class, V2MockWebHookIntegration.class})
 public class WebHookIntegrationTest extends MockKeystore {
 
   private static final String CONFIGURATION_ID = "57bf581ae4b079de6a1cbbf9";
 
+  private static final String INSTANCE_ID = "592c7696e4b0402b2a03ce5b";
+
   private static final String INTEGRATION_USER = "jiraWebHookIntegration";
+
+  private static final String MOCK_USERID = "98568743";
 
   private static final String XML_WITH_PROLOG =
       "<?xml version =\"1.0\" encoding=\"UTF-8\"?><mention"
@@ -159,6 +164,9 @@ public class WebHookIntegrationTest extends MockKeystore {
   @Autowired
   private MockWebHookIntegration mockWHI;
 
+  @Autowired
+  private V2MockWebHookIntegration v2MockWHI;
+
   private IntegrationSettings settings;
 
   @Before
@@ -175,6 +183,7 @@ public class WebHookIntegrationTest extends MockKeystore {
     settings.setEnabled(true);
 
     mockWHI.onConfigChange(settings);
+    v2MockWHI.onConfigChange(settings);
 
     doReturn(settings).when(integrationService)
         .getIntegrationByType(INTEGRATION_USER, INTEGRATION_USER);
@@ -475,7 +484,7 @@ public class WebHookIntegrationTest extends MockKeystore {
     assertEquals(
         "<messageML>Hi there. This is the JIRA application. I'll let you know of any new events "
             + "sent from the JIRA integration you configured.</messageML>",
-        answer.getMessage());
+        answer.getFormattedMessage());
     assertEquals(1, answer.getCount());
   }
 
@@ -508,7 +517,7 @@ public class WebHookIntegrationTest extends MockKeystore {
     assertEquals(
         "<messageML>Hi there. This is the JIRA application. I'll let you know of any new events "
             + "sent from the JIRA integration configured by Test user.</messageML>",
-        answer.getMessage());
+        answer.getFormattedMessage());
     assertEquals(2, answer.getCount());
   }
 
@@ -533,7 +542,7 @@ public class WebHookIntegrationTest extends MockKeystore {
     assertEquals(
         "<messageML>Hi there. This is the JIRA application. I'll let you know of any new events "
             + "sent from the JIRA integration configured by UNKNOWN.</messageML>",
-        answer.getMessage());
+        answer.getFormattedMessage());
     assertEquals(2, answer.getCount());
   }
 
@@ -591,6 +600,106 @@ public class WebHookIntegrationTest extends MockKeystore {
     assertEquals(expected, result.getMessage());
   }
 
+  @Test
+  public void testHandleMMLV2WithoutCreatorInfo() throws RemoteApiException, IOException {
+    doReturn(settings).when(integrationService).getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
+
+    WebHookPayload payload = new WebHookPayload(Collections.<String, String>emptyMap(),
+        Collections.<String, String>emptyMap(), "{ \"message\": \"mockMessage\" }");
+
+    SendMessageAnswer answer = new SendMessageAnswer();
+    doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
+        anyListOf(String.class), any(Message.class));
+
+    IntegrationInstance instance = mockInstance();
+    doReturn(instance).when(integrationService).getInstanceById(CONFIGURATION_ID, INSTANCE_ID, INTEGRATION_USER);
+
+    v2MockWHI.handle(instance.getInstanceId(), INTEGRATION_USER, payload);
+
+    assertEquals("<messageML>mockMessage</messageML>", answer.getFormattedMessage());
+    assertNull(answer.getMessage().getData());
+  }
+
+  private IntegrationInstance mockInstance() {
+    IntegrationInstance instance = new IntegrationInstance();
+    instance.setConfigurationId(CONFIGURATION_ID);
+    instance.setInstanceId(INSTANCE_ID);
+    instance.setOptionalProperties("{}");
+
+    return instance;
+  }
+
+  @Test
+  public void testHandleMMLV2FailedSetOwnership() throws RemoteApiException, IOException {
+    doReturn(settings).when(integrationService).getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
+
+    WebHookPayload payload = new WebHookPayload(Collections.<String, String>emptyMap(),
+        Collections.<String, String>emptyMap(), "{ \"message\": \"mockMessage\", \"data\": \"mockData\" }");
+
+    SendMessageAnswer answer = new SendMessageAnswer();
+    doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
+        anyListOf(String.class), any(Message.class));
+
+    IntegrationInstance instance = mockInstance();
+    instance.setCreatorId(MOCK_USERID);
+
+    doReturn(instance).when(integrationService).getInstanceById(CONFIGURATION_ID, INSTANCE_ID, INTEGRATION_USER);
+
+    v2MockWHI.handle(instance.getInstanceId(), INTEGRATION_USER, payload);
+
+    assertEquals("<messageML>mockMessage</messageML>", answer.getFormattedMessage());
+    assertEquals("mockData", answer.getMessage().getData());
+  }
+
+  @Test
+  public void testHandleMMLV2EmptyData() throws RemoteApiException, IOException {
+    doReturn(settings).when(integrationService).getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
+
+    WebHookPayload payload = new WebHookPayload(Collections.<String, String>emptyMap(),
+        Collections.<String, String>emptyMap(), "{ \"message\": \"mockMessage\" }");
+
+    SendMessageAnswer answer = new SendMessageAnswer();
+    doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
+        anyListOf(String.class), any(Message.class));
+
+    IntegrationInstance instance = mockInstance();
+    instance.setCreatorName(INTEGRATION_USER);
+
+    doReturn(instance).when(integrationService).getInstanceById(CONFIGURATION_ID, INSTANCE_ID, INTEGRATION_USER);
+
+    v2MockWHI.handle(instance.getInstanceId(), INTEGRATION_USER, payload);
+
+    assertEquals("<messageML>mockMessage</messageML>", answer.getFormattedMessage());
+    assertEquals("{\"Ownership\":{\"username\":\"jiraWebHookIntegration\"}}",
+        answer.getMessage().getData());
+  }
+
+  @Test
+  public void testHandleMMLV2() throws RemoteApiException, IOException {
+    doReturn(settings).when(integrationService).getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
+
+    WebHookPayload payload = new WebHookPayload(Collections.<String, String>emptyMap(),
+        Collections.<String, String>emptyMap(),
+        "{ \"message\": \"mockMessage\", \"data\": { \"event\": \"mockEvent\" } }");
+
+    SendMessageAnswer answer = new SendMessageAnswer();
+    doAnswer(answer).when(service).sendMessage(any(IntegrationInstance.class), anyString(),
+        anyListOf(String.class), any(Message.class));
+
+    IntegrationInstance instance = mockInstance();
+    instance.setCreatorId(MOCK_USERID);
+    instance.setCreatorName(INTEGRATION_USER);
+
+    doReturn(instance).when(integrationService).getInstanceById(CONFIGURATION_ID, INSTANCE_ID, INTEGRATION_USER);
+
+    v2MockWHI.handle(instance.getInstanceId(), INTEGRATION_USER, payload);
+
+    assertEquals(
+        "{\"event\":\"mockEvent\",\"Ownership\":{\"userId\":\"98568743\","
+            + "\"username\":\"jiraWebHookIntegration\"}}",
+        answer.getMessage().getData());
+  }
+
   public static final class SendMessageAnswer implements Answer<List<Message>> {
 
     private Message message;
@@ -603,10 +712,19 @@ public class WebHookIntegrationTest extends MockKeystore {
       List<String> streams = (List<String>) invocationOnMock.getArguments()[2];
       this.message = (Message) invocationOnMock.getArguments()[3];
       this.count = streams.size();
-      return new ArrayList<>();
+
+      if (this.message.getTimestamp() == null) {
+        this.message.setTimestamp(System.currentTimeMillis());
+      }
+
+      return Arrays.asList(message);
     }
 
-    public String getMessage() {
+    public Message getMessage() {
+      return message;
+    }
+
+    public String getFormattedMessage() {
       return message.getMessage();
     }
 

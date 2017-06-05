@@ -286,7 +286,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
       if (StringUtils.isEmpty(data)) {
         dataNode = JsonNodeFactory.instance.objectNode();
       } else {
-        dataNode = (ObjectNode) JsonUtils.readTree(message.getData());
+        dataNode = (ObjectNode) JsonUtils.readTree(data);
       }
 
       ObjectNode ownership = dataNode.putObject(OWNERSHIP);
@@ -299,7 +299,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
         ownership.put(USER_NAME, creatorName);
       }
 
-      String newData = JsonUtils.writeValueAsString(data);
+      String newData = JsonUtils.writeValueAsString(dataNode);
       message.setData(newData);
     } catch (Exception e) {
       LOGGER.warn("Fail to set ownership info for instance " + instance.getInstanceId(), e);
