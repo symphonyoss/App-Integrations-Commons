@@ -22,6 +22,7 @@ import static org.symphonyoss.integration.model.healthcheck.IntegrationFlags.Val
 import static org.symphonyoss.integration.utils.WebHookConfigurationUtils.LAST_POSTED_DATE;
 
 import com.codahale.metrics.Timer;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -38,15 +39,16 @@ import org.symphonyoss.integration.exception.bootstrap.RetryLifecycleException;
 import org.symphonyoss.integration.exception.bootstrap.UnexpectedBootstrapException;
 import org.symphonyoss.integration.exception.config.ForbiddenUserException;
 import org.symphonyoss.integration.exception.config.IntegrationConfigException;
+import org.symphonyoss.integration.json.JsonUtils;
 import org.symphonyoss.integration.model.config.IntegrationInstance;
 import org.symphonyoss.integration.model.config.IntegrationSettings;
+import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
 import org.symphonyoss.integration.model.message.Message;
 import org.symphonyoss.integration.model.message.MessageMLVersion;
 import org.symphonyoss.integration.model.stream.StreamType;
-import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
 import org.symphonyoss.integration.model.yaml.Application;
-import org.symphonyoss.integration.service.IntegrationService;
 import org.symphonyoss.integration.service.IntegrationBridge;
+import org.symphonyoss.integration.service.IntegrationService;
 import org.symphonyoss.integration.service.StreamService;
 import org.symphonyoss.integration.service.UserService;
 import org.symphonyoss.integration.utils.WebHookConfigurationUtils;
@@ -58,8 +60,6 @@ import org.symphonyoss.integration.webhook.exception.WebHookUnavailableException
 import org.symphonyoss.integration.webhook.exception.WebHookUnprocessableEntityException;
 import org.symphonyoss.integration.webhook.metrics.ParserMetricsController;
 
-import javax.ws.rs.core.MediaType;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
@@ -68,6 +68,8 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import javax.ws.rs.core.MediaType;
 
 /**
  * WebHook based Integrations, implementing common methods for WebHookIntegrations and defining
@@ -89,7 +91,8 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
   private static final String UNKNOWN_USER = "UNKNOWN";
 
-  private static final String PROLOG_ML_REGEX = "((<\\?xml version =\\\")[\\d].[\\d]\\\"[\\s\\w\\d=\"\\?-]*>)";
+  private static final String PROLOG_ML_REGEX =
+      "((<\\?xml version =\\\")[\\d].[\\d]\\\"[\\s\\w\\d=\"\\?-]*>)";
 
   @Autowired
   @Qualifier("remoteIntegrationService")
@@ -130,6 +133,13 @@ public abstract class WebHookIntegration extends BaseIntegration {
    * Used to control the timeout for the circuit breaker mechanism used by this integration.
    */
   private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+  /**
+   * Ownership fields
+   */
+  private static final String OWNERSHIP = "Ownership";
+  private static final String USER_ID = "userId";
+  private static final String USER_NAME = "username";
 
   @Override
   public void onCreate(String integrationUser) {
@@ -239,11 +249,58 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
       if (message != null) {
         List<String> streams = streamService.getStreams(instance);
+
+        if (MessageMLVersion.V2.equals(message.getVersion())) {
+          includeOwnershipOnMessageData(message, instance);
+        }
+
         postMessage(instance, integrationUser, streams, message);
       } else {
         String erroMessage = String.format("Event not handled by the %s", integrationUser);
         throw new WebHookUnprocessableEntityException(erroMessage);
       }
+    }
+  }
+
+  /**
+   * Add ownership info into the EntityJSON. It's required for auditing process.
+   * @param message Message to be posted
+   * @param instance Integration instance
+   */
+  private void includeOwnershipOnMessageData(Message message, IntegrationInstance instance) {
+    String creatorId = instance.getCreatorId();
+    String creatorName = instance.getCreatorName();
+
+    if ((StringUtils.isEmpty(creatorId)) && (StringUtils.isEmpty(creatorName))) {
+      LOGGER.info("No ownership info for instance {}", instance.getInstanceId());
+      return;
+    }
+
+    String data = message.getData();
+
+    try {
+      ObjectNode dataNode;
+
+      if (StringUtils.isEmpty(data)) {
+        dataNode = JsonNodeFactory.instance.objectNode();
+      } else {
+        dataNode = (ObjectNode) JsonUtils.readTree(data);
+      }
+
+      ObjectNode ownership = dataNode.putObject(OWNERSHIP);
+
+      if (StringUtils.isNotEmpty(creatorId)) {
+        ownership.put(USER_ID, creatorId);
+      }
+
+      if (StringUtils.isNotEmpty(creatorName)) {
+        ownership.put(USER_NAME, creatorName);
+      }
+
+      String newData = JsonUtils.writeValueAsString(dataNode);
+      message.setData(newData);
+    } catch (Exception e) {
+      LOGGER.warn("Fail to set ownership info for instance " + instance.getInstanceId(), e);
     }
   }
 
@@ -426,7 +483,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
   protected Message buildMessageML(String message, String webHookEvent) {
     if (!StringUtils.isBlank(message)) {
       //Remove XML prolog
-      String formattedMessage = message.replaceAll(PROLOG_ML_REGEX,"");
+      String formattedMessage = message.replaceAll(PROLOG_ML_REGEX, "");
       formattedMessage = MESSAGEML_START + formattedMessage + MESSAGEML_END;
 
       Message messageSubmission = new Message();
