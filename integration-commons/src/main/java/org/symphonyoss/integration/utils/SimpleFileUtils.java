@@ -19,6 +19,7 @@ import static org.symphonyoss.integration.messageml.MessageMLFormatConstants.MES
 import static org.symphonyoss.integration.messageml.MessageMLFormatConstants.MESSAGEML_START;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.apache.commons.io.FileUtils;
 import org.symphonyoss.integration.json.JsonUtils;
 
 import java.io.File;
@@ -41,10 +42,8 @@ public class SimpleFileUtils {
 
   public static String readFile(String fileName) throws IOException {
     ClassLoader classLoader = SimpleFileUtils.class.getClassLoader();
-    String file =
-        org.apache.commons.io.FileUtils.readFileToString(
-            new File(classLoader.getResource(fileName).getPath()), Charset
-                .defaultCharset());
+    String file = FileUtils.readFileToString(new File(classLoader.getResource(fileName).getPath()),
+        Charset.defaultCharset());
     return file;
   }
 }
