@@ -22,7 +22,6 @@ import static org.symphonyoss.integration.model.healthcheck.IntegrationFlags.Val
 import static org.symphonyoss.integration.utils.WebHookConfigurationUtils.LAST_POSTED_DATE;
 
 import com.codahale.metrics.Timer;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.StringUtils;
@@ -43,13 +42,13 @@ import org.symphonyoss.integration.exception.config.IntegrationConfigException;
 import org.symphonyoss.integration.json.JsonUtils;
 import org.symphonyoss.integration.model.config.IntegrationInstance;
 import org.symphonyoss.integration.model.config.IntegrationSettings;
+import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
 import org.symphonyoss.integration.model.message.Message;
 import org.symphonyoss.integration.model.message.MessageMLVersion;
 import org.symphonyoss.integration.model.stream.StreamType;
-import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
 import org.symphonyoss.integration.model.yaml.Application;
-import org.symphonyoss.integration.service.IntegrationService;
 import org.symphonyoss.integration.service.IntegrationBridge;
+import org.symphonyoss.integration.service.IntegrationService;
 import org.symphonyoss.integration.service.StreamService;
 import org.symphonyoss.integration.service.UserService;
 import org.symphonyoss.integration.utils.WebHookConfigurationUtils;
@@ -61,9 +60,6 @@ import org.symphonyoss.integration.webhook.exception.WebHookUnavailableException
 import org.symphonyoss.integration.webhook.exception.WebHookUnprocessableEntityException;
 import org.symphonyoss.integration.webhook.metrics.ParserMetricsController;
 
-import javax.ws.rs.core.MediaType;
-import javax.xml.parsers.ParserConfigurationException;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
@@ -72,6 +68,8 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import javax.ws.rs.core.MediaType;
 
 /**
  * WebHook based Integrations, implementing common methods for WebHookIntegrations and defining
