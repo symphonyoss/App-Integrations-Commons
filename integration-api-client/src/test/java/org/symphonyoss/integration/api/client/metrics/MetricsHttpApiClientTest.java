@@ -16,13 +16,11 @@
 
 package org.symphonyoss.integration.api.client.metrics;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
-import com.codahale.metrics.Timer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,21 +41,17 @@ public class MetricsHttpApiClientTest {
 
   private static final String MOCK_PATH = "/v1/configuration/create";
 
-  @Mock
-  private ApiMetricsController metricsController;
+  private MockApiMetricsController metricsController;
 
   @Mock
   private HttpApiClient apiClient;
-
-  @Mock
-  private Timer.Context context;
 
   private MetricsHttpApiClient metricsHttpApiClient;
 
   @Before
   public void init() {
+    this.metricsController = new MockApiMetricsController();
     this.metricsHttpApiClient = new MetricsHttpApiClient(metricsController, apiClient);
-    doReturn(context).when(metricsController).startApiCall(MOCK_PATH);
   }
 
   @Test
@@ -71,9 +65,7 @@ public class MetricsHttpApiClientTest {
           Collections.<String, String>emptyMap(), IntegrationSettings.class);
       fail();
     } catch (RemoteApiException e) {
-      verify(metricsController, times(1)).startApiCall(MOCK_PATH);
-      verify(metricsController, times(0)).finishApiCall(context, MOCK_PATH, true);
-      verify(metricsController, times(1)).finishApiCall(context, MOCK_PATH, false);
+      assertFalse(metricsController.isSuccess());
     }
   }
 
@@ -82,9 +74,7 @@ public class MetricsHttpApiClientTest {
     metricsHttpApiClient.doGet(MOCK_PATH, Collections.<String, String>emptyMap(),
         Collections.<String, String>emptyMap(), IntegrationSettings.class);
 
-    verify(metricsController, times(1)).startApiCall(MOCK_PATH);
-    verify(metricsController, times(0)).finishApiCall(context, MOCK_PATH, false);
-    verify(metricsController, times(1)).finishApiCall(context, MOCK_PATH, true);
+    assertTrue(metricsController.isSuccess());
   }
 
   @Test
@@ -98,9 +88,7 @@ public class MetricsHttpApiClientTest {
           Collections.<String, String>emptyMap(), null, IntegrationSettings.class);
       fail();
     } catch (RemoteApiException e) {
-      verify(metricsController, times(1)).startApiCall(MOCK_PATH);
-      verify(metricsController, times(0)).finishApiCall(context, MOCK_PATH, true);
-      verify(metricsController, times(1)).finishApiCall(context, MOCK_PATH, false);
+      assertFalse(metricsController.isSuccess());
     }
   }
 
@@ -109,9 +97,7 @@ public class MetricsHttpApiClientTest {
     metricsHttpApiClient.doPost(MOCK_PATH, Collections.<String, String>emptyMap(),
         Collections.<String, String>emptyMap(), null, IntegrationSettings.class);
 
-    verify(metricsController, times(1)).startApiCall(MOCK_PATH);
-    verify(metricsController, times(0)).finishApiCall(context, MOCK_PATH, false);
-    verify(metricsController, times(1)).finishApiCall(context, MOCK_PATH, true);
+    assertTrue(metricsController.isSuccess());
   }
 
   @Test
@@ -125,9 +111,7 @@ public class MetricsHttpApiClientTest {
           Collections.<String, String>emptyMap(), null, IntegrationSettings.class);
       fail();
     } catch (RemoteApiException e) {
-      verify(metricsController, times(1)).startApiCall(MOCK_PATH);
-      verify(metricsController, times(0)).finishApiCall(context, MOCK_PATH, true);
-      verify(metricsController, times(1)).finishApiCall(context, MOCK_PATH, false);
+      assertFalse(metricsController.isSuccess());
     }
   }
 
@@ -136,9 +120,7 @@ public class MetricsHttpApiClientTest {
     metricsHttpApiClient.doPut(MOCK_PATH, Collections.<String, String>emptyMap(),
         Collections.<String, String>emptyMap(), null, IntegrationSettings.class);
 
-    verify(metricsController, times(1)).startApiCall(MOCK_PATH);
-    verify(metricsController, times(0)).finishApiCall(context, MOCK_PATH, false);
-    verify(metricsController, times(1)).finishApiCall(context, MOCK_PATH, true);
+    assertTrue(metricsController.isSuccess());
   }
 
   @Test
@@ -152,9 +134,7 @@ public class MetricsHttpApiClientTest {
           Collections.<String, String>emptyMap(), IntegrationSettings.class);
       fail();
     } catch (RemoteApiException e) {
-      verify(metricsController, times(1)).startApiCall(MOCK_PATH);
-      verify(metricsController, times(0)).finishApiCall(context, MOCK_PATH, true);
-      verify(metricsController, times(1)).finishApiCall(context, MOCK_PATH, false);
+      assertFalse(metricsController.isSuccess());
     }
   }
 
@@ -163,9 +143,7 @@ public class MetricsHttpApiClientTest {
     metricsHttpApiClient.doDelete(MOCK_PATH, Collections.<String, String>emptyMap(),
         Collections.<String, String>emptyMap(), IntegrationSettings.class);
 
-    verify(metricsController, times(1)).startApiCall(MOCK_PATH);
-    verify(metricsController, times(0)).finishApiCall(context, MOCK_PATH, false);
-    verify(metricsController, times(1)).finishApiCall(context, MOCK_PATH, true);
+    assertTrue(metricsController.isSuccess());
   }
 
 }
