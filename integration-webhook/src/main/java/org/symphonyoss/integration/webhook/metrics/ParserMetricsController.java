@@ -131,7 +131,7 @@ public class ParserMetricsController implements IntegrationController {
     }
 
     if (context != null) {
-      context.stop();
+      context.close();
     }
   }
 }
