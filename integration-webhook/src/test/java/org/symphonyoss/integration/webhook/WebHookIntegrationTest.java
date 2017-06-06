@@ -30,17 +30,14 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.symphonyoss.integration.utils.WebHookConfigurationUtils.LAST_POSTED_DATE;
 
-import com.codahale.metrics.Timer;
+import com.codahale.metrics.MetricRegistry;
 import com.google.common.cache.LoadingCache;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +74,6 @@ import org.symphonyoss.integration.webhook.exception.StreamTypeNotFoundException
 import org.symphonyoss.integration.webhook.exception.WebHookDisabledException;
 import org.symphonyoss.integration.webhook.exception.WebHookParseException;
 import org.symphonyoss.integration.webhook.exception.WebHookUnavailableException;
-import org.symphonyoss.integration.webhook.metrics.ParserMetricsController;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -103,7 +99,8 @@ import javax.ws.rs.ProcessingException;
 @SpringBootTest
 @EnableConfigurationProperties
 @ContextConfiguration(classes = {IntegrationProperties.class, MockWebHookIntegration.class,
-    MockIntegrationHealthManager.class, V2MockWebHookIntegration.class})
+    MockIntegrationHealthManager.class, V2MockWebHookIntegration.class,
+    MockParserMetricsController.class, MetricRegistry.class})
 public class WebHookIntegrationTest extends MockKeystore {
 
   private static final String CONFIGURATION_ID = "57bf581ae4b079de6a1cbbf9";
@@ -155,11 +152,8 @@ public class WebHookIntegrationTest extends MockKeystore {
   @MockBean
   private IntegrationUtils utils;
 
-  @MockBean
-  private ParserMetricsController metricsController;
-
-  @Mock
-  private Timer.Context context;
+  @Autowired
+  private MockParserMetricsController metricsController;
 
   @Autowired
   private MockWebHookIntegration mockWHI;
@@ -201,8 +195,6 @@ public class WebHookIntegrationTest extends MockKeystore {
     doAnswer(new GetStreamsAnswer()).when(streamService)
         .getStreams(any(IntegrationInstance.class));
     doAnswer(new GetStreamsAnswer()).when(streamService).getStreams(any(String.class));
-
-    doReturn(context).when(metricsController).startParserExecution(INTEGRATION_USER);
   }
 
   @Test
@@ -308,8 +300,7 @@ public class WebHookIntegrationTest extends MockKeystore {
     IntegrationHealth integrationHealth = mockWHI.getHealthStatus();
     assertEquals("2016-10-10T14:31:21Z+0000", integrationHealth.getLatestPostTimestamp());
 
-    verify(metricsController, times(1)).startParserExecution(INTEGRATION_USER);
-    verify(metricsController, times(1)).finishParserExecution(context, INTEGRATION_USER, true);
+    assertTrue(metricsController.isSuccess());
   }
 
   @Test
@@ -348,8 +339,7 @@ public class WebHookIntegrationTest extends MockKeystore {
     IntegrationHealth integrationHealth = mockWHI.getHealthStatus();
     assertNull(integrationHealth.getLatestPostTimestamp());
 
-    verify(metricsController, times(1)).startParserExecution(INTEGRATION_USER);
-    verify(metricsController, times(1)).finishParserExecution(context, INTEGRATION_USER, true);
+    assertTrue(metricsController.isSuccess());
   }
 
   @Test
@@ -394,8 +384,7 @@ public class WebHookIntegrationTest extends MockKeystore {
       IntegrationHealth integrationHealth = mockWHI.getHealthStatus();
       assertNull(integrationHealth.getLatestPostTimestamp());
 
-      verify(metricsController, times(1)).startParserExecution(INTEGRATION_USER);
-      verify(metricsController, times(1)).finishParserExecution(context, INTEGRATION_USER, true);
+      assertTrue(metricsController.isSuccess());
     }
   }
 
