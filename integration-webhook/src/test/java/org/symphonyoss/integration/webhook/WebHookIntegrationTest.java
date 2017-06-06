@@ -359,8 +359,8 @@ public class WebHookIntegrationTest extends MockKeystore {
     instance.setInstanceId("1234");
     instance.setOptionalProperties(optionalProperties);
 
-    IntegrationSettings settings = mock(IntegrationSettings.class);
-    doReturn(true).when(settings).getEnabled();
+    IntegrationSettings settings = new IntegrationSettings();
+    settings.setEnabled(true);
 
     doReturn(instance).when(integrationService)
         .getInstanceById(anyString(), anyString(), anyString());
@@ -583,10 +583,9 @@ public class WebHookIntegrationTest extends MockKeystore {
 
   @Test
   public void testMessageMLWithProlog() throws IOException {
-    String rawMessage = XML_WITH_PROLOG;
-    String expected = VALID_MESSAGEML;
-    Message result = mockWHI.buildMessageML(rawMessage, "");
-    assertEquals(expected, result.getMessage());
+    Message result = mockWHI.buildMessageML(XML_WITH_PROLOG, "");
+    assertNotNull(result);
+    assertEquals(VALID_MESSAGEML, result.getMessage());
   }
 
   @Test
