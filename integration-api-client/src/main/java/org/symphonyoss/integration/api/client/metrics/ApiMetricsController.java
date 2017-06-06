@@ -171,7 +171,7 @@ public class ApiMetricsController {
     }
 
     if (context != null) {
-      context.stop();
+      context.close();
     }
   }
 
