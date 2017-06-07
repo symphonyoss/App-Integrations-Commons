@@ -135,9 +135,17 @@ public abstract class WebHookIntegration extends BaseIntegration {
   private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
   /**
+   * Entity fields
+   */
+  private static final String ENTITY_TYPE = "type";
+  private static final String ENTITY_VERSION = "version";
+
+  /**
    * Ownership fields
    */
-  private static final String OWNERSHIP = "Ownership";
+  private static final String OWNERSHIP = "ownership";
+  private static final String OWNERSHIP_ENTITY_TYPE = "com.symphony.integration.ownership";
+  private static final String OWNERSHIP_ENTITY_VERSION = "1.0";
   private static final String USER_ID = "userId";
   private static final String USER_NAME = "username";
 
@@ -288,6 +296,8 @@ public abstract class WebHookIntegration extends BaseIntegration {
       }
 
       ObjectNode ownership = dataNode.putObject(OWNERSHIP);
+      ownership.put(ENTITY_TYPE, OWNERSHIP_ENTITY_TYPE);
+      ownership.put(ENTITY_VERSION, OWNERSHIP_ENTITY_VERSION);
 
       if (StringUtils.isNotEmpty(creatorId)) {
         ownership.put(USER_ID, creatorId);
