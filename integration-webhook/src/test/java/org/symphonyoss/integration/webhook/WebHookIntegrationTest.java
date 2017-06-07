@@ -658,7 +658,9 @@ public class WebHookIntegrationTest extends MockKeystore {
     v2MockWHI.handle(instance.getInstanceId(), INTEGRATION_USER, payload);
 
     assertEquals("<messageML>mockMessage</messageML>", answer.getFormattedMessage());
-    assertEquals("{\"Ownership\":{\"username\":\"jiraWebHookIntegration\"}}",
+    assertEquals(
+        "{\"ownership\":{\"type\":\"com.symphony.integration.ownership\",\"version\":\"1.0\","
+            + "\"username\":\"jiraWebHookIntegration\"}}",
         answer.getMessage().getData());
   }
 
@@ -683,7 +685,8 @@ public class WebHookIntegrationTest extends MockKeystore {
     v2MockWHI.handle(instance.getInstanceId(), INTEGRATION_USER, payload);
 
     assertEquals(
-        "{\"event\":\"mockEvent\",\"Ownership\":{\"userId\":\"98568743\","
+        "{\"event\":\"mockEvent\",\"ownership\":{\"type\":\"com.symphony.integration.ownership\","
+            + "\"version\":\"1.0\",\"userId\":\"98568743\","
             + "\"username\":\"jiraWebHookIntegration\"}}",
         answer.getMessage().getData());
   }
