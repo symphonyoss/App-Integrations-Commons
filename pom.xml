@@ -860,13 +860,16 @@
                             <formats>
                                 <format>html</format>
                             </formats>
-                            <check/>
+                            <check>
+                                <totalLineRate>90</totalLineRate>
+                            </check>
                         </configuration>
                         <executions>
                             <execution>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>cobertura</goal>
+                                    <goal>check</goal>
                                 </goals>
                             </execution>
                         </executions>
