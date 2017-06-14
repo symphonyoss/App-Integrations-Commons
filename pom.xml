@@ -492,6 +492,16 @@
             </roles>
             <timezone>America/Sao_Paulo</timezone>
         </developer>
+        <developer>
+            <id>crepache</id>
+            <name>Cassiano Cesar Repache</name>
+            <email>Cassiano.Repache@symphony.com</email>
+            <organization>Daitan</organization>
+            <roles>
+                <role>Senior Software Engineer</role>
+            </roles>
+            <timezone>America/Sao_Paulo</timezone>
+        </developer>
     </developers>
 
     <contributors>
@@ -828,6 +838,50 @@
                     <version>${project.version}</version>
                 </dependency>
             </dependencies>
+        </profile>
+
+        <profile>
+            <id>cobertura</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>build.cobertura</name>
+                    <value>true</value>
+                </property>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>cobertura-maven-plugin</artifactId>
+                        <version>2.7</version>
+                        <configuration>
+                            <formats>
+                                <format>html</format>
+                            </formats>
+                            <check/>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>cobertura</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <reporting>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>cobertura-maven-plugin</artifactId>
+                        <version>2.7</version>
+                    </plugin>
+                </plugins>
+            </reporting>
         </profile>
     </profiles>
 </project>
