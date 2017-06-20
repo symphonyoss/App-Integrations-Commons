@@ -18,12 +18,15 @@ package config;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.symphonyoss.integration.model.config.IntegrationInstance;
 
 /**
  * Unit test for {@link IntegrationInstanceTest}
  * Created by crepache on 20/06/17.
  */
+@RunWith(MockitoJUnitRunner.class)
 public class IntegrationInstanceTest {
 
   private static final String MOCK_INSTANCE_ID = "57e2f006e4b0176038a81b18";
