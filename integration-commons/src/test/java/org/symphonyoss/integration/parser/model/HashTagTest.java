@@ -3,14 +3,11 @@ package org.symphonyoss.integration.parser.model;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * Unit test for {@link HashTag}
  * Created by crepache on 20/06/17.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class HashTagTest {
 
   private static final String EXPECTED_HASH_TAG = "<hash tag=\"#HashTag\"/>";
