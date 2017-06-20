@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package config;
+package org.symphonyoss.integration.model.config;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.symphonyoss.integration.model.config.IntegrationInstance;
 
 /**
- * Unit test for {@link IntegrationInstanceTest}
+ * Unit test for {@link IntegrationInstance}
  * Created by crepache on 20/06/17.
  */
 @RunWith(MockitoJUnitRunner.class)
