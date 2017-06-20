@@ -1,5 +1,6 @@
 package org.symphonyoss.integration.model.config;
 
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -9,4 +10,9 @@ import org.mockito.runners.MockitoJUnitRunner;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class IntegrationSettingsTest {
+
+  @Test
+  public void testCreateIntegrationSettings() {
+    //
+  }
 }
