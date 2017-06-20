@@ -36,7 +36,7 @@ public class IntegrationInstanceTest {
   private static final String OPTIONAL_PROPERTIES = "{\"streams\":[\"t7uufOOl8JXeDcamEVLvSn___qvMMOjEdA\",\"JHbxCfFqwResXmyVn3VGr3___qvU3O\"]}";
 
   @Test
-  public void testInstance() {
+  public void testCreateIntegrationInstance() {
     IntegrationInstance integrationInstance = new IntegrationInstance();
 
     integrationInstance.setInstanceId(MOCK_INSTANCE_ID);
@@ -49,14 +49,14 @@ public class IntegrationInstanceTest {
     integrationInstance.setOptionalProperties(OPTIONAL_PROPERTIES);
     integrationInstance.setActive(Boolean.TRUE);
 
-    Assert.assertNotNull(integrationInstance.getInstanceId());
-    Assert.assertNotNull(integrationInstance.getConfigurationId());
-    Assert.assertNotNull(integrationInstance.getName());
-    Assert.assertNotNull(integrationInstance.getCreatorId());
-    Assert.assertNotNull(integrationInstance.getCreatedDate());
-    Assert.assertNotNull(integrationInstance.getCreatorName());
-    Assert.assertNotNull(integrationInstance.getLastModifiedDate());
-    Assert.assertNotNull(integrationInstance.getOptionalProperties());
+    Assert.assertEquals(MOCK_INSTANCE_ID, integrationInstance.getInstanceId());
+    Assert.assertEquals(MOCK_CONFIG_ID, integrationInstance.getConfigurationId());
+    Assert.assertEquals(MOCK_INSTANCE_NAME, integrationInstance.getName());
+    Assert.assertEquals(MOCKE_CREATOR_ID, integrationInstance.getCreatorId());
+    Assert.assertEquals(CREATED_DATE, integrationInstance.getCreatedDate());
+    Assert.assertEquals(MOCK_CREATOR_NAME, integrationInstance.getCreatorName());
+    Assert.assertEquals(LAST_MODIFIED_DATE, integrationInstance.getLastModifiedDate());
+    Assert.assertEquals(OPTIONAL_PROPERTIES, integrationInstance.getOptionalProperties());
     Assert.assertTrue(integrationInstance.getActive());
   }
 
