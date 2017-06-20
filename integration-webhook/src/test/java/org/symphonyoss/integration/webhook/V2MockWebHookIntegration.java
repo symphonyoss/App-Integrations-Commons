@@ -44,6 +44,8 @@ import javax.ws.rs.core.MediaType;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class V2MockWebHookIntegration extends WebHookIntegration {
 
+  public static final String EVENT_NOT_HANDLED = "eventNotHandled";
+
   public static final String MESSAGE = "message";
 
   public static final String DATA = "data";
@@ -52,6 +54,10 @@ public class V2MockWebHookIntegration extends WebHookIntegration {
   public Message parse(WebHookPayload input) throws WebHookParseException {
     String formattedMessage;
     String data;
+
+    if (input.getParameters() != null && input.getParameters().containsKey(EVENT_NOT_HANDLED)) {
+      return null;
+    }
 
     try {
       JsonNode rootNode = JsonUtils.readTree(input.getBody());

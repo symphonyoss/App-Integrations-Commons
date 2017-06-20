@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <metadata name="testEvent" type="com.symphony.integration.test" version="1.0">
 
+    <field key="field" value="field" />
+
     <object id="header" type="com.symphony.integration.test.header" version="1.0">
         <field key="value" value="content.header" />
     </object>
+
+    <object id="comments" type="com.symphony.integration.test.comments" version="1.0" list="true">
+        <object id="comment" type="com.symphony.integration.test.comment" version="1.0">
+            <field key="value" value="comment.value" />
+        </object>
+    </object>
+
+    <object id="labels" type="com.symphony.integration.test.labels" version="1.0" list="true" />
 
 </metadata>

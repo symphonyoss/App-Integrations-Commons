@@ -1,6 +1,17 @@
 {
+  "field": "field value",
   "content": {
     "header": "hello",
     "boolean": true
-  }
+  },
+  "comments": [
+    { "comment": { "value" : "commment 1" } },
+    { "comment": { "value" : "commment 2" } },
+    { "comment": { "value" : "commment 3" } }
+  ],
+  "labels": [
+    "label 1",
+    "label 2",
+    "label 3"
+  ]
 }

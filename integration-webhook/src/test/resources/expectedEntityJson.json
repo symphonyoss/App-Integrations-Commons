@@ -2,10 +2,33 @@
   "testEvent": {
     "type": "com.symphony.integration.test",
     "version": "1.0",
+    "field": "field value",
     "header": {
       "type": "com.symphony.integration.test.header",
       "version": "1.0",
-      "value":"hello"
-    }
+      "value": "hello"
+    },
+    "comments": [
+      {
+        "type": "com.symphony.integration.test.comment",
+        "version": "1.0",
+        "value": "commment 1"
+      },
+      {
+        "type": "com.symphony.integration.test.comment",
+        "version": "1.0",
+        "value": "commment 2"
+      },
+      {
+        "type": "com.symphony.integration.test.comment",
+        "version": "1.0",
+        "value": "commment 3"
+      }
+    ],
+    "labels": [
+      "label 1",
+      "label 2",
+      "label 3"
+    ]
   }
 }
