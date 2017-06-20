@@ -14,10 +14,10 @@ public class IntegrationSettingsTest {
   private static final String MOCK_NAME = "Application Test";
   private static final String MOCK_DESC = "Application Description";
   private static final String MOCK_USERNAME = "AppTest";
-  private static final Long OWNER = new Long(12394755755L);
+  private static final Long OWNER = 12394755755L;
 
   @Test
-  public void testCreateIntegrationSettings() {
+  public void testIntegrationSettings() {
     IntegrationSettings integrationSettings = new IntegrationSettings();
 
     integrationSettings.setConfigurationId(MOCK_CONFIGURATION_ID);

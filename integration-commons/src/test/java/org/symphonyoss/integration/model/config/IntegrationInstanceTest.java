@@ -29,13 +29,13 @@ public class IntegrationInstanceTest {
   private static final String MOCK_CONFIG_ID = "57d6f328e4b0396198ce723d";
   private static final String MOCK_INSTANCE_NAME = "mockInstanceName";
   private static final String MOCKE_CREATOR_ID = "mockeCreatorId";
-  private static final Long CREATED_DATE = new Long(1462371116436L);
+  private static final Long CREATED_DATE = 1462371116436L;
   private static final String MOCK_CREATOR_NAME = "mockCreatorName";
-  private static final Long LAST_MODIFIED_DATE = new Long(1462371116436L);
+  private static final Long LAST_MODIFIED_DATE = 1462371116436L;
   private static final String OPTIONAL_PROPERTIES = "{\"streams\":[\"t7uufOOl8JXeDcamEVLvSn___qvMMOjEdA\",\"JHbxCfFqwResXmyVn3VGr3___qvU3O\"]}";
 
   @Test
-  public void testCreateIntegrationInstance() {
+  public void testIntegrationInstance() {
     IntegrationInstance integrationInstance = new IntegrationInstance();
 
     integrationInstance.setInstanceId(MOCK_INSTANCE_ID);
