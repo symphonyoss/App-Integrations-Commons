@@ -10,13 +10,13 @@ import org.symphonyoss.integration.entity.Entity;
  */
 public class UserTest {
 
-  private static final Long MOCK_ID = 1234L;
+  private static final Long ID = 1234L;
 
-  private static final String MOCK_USER_NAME = "crepachesymphonytest";
+  private static final String USER_NAME = "crepachesymphonytest";
 
-  private static final String MOCK_DISPLAY_NAME = "Cassiano";
+  private static final String DISPLAY_NAME = "Cassiano";
 
-  private static final String MOCK_EMAIL = "crepache@symphony.com";
+  private static final String EMAIL = "crepache@symphony.com";
 
   private static final String INTEGRATION_NAME = "integrationName";
 
@@ -24,10 +24,10 @@ public class UserTest {
 
   private User mockUser() {
     User user = new User();
-    user.setId(MOCK_ID);
-    user.setUserName(MOCK_USER_NAME);
-    user.setDisplayName(MOCK_DISPLAY_NAME);
-    user.setEmailAddress(MOCK_EMAIL);
+    user.setId(ID);
+    user.setUserName(USER_NAME);
+    user.setDisplayName(DISPLAY_NAME);
+    user.setEmailAddress(EMAIL);
 
     return user;
   }
@@ -36,10 +36,10 @@ public class UserTest {
   public void testUser() {
     User user = mockUser();
 
-    Assert.assertEquals(MOCK_ID, user.getId());
-    Assert.assertEquals(MOCK_USER_NAME, user.getUsername());
-    Assert.assertEquals(MOCK_DISPLAY_NAME, user.getDisplayName());
-    Assert.assertEquals(MOCK_EMAIL, user.getEmailAddress());
+    Assert.assertEquals(ID, user.getId());
+    Assert.assertEquals(USER_NAME, user.getUsername());
+    Assert.assertEquals(DISPLAY_NAME, user.getDisplayName());
+    Assert.assertEquals(EMAIL, user.getEmailAddress());
   }
 
   @Test

@@ -9,14 +9,14 @@ import org.junit.Test;
  */
 public class StreamTest {
 
-  public static final String MOCK_ID = "123456";
+  public static final String ID = "123456";
 
   @Test
   public void testStream() {
     Stream stream = new Stream();
-    stream.setId(MOCK_ID);
+    stream.setId(ID);
 
-    Assert.assertEquals(MOCK_ID, stream.getId());
+    Assert.assertEquals(ID, stream.getId());
   }
 
 }

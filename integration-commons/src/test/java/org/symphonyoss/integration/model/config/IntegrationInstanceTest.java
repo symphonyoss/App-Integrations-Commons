@@ -25,12 +25,12 @@ import org.junit.Test;
  */
 public class IntegrationInstanceTest {
 
-  private static final String MOCK_INSTANCE_ID = "57e2f006e4b0176038a81b18";
-  private static final String MOCK_CONFIG_ID = "57d6f328e4b0396198ce723d";
-  private static final String MOCK_INSTANCE_NAME = "mockInstanceName";
-  private static final String MOCKE_CREATOR_ID = "mockeCreatorId";
+  private static final String INSTANCE_ID = "57e2f006e4b0176038a81b18";
+  private static final String CONFIG_ID = "57d6f328e4b0396198ce723d";
+  private static final String INSTANCE_NAME = "mockInstanceName";
+  private static final String CREATOR_ID = "mockeCreatorId";
   private static final Long CREATED_DATE = 1462371116436L;
-  private static final String MOCK_CREATOR_NAME = "mockCreatorName";
+  private static final String CREATOR_NAME = "mockCreatorName";
   private static final Long LAST_MODIFIED_DATE = 1462371116436L;
   private static final String OPTIONAL_PROPERTIES = "{\"streams\":[\"t7uufOOl8JXeDcamEVLvSn___qvMMOjEdA\",\"JHbxCfFqwResXmyVn3VGr3___qvU3O\"]}";
 
@@ -38,22 +38,22 @@ public class IntegrationInstanceTest {
   public void testIntegrationInstance() {
     IntegrationInstance integrationInstance = new IntegrationInstance();
 
-    integrationInstance.setInstanceId(MOCK_INSTANCE_ID);
-    integrationInstance.setConfigurationId(MOCK_CONFIG_ID);
-    integrationInstance.setName(MOCK_INSTANCE_NAME);
-    integrationInstance.setCreatorId(MOCKE_CREATOR_ID);
+    integrationInstance.setInstanceId(INSTANCE_ID);
+    integrationInstance.setConfigurationId(CONFIG_ID);
+    integrationInstance.setName(INSTANCE_NAME);
+    integrationInstance.setCreatorId(CREATOR_ID);
     integrationInstance.setCreatedDate(CREATED_DATE);
-    integrationInstance.setCreatorName(MOCK_CREATOR_NAME);
+    integrationInstance.setCreatorName(CREATOR_NAME);
     integrationInstance.setLastModifiedDate(LAST_MODIFIED_DATE);
     integrationInstance.setOptionalProperties(OPTIONAL_PROPERTIES);
     integrationInstance.setActive(Boolean.TRUE);
 
-    Assert.assertEquals(MOCK_INSTANCE_ID, integrationInstance.getInstanceId());
-    Assert.assertEquals(MOCK_CONFIG_ID, integrationInstance.getConfigurationId());
-    Assert.assertEquals(MOCK_INSTANCE_NAME, integrationInstance.getName());
-    Assert.assertEquals(MOCKE_CREATOR_ID, integrationInstance.getCreatorId());
+    Assert.assertEquals(INSTANCE_ID, integrationInstance.getInstanceId());
+    Assert.assertEquals(CONFIG_ID, integrationInstance.getConfigurationId());
+    Assert.assertEquals(INSTANCE_NAME, integrationInstance.getName());
+    Assert.assertEquals(CREATOR_ID, integrationInstance.getCreatorId());
     Assert.assertEquals(CREATED_DATE, integrationInstance.getCreatedDate());
-    Assert.assertEquals(MOCK_CREATOR_NAME, integrationInstance.getCreatorName());
+    Assert.assertEquals(CREATOR_NAME, integrationInstance.getCreatorName());
     Assert.assertEquals(LAST_MODIFIED_DATE, integrationInstance.getLastModifiedDate());
     Assert.assertEquals(OPTIONAL_PROPERTIES, integrationInstance.getOptionalProperties());
     Assert.assertTrue(integrationInstance.getActive());

@@ -9,9 +9,9 @@ import org.junit.Test;
  */
 public class MessageTest {
 
-  private static final Long MOCK_TIMESTAMP = 1476109880000L;
-  private static final String MOCK_TEST_MESSAGE = "Mock test message";
-  private static final String MOCK_TEST_DATA = "Test data";
+  private static final Long TIMESTAMP = 1476109880000L;
+  private static final String TEST_MESSAGE = "Mock test message";
+  private static final String TEST_DATA = "Test data";
   private static final String EXPECTED_MESSAGE_JSON =
       "Message{timestamp=1476109880000, message='Mock test message', format=MESSAGEML, data='Test "
           + "data', version=V1}";
@@ -19,16 +19,16 @@ public class MessageTest {
   @Test
   public void testMessage() {
     Message message = new Message();
-    message.setTimestamp(MOCK_TIMESTAMP);
-    message.setMessage(MOCK_TEST_MESSAGE);
+    message.setTimestamp(TIMESTAMP);
+    message.setMessage(TEST_MESSAGE);
     message.setFormat(Message.FormatEnum.MESSAGEML);
-    message.setData(MOCK_TEST_DATA);
+    message.setData(TEST_DATA);
     message.setVersion(MessageMLVersion.V1);
 
-    Assert.assertEquals(MOCK_TIMESTAMP, message.getTimestamp());
-    Assert.assertEquals(MOCK_TEST_MESSAGE, message.getMessage());
+    Assert.assertEquals(TIMESTAMP, message.getTimestamp());
+    Assert.assertEquals(TEST_MESSAGE, message.getMessage());
     Assert.assertEquals(Message.FormatEnum.MESSAGEML, message.getFormat());
-    Assert.assertEquals(MOCK_TEST_DATA, message.getData());
+    Assert.assertEquals(TEST_DATA, message.getData());
     Assert.assertEquals(MessageMLVersion.V1, message.getVersion());
 
     Assert.assertEquals(
