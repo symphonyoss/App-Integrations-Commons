@@ -9,8 +9,9 @@ import org.junit.Test;
  */
 public class AdminUserTest {
 
-  public static final String KEYSTORE_FILE = "keystoreFile";
-  public static final String KEYSTORE_PASSWORD = "keystorePassword";
+  private static final String KEYSTORE_FILE = "keystoreFile";
+
+  private static final String KEYSTORE_PASSWORD = "keystorePassword";
 
   @Test
   public void testAdminUser() {
