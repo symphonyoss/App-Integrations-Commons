@@ -25,7 +25,5 @@ public class ConnectionInfoTest {
     Assert.assertEquals(HOST, connectionInfo.getHost());
     Assert.assertEquals(MIN_VERSION, connectionInfo.getMinVersion());
     Assert.assertEquals(PORT, connectionInfo.getPort());
-
-    Assert.assertEquals(EXPECTED_CONNECTION_INFO, connectionInfo.toString());
   }
 }
