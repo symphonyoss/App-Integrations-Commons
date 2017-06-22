@@ -164,7 +164,7 @@ applications:
       file: jira.p12
       password: changeit
       type: pkcs12
-      allowed_origins:
+      allowedOrigins:
         - host: ec2-107-23-104-115.compute-1.amazonaws.com
           address: 107.23.104.115
         - address: 192.30.252.0/22

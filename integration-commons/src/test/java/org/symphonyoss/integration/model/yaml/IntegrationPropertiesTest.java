@@ -33,16 +33,19 @@ public class IntegrationPropertiesTest {
     validatePodSession();
     validateKeyManager();
     validateKeyManagerAuth();
-
-    Assert.assertEquals(2, integrationProperties.getApplications().size());
-
-    Assert.assertEquals("https://nexus.symphony.com:443/login", integrationProperties.getLoginUrl());
+    validateNumberOfApplications();
+    validateLoginURL();
 
     Assert.assertNotNull(integrationProperties.getGlobalWhiteList());
-
-    Assert.assertEquals("https://nexus.symphony.com:8444/sessionauth", integrationProperties.getSessionManagerAuthUrl());
-
     Assert.assertEquals("IntegrationProperties{pod=ConnectionInfo{host='nexus.symphony.com', port='443'}, agent=ConnectionInfo{host='nexus.symphony.com', port='8444'}, sessionManager=ConnectionInfo{host='nexus.symphony.com', port='8444'}, keyManager=ConnectionInfo{host='nexus.symphony.com', port='443'}}", integrationProperties.toString());
+  }
+
+  private void validateLoginURL() {
+    Assert.assertEquals("https://nexus.symphony.com:443/login", integrationProperties.getLoginUrl());
+  }
+
+  private void validateNumberOfApplications() {
+    Assert.assertEquals(2, integrationProperties.getApplications().size());
   }
 
   private void validateKeyManagerAuth() {
@@ -65,6 +68,7 @@ public class IntegrationPropertiesTest {
     Assert.assertEquals("nexus.symphony.com", integrationProperties.getPodSessionManager().getHost());
     Assert.assertEquals("8444", integrationProperties.getPodSessionManager().getPort());
     Assert.assertNull(integrationProperties.getPodSessionManager().getMinVersion());
+    Assert.assertEquals("https://nexus.symphony.com:8444/sessionauth", integrationProperties.getSessionManagerAuthUrl());
     Assert.assertEquals("ConnectionInfo{host='nexus.symphony.com', port='8444'}", integrationProperties.getPodSessionManager().toString());
   }
 
@@ -105,6 +109,10 @@ public class IntegrationPropertiesTest {
   }
 
   private void validateApplication() {
+    Assert.assertNotNull(integrationProperties.getApplicationId("jira"));
+    Assert.assertEquals("https://nexus.symphony.com/apps/context", integrationProperties.getApplicationUrl("jira"));
+
+
     Application application = integrationProperties.getApplication("jira");
     Assert.assertEquals("jira.icon", application.getAvatar());
     Assert.assertEquals("jira.com", application.getAvatarUrl());
