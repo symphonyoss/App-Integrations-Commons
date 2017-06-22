@@ -25,38 +25,14 @@ public class IntegrationPropertiesTest {
   @Test
   public void testIntegrationProperties() {
     validateApplication();
-
     validateIntegrationBridge();
-
-
-    Assert.assertEquals("nexus.symphony.com", integrationProperties.getAgent().getHost());
-    Assert.assertEquals("8444", integrationProperties.getAgent().getPort());
-    Assert.assertNull(integrationProperties.getAgent().getMinVersion());
-    Assert.assertEquals("https://nexus.symphony.com:8444/agent", integrationProperties.getAgentUrl());
-
-    Assert.assertEquals("/home/centos/admin.p12", integrationProperties.getAdminUser().getKeystoreFile());
-    Assert.assertEquals("changeit", integrationProperties.getAdminUser().getKeystorePassword());
-
-    Assert.assertEquals("nexus.symphony.com", integrationProperties.getPod().getHost());
-    Assert.assertEquals("443", integrationProperties.getPod().getPort());
-    Assert.assertNull(integrationProperties.getPod().getMinVersion());
-    Assert.assertEquals("https://nexus.symphony.com:443/pod", integrationProperties.getPodUrl());
-    Assert.assertEquals("ConnectionInfo{host='nexus.symphony.com', port='443'}", integrationProperties.getPod().toString());
-
-    Assert.assertEquals("nexus.symphony.com", integrationProperties.getPodSessionManager().getHost());
-    Assert.assertEquals("8444", integrationProperties.getPodSessionManager().getPort());
-    Assert.assertNull(integrationProperties.getPodSessionManager().getMinVersion());
-    Assert.assertEquals("ConnectionInfo{host='nexus.symphony.com', port='8444'}", integrationProperties.getPodSessionManager().toString());
-
-    Assert.assertEquals("nexus.symphony.com", integrationProperties.getKeyManager().getHost());
-    Assert.assertEquals("443", integrationProperties.getKeyManager().getPort());
-    Assert.assertNull(integrationProperties.getKeyManager().getMinVersion());
-    Assert.assertEquals("ConnectionInfo{host='nexus.symphony.com', port='443'}", integrationProperties.getKeyManager().toString());
-
-    Assert.assertEquals("nexus.symphony.com", integrationProperties.getKeyManagerAuth().getHost());
-    Assert.assertEquals("8444", integrationProperties.getKeyManagerAuth().getPort());
-    Assert.assertNull(integrationProperties.getKeyManagerAuth().getMinVersion());
-    Assert.assertEquals("ConnectionInfo{host='nexus.symphony.com', port='8444'}", integrationProperties.getKeyManagerAuth().toString());
+    validateSigningCert();
+    validateAgent();
+    validateAdminUser();
+    validatePod();
+    validatePodSession();
+    validateKeyManager();
+    validateKeyManagerAuth();
 
     Assert.assertEquals(2, integrationProperties.getApplications().size());
 
@@ -64,19 +40,60 @@ public class IntegrationPropertiesTest {
 
     Assert.assertNotNull(integrationProperties.getGlobalWhiteList());
 
-    Assert.assertEquals("https://nexus.symphony.com:443", integrationProperties.getSymphonyUrl().toString());
     Assert.assertEquals("https://nexus.symphony.com:8444/sessionauth", integrationProperties.getSessionManagerAuthUrl());
 
-    Assert.assertEquals("https://nexus.symphony.com:443/relay", integrationProperties.getKeyManagerUrl());
-    Assert.assertEquals("https://nexus.symphony.com:8444/keyauth", integrationProperties.getKeyManagerAuthUrl());
     Assert.assertEquals("IntegrationProperties{pod=ConnectionInfo{host='nexus.symphony.com', port='443'}, agent=ConnectionInfo{host='nexus.symphony.com', port='8444'}, sessionManager=ConnectionInfo{host='nexus.symphony.com', port='8444'}, keyManager=ConnectionInfo{host='nexus.symphony.com', port='443'}}", integrationProperties.toString());
+  }
 
+  private void validateKeyManagerAuth() {
+    Assert.assertEquals("nexus.symphony.com", integrationProperties.getKeyManagerAuth().getHost());
+    Assert.assertEquals("8444", integrationProperties.getKeyManagerAuth().getPort());
+    Assert.assertNull(integrationProperties.getKeyManagerAuth().getMinVersion());
+    Assert.assertEquals("https://nexus.symphony.com:8444/keyauth", integrationProperties.getKeyManagerAuthUrl());
+    Assert.assertEquals("ConnectionInfo{host='nexus.symphony.com', port='8444'}", integrationProperties.getKeyManagerAuth().toString());
+  }
+
+  private void validateKeyManager() {
+    Assert.assertEquals("nexus.symphony.com", integrationProperties.getKeyManager().getHost());
+    Assert.assertEquals("443", integrationProperties.getKeyManager().getPort());
+    Assert.assertNull(integrationProperties.getKeyManager().getMinVersion());
+    Assert.assertEquals("https://nexus.symphony.com:443/relay", integrationProperties.getKeyManagerUrl());
+    Assert.assertEquals("ConnectionInfo{host='nexus.symphony.com', port='443'}", integrationProperties.getKeyManager().toString());
+  }
+
+  private void validatePodSession() {
+    Assert.assertEquals("nexus.symphony.com", integrationProperties.getPodSessionManager().getHost());
+    Assert.assertEquals("8444", integrationProperties.getPodSessionManager().getPort());
+    Assert.assertNull(integrationProperties.getPodSessionManager().getMinVersion());
+    Assert.assertEquals("ConnectionInfo{host='nexus.symphony.com', port='8444'}", integrationProperties.getPodSessionManager().toString());
+  }
+
+  private void validatePod() {
+    Assert.assertEquals("nexus.symphony.com", integrationProperties.getPod().getHost());
+    Assert.assertEquals("443", integrationProperties.getPod().getPort());
+    Assert.assertNull(integrationProperties.getPod().getMinVersion());
+    Assert.assertEquals("https://nexus.symphony.com:443/pod", integrationProperties.getPodUrl());
+    Assert.assertEquals("ConnectionInfo{host='nexus.symphony.com', port='443'}", integrationProperties.getPod().toString());
+    Assert.assertEquals("https://nexus.symphony.com:443", integrationProperties.getSymphonyUrl().toString());
+  }
+
+  private void validateAdminUser() {
+    Assert.assertEquals("/home/centos/admin.p12", integrationProperties.getAdminUser().getKeystoreFile());
+    Assert.assertEquals("changeit", integrationProperties.getAdminUser().getKeystorePassword());
+  }
+
+  private void validateAgent() {
+    Assert.assertEquals("nexus.symphony.com", integrationProperties.getAgent().getHost());
+    Assert.assertEquals("8444", integrationProperties.getAgent().getPort());
+    Assert.assertNull(integrationProperties.getAgent().getMinVersion());
+    Assert.assertEquals("https://nexus.symphony.com:8444/agent", integrationProperties.getAgentUrl());
+  }
+
+  private void validateSigningCert() {
     Assert.assertEquals("caCertChainFileTest", integrationProperties.getSigningCert().getCaCertChainFile());
     Assert.assertEquals("/home/centos/int-cert.pem", integrationProperties.getSigningCert().getCaCertFile());
     Assert.assertEquals("/home/centos/int-key.pem", integrationProperties.getSigningCert().getCaKeyFile());
     Assert.assertEquals("changeit", integrationProperties.getSigningCert().getCaKeyPassword());
-
-
   }
 
   private void validateIntegrationBridge() {
