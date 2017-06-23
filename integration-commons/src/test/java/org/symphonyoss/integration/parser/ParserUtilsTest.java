@@ -18,10 +18,16 @@ package org.symphonyoss.integration.parser;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.boot.test.context.TestComponent;
+import org.symphonyoss.integration.exception.URISyntaxRuntimeException;
+import org.symphonyoss.integration.parser.model.HashTag;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -302,4 +308,74 @@ public class ParserUtilsTest {
     String result = String.format(format, uri);
     assertNotNull(result);
   }
+
+  @Test
+  public void testPresentationFormat() throws URISyntaxException {
+    String format = "<i>Italics</i> %s";
+    String expected = "<i>Italics</i> &lt;p&gt;line 1<br/>line 2&lt;/p&gt;";
+
+    //Test with String object
+    String stringObject = "<p>line 1\nline 2</p>";
+    SafeString result = ParserUtils.presentationFormat(format, stringObject);
+
+    Assert.assertEquals(expected, result.toString());
+
+    //Test with SafeString object
+    SafeString safeStringObject = new SafeString("<p>line 1\nline 2</p>");
+    result = ParserUtils.presentationFormat(format, safeStringObject);
+
+    Assert.assertEquals(expected, result.toString());
+
+    //Test with HashTag object
+    HashTag hashTagObject = new HashTag("<p>line 1\nline 2</p>");
+    result = ParserUtils.presentationFormat(format, hashTagObject);
+    expected = "<i>Italics</i> <hash tag=\"<p>line 1\n" +
+        "line 2</p>\"/>";
+
+    Assert.assertEquals(expected, result.toString());
+
+    //Test with HashTag Array
+    HashTag[] hashTagArray = {hashTagObject, hashTagObject};
+    result = ParserUtils.presentationFormat(format, hashTagArray);
+
+    expected = "<i>Italics</i> <hash tag=\"<p>line 1\n"
+        + "line 2</p>\"/>, <hash tag=\"<p>line 1\n"
+        + "line 2</p>\"/>";
+
+    Assert.assertEquals(expected, result.toString());
+
+    //Test with URI object
+    URI uriObject = ParserUtils.newUri("https://symphony.com/");
+    result = ParserUtils.presentationFormat(format, uriObject);
+    expected = "<i>Italics</i> <a href=\"https://symphony.com/\"/>";
+
+    Assert.assertEquals(expected, result.toString());
+
+    //Test with null URI
+    uriObject = null;
+    result = ParserUtils.presentationFormat(format, uriObject);
+    expected = "<i>Italics</i> ";
+
+    Assert.assertEquals(expected, result.toString());
+
+  }
+
+  @Test
+  public void testNewURI() {
+    String URL = "https://symphony.com/";
+    URI result = ParserUtils.newUri(URL);
+
+    Assert.assertEquals(URL, result.toString());
+
+    //Test invalid URL
+    URL = "INVALIDURL";
+
+    try {
+      ParserUtils.newUri(URL);
+    } catch (Exception e) {
+      boolean isValidException = (e instanceof URISyntaxRuntimeException);
+      assertTrue(isValidException);
+    }
+  }
+
 }
