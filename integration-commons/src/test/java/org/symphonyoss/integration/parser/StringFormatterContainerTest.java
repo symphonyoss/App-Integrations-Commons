@@ -71,8 +71,13 @@ public class StringFormatterContainerTest {
 
   @Test
   public void formatInvalidFormatString() throws Exception {
-    String result = testFormat(FORMAT_STRING_ONE_PARAMETER, values, EXPECTED_ONE_VALUE);
-    assertEquals(expected, result);
+    StringFormatterContainer formatterContainer = new StringFormatterContainer(null, null);
+    formatterContainer.setFormatString(FORMAT_STRING_ONE_PARAMETER);
+    formatterContainer.setValues(values);
+
+    String result = formatterContainer.format();
+
+    assertEquals(EXPECTED_ONE_VALUE, result);
   }
 
   @Test
