@@ -8,24 +8,22 @@ import org.junit.Test;
  * Created by crepache on 23/06/17.
  */
 public class IntegrationRuntimeExceptionTest {
+  private static final String CAUSE = "cause";
 
   private String message = "message";
-
   private String component = "component";
-
-  private String solution = "solution";
-
-  private Throwable cause = new Throwable("cause");
+  private String solution = "solutions";
+  private Throwable cause = new Throwable(CAUSE);
 
   @Test
   public void testIntegrationRuntimeException() {
     IntegrationRuntimeException exception = new IntegrationRuntimeException(component, message);
     String resultMessage = exception.getMessage();
-    String expectedMessage = "\n" +
-        "Component: component\n" +
-        "Message: message\n" +
-        "Solutions: \n" +
-        "No solution has been cataloged for troubleshooting this problem.\n";
+    String expectedMessage = new ExpectedMessageBuilder()
+        .component(component)
+        .message(message)
+        .solutions(ExpectedMessageBuilder.EXPECTED_SOLUTION_NO_SOLUTION)
+        .build();
 
     Assert.assertEquals(expectedMessage, resultMessage);
   }
@@ -35,11 +33,11 @@ public class IntegrationRuntimeExceptionTest {
     IntegrationRuntimeException exception =
         new IntegrationRuntimeException(component, message, solution);
     String resultMessage = exception.getMessage();
-    String expectedMessage = "\n" +
-        "Component: component\n" +
-        "Message: message\n" +
-        "Solutions: \n" +
-        "solution\n";
+    String expectedMessage = new ExpectedMessageBuilder()
+        .component(component)
+        .message(message)
+        .solutions(solution)
+        .build();
 
     Assert.assertEquals(expectedMessage, resultMessage);
   }
@@ -49,12 +47,12 @@ public class IntegrationRuntimeExceptionTest {
     IntegrationRuntimeException exception =
         new IntegrationRuntimeException(component, message, cause);
     String resultMessage = exception.getMessage();
-    String expectedMessage = "\n" +
-        "Component: component\n" +
-        "Message: message\n" +
-        "Solutions: \n" +
-        "No solution has been cataloged for troubleshooting this problem.\n" +
-        "Stack trace: cause\n";
+    String expectedMessage = new ExpectedMessageBuilder()
+        .component(component)
+        .message(message)
+        .solutions(ExpectedMessageBuilder.EXPECTED_SOLUTION_NO_SOLUTION)
+        .stackTrace(CAUSE)
+        .build();
 
     Assert.assertEquals(expectedMessage, resultMessage);
   }
@@ -64,12 +62,13 @@ public class IntegrationRuntimeExceptionTest {
     IntegrationRuntimeException exception =
         new IntegrationRuntimeException(component, message, cause, solution);
     String resultMessage = exception.getMessage();
-    String expectedMessage = "\n" +
-        "Component: component\n" +
-        "Message: message\n" +
-        "Solutions: \n" +
-        "solution\n" +
-        "Stack trace: cause\n";
+    String expectedMessage =
+        new ExpectedMessageBuilder()
+            .component(component)
+            .message(message)
+            .solutions(solution)
+            .stackTrace(CAUSE)
+            .build();
 
     Assert.assertEquals(expectedMessage, resultMessage);
   }

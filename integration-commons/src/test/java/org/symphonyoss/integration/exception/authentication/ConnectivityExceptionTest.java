@@ -1,29 +1,32 @@
 package org.symphonyoss.integration.exception.authentication;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
+import org.symphonyoss.integration.exception.ExpectedMessageBuilder;
 
 /**
  * Unit tests for {@link ConnectivityException}.
  * Created by crepache on 23/06/17.
  */
 public class ConnectivityExceptionTest {
+  private static final String COMPONENT = "Authentication Proxy";
+  private static final String MESSAGE = "Integration Bridge can't reach service name service!";
+  private static final String CAUSE = "cause";
 
   private String serviceName = "service name";
-
-  private String solution = "solution";
-
-  private Throwable cause = new Throwable("cause");
+  private String solution = "solutions";
+  private Throwable cause = new Throwable(CAUSE);
 
   @Test
   public void testConnectivityException() {
     ConnectivityException exception = new ConnectivityException(serviceName);
     String resultMessage = exception.getMessage();
-    String expectedMessage = "\n" +
-        "Component: Authentication Proxy\n" +
-        "Message: Integration Bridge can't reach service name service!\n" +
-        "Solutions: \n" +
-        "No solution has been cataloged for troubleshooting this problem.\n";
+    String expectedMessage = new ExpectedMessageBuilder()
+        .component(COMPONENT)
+        .message(MESSAGE)
+        .solutions(ExpectedMessageBuilder.EXPECTED_SOLUTION_NO_SOLUTION)
+        .build();
 
     Assert.assertEquals(expectedMessage, resultMessage);
   }
@@ -32,11 +35,11 @@ public class ConnectivityExceptionTest {
   public void testConnectivityExceptionWithSolution() {
     ConnectivityException exception = new ConnectivityException(serviceName, solution);
     String resultMessage = exception.getMessage();
-    String expectedMessage = "\n" +
-        "Component: Authentication Proxy\n" +
-        "Message: Integration Bridge can't reach service name service!\n" +
-        "Solutions: \n" +
-        "solution\n";
+    String expectedMessage = new ExpectedMessageBuilder()
+        .component(COMPONENT)
+        .message(MESSAGE)
+        .solutions(solution)
+        .build();
 
     Assert.assertEquals(expectedMessage, resultMessage);
   }
@@ -54,12 +57,13 @@ public class ConnectivityExceptionTest {
     ConnectivityException exception = new ConnectivityException(serviceName, cause, solution);
     String resultMessage = exception.getMessage();
     Throwable resultCause = exception.getCause();
-    String expectedMessage = "\n" +
-        "Component: Authentication Proxy\n" +
-        "Message: Integration Bridge can't reach service name service!\n" +
-        "Solutions: \n" +
-        "solution\n" +
-        "Stack trace: cause\n";
+
+    String expectedMessage = new ExpectedMessageBuilder()
+        .component(COMPONENT)
+        .message(MESSAGE)
+        .solutions(solution)
+        .stackTrace(CAUSE)
+        .build();
 
     Assert.assertEquals(expectedMessage, resultMessage);
     Assert.assertEquals(cause, resultCause);

@@ -18,7 +18,6 @@ package org.symphonyoss.integration.exception;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.commons.lang3.text.StrBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -31,35 +30,27 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class ExceptionMessageFormatterTest {
 
-
-  private static final String COMPONENT = "Component: ";
-  private static final String MESSAGE = "Message: ";
-  private static final String SOLUTIONS = "Solutions: ";
-  private static final String STACKTRACE = "Stack trace: ";
-  private static final String BREAK_LINE = "\n";
-
-  private static final String SOLUTION1 = "My solution 1";
-  private static final String SOLUTION2 = "My solution 2";
+  private static final String SOLUTION1 = "My solutions 1";
+  private static final String SOLUTION2 = "My solutions 2";
   private static final String COMPONENT_NAME = "Unit Test";
   private static final String STR_MESSAGE = "Something whent wrong";
   private static final String UNKNOWN = "Unknown";
   private static final String NONE = "None";
-  private static final String NO_SOLUTION_MESSAGE =
-      "No solution has been cataloged for troubleshooting this problem.";
   private static final String[] SOLUTIONS_ARRAY = {SOLUTION1, SOLUTION2};
 
   @Test
   public void testMessageExceptionWithThrowable() {
     String exceptionMessage = "Something is null";
     NullPointerException exception = new NullPointerException(exceptionMessage);
-    String actual = ExceptionMessageFormatter.format(COMPONENT_NAME, STR_MESSAGE, exception, SOLUTIONS_ARRAY);
+    String actual =
+        ExceptionMessageFormatter.format(COMPONENT_NAME, STR_MESSAGE, exception, SOLUTIONS_ARRAY);
 
-    StrBuilder expected = new StrBuilder(BREAK_LINE)
-        .append(COMPONENT).appendln(COMPONENT_NAME)
-        .append(MESSAGE).appendln(STR_MESSAGE)
-        .appendln(SOLUTIONS)
-        .appendWithSeparators(SOLUTIONS_ARRAY, BREAK_LINE).appendNewLine()
-        .append(STACKTRACE).appendln(exceptionMessage);
+    String expected = new ExpectedMessageBuilder()
+        .component(COMPONENT_NAME)
+        .message(STR_MESSAGE)
+        .solutions(SOLUTIONS_ARRAY)
+        .stackTrace(exceptionMessage)
+        .build();
 
     assertEquals(expected.toString(), actual);
   }
@@ -68,14 +59,15 @@ public class ExceptionMessageFormatterTest {
   public void testMessageExceptionWithThrowableOneSolution() {
     String exceptionMessage = "Something is null";
     NullPointerException exception = new NullPointerException(exceptionMessage);
-    String actual = ExceptionMessageFormatter.format(COMPONENT_NAME, STR_MESSAGE, exception, SOLUTION1);
+    String actual =
+        ExceptionMessageFormatter.format(COMPONENT_NAME, STR_MESSAGE, exception, SOLUTION1);
 
-    StrBuilder expected = new StrBuilder(BREAK_LINE)
-        .append(COMPONENT).appendln(COMPONENT_NAME)
-        .append(MESSAGE).appendln(STR_MESSAGE)
-        .appendln(SOLUTIONS)
-        .appendln(SOLUTION1)
-        .append(STACKTRACE).appendln(exceptionMessage);
+    String expected = new ExpectedMessageBuilder()
+        .component(COMPONENT_NAME)
+        .message(STR_MESSAGE)
+        .solutions(SOLUTION1)
+        .stackTrace(exceptionMessage)
+        .build();
 
     assertEquals(expected.toString(), actual);
   }
@@ -85,11 +77,11 @@ public class ExceptionMessageFormatterTest {
     String actual = ExceptionMessageFormatter.format(COMPONENT_NAME, STR_MESSAGE,
         SOLUTION1, SOLUTION2);
 
-    StrBuilder expected = new StrBuilder(BREAK_LINE)
-        .append(COMPONENT).appendln(COMPONENT_NAME)
-        .append(MESSAGE).appendln(STR_MESSAGE)
-        .appendln(SOLUTIONS)
-        .appendWithSeparators(SOLUTIONS_ARRAY, BREAK_LINE).appendNewLine();
+    String expected = new ExpectedMessageBuilder()
+        .component(COMPONENT_NAME)
+        .message(STR_MESSAGE)
+        .solutions(SOLUTIONS_ARRAY)
+        .build();
 
     assertEquals(expected.toString(), actual);
   }
@@ -98,11 +90,11 @@ public class ExceptionMessageFormatterTest {
   public void testMessageExceptionWithoutThrowableOneSolution() {
     String actual = ExceptionMessageFormatter.format(COMPONENT_NAME, STR_MESSAGE, SOLUTION1);
 
-    StrBuilder expected = new StrBuilder(BREAK_LINE)
-        .append(COMPONENT).appendln(COMPONENT_NAME)
-        .append(MESSAGE).appendln(STR_MESSAGE)
-        .appendln(SOLUTIONS)
-        .appendln(SOLUTION1);
+    String expected = new ExpectedMessageBuilder()
+        .component(COMPONENT_NAME)
+        .message(STR_MESSAGE)
+        .solutions(SOLUTION1)
+        .build();
 
     assertEquals(expected.toString(), actual);
   }
@@ -111,11 +103,11 @@ public class ExceptionMessageFormatterTest {
   public void testMessageExceptionWithoutSolutions() {
     String actual = ExceptionMessageFormatter.format(COMPONENT_NAME, STR_MESSAGE);
 
-    StrBuilder expected = new StrBuilder(BREAK_LINE)
-        .append(COMPONENT).appendln(COMPONENT_NAME)
-        .append(MESSAGE).appendln(STR_MESSAGE)
-        .appendln(SOLUTIONS)
-        .appendln(NO_SOLUTION_MESSAGE);
+    String expected = new ExpectedMessageBuilder()
+        .component(COMPONENT_NAME)
+        .message(STR_MESSAGE)
+        .solutions(ExpectedMessageBuilder.EXPECTED_SOLUTION_NO_SOLUTION)
+        .build();
 
     assertEquals(expected.toString(), actual);
   }
@@ -124,11 +116,11 @@ public class ExceptionMessageFormatterTest {
   public void testMessageExceptionWithoutVariables() {
     String actual = ExceptionMessageFormatter.format("", "");
 
-    StrBuilder expected = new StrBuilder(BREAK_LINE)
-        .append(COMPONENT).appendln(UNKNOWN)
-        .append(MESSAGE).appendln(NONE)
-        .appendln(SOLUTIONS)
-        .appendln(NO_SOLUTION_MESSAGE);
+    String expected = new ExpectedMessageBuilder()
+        .component(UNKNOWN)
+        .message(NONE)
+        .solutions(ExpectedMessageBuilder.EXPECTED_SOLUTION_NO_SOLUTION)
+        .build();
 
     assertEquals(expected.toString(), actual);
   }
@@ -137,11 +129,11 @@ public class ExceptionMessageFormatterTest {
   public void testMessageExceptionWithVariablesNull() {
     String actual = ExceptionMessageFormatter.format(null, null);
 
-    StrBuilder expected = new StrBuilder(BREAK_LINE)
-        .append(COMPONENT).appendln(UNKNOWN)
-        .append(MESSAGE).appendln(NONE)
-        .appendln(SOLUTIONS)
-        .appendln(NO_SOLUTION_MESSAGE);
+    String expected = new ExpectedMessageBuilder()
+        .component(UNKNOWN)
+        .message(NONE)
+        .solutions(ExpectedMessageBuilder.EXPECTED_SOLUTION_NO_SOLUTION)
+        .build();
 
     assertEquals(expected.toString(), actual);
   }

@@ -14,12 +14,12 @@ public class EntityXMLGeneratorExceptionTest {
     Exception e = new Exception("message");
     EntityXMLGeneratorException exception = new EntityXMLGeneratorException(e);
     String resultMessage = exception.getMessage();
-    String expectedMessage = "\n" +
-        "Component: Commons\n" +
-        "Message: message\n" +
-        "Solutions: \n" +
-        "No solution has been cataloged for troubleshooting this problem.\n" +
-        "Stack trace: message\n";
+    String expectedMessage = new ExpectedMessageBuilder()
+        .component("Commons")
+        .message("message")
+        .solutions(ExpectedMessageBuilder.EXPECTED_SOLUTION_NO_SOLUTION)
+        .stackTrace("message")
+        .build();
 
     Assert.assertEquals(expectedMessage, resultMessage);
   }

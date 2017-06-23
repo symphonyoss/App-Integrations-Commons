@@ -761,14 +761,14 @@ public class WebHookIntegrationTest extends MockKeystore {
     WebHookParseException exception = new WebHookParseException("component", "exception");
     testWebHookParseException(instance, exception);
 
-    exception = new WebHookParseException("component", "exception", "solution");
+    exception = new WebHookParseException("component", "exception", "solutions");
     testWebHookParseException(instance, exception);
 
     exception = new WebHookParseException("component", "exception", new RuntimeException());
     testWebHookParseException(instance, exception);
 
     exception = new WebHookParseException(
-        "component", "exception", new RuntimeException(), "solution");
+        "component", "exception", new RuntimeException(), "solutions");
     testWebHookParseException(instance, exception);
   }
 

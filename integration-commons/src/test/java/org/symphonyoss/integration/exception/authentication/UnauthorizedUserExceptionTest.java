@@ -2,12 +2,14 @@ package org.symphonyoss.integration.exception.authentication;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.symphonyoss.integration.exception.ExpectedMessageBuilder;
 
 /**
  * Unit tests for {@link UnauthorizedUserException}.
  * Created by crepache on 23/06/17.
  */
 public class UnauthorizedUserExceptionTest {
+  private static final String COMPONENT = "Authentication Proxy";
 
   private String message = "message";
 
@@ -15,11 +17,11 @@ public class UnauthorizedUserExceptionTest {
   public void testUnexpectedAutoException() {
     UnauthorizedUserException exception = new UnauthorizedUserException(message);
     String resultMessage = exception.getMessage();
-    String expectedMessage = "\n" +
-        "Component: Authentication Proxy\n" +
-        "Message: message\n" +
-        "Solutions: \n" +
-        "No solution has been cataloged for troubleshooting this problem.\n";
+    String expectedMessage = new ExpectedMessageBuilder()
+        .component(COMPONENT)
+        .message(message)
+        .solutions(ExpectedMessageBuilder.EXPECTED_SOLUTION_NO_SOLUTION)
+        .build();
 
     Assert.assertEquals(expectedMessage, resultMessage);
   }
@@ -27,15 +29,16 @@ public class UnauthorizedUserExceptionTest {
 
   @Test
   public void testUnexpectedAutoExceptionWithCause() {
-    Throwable cause = new Throwable("cause");
+    String causeStr = "cause";
+    Throwable cause = new Throwable(causeStr);
     UnauthorizedUserException exception = new UnauthorizedUserException(message, cause);
     String resultMessage = exception.getMessage();
-    String expectedMessage = "\n" +
-        "Component: Authentication Proxy\n" +
-        "Message: message\n" +
-        "Solutions: \n" +
-        "No solution has been cataloged for troubleshooting this problem.\n" +
-        "Stack trace: cause\n";
+    String expectedMessage = new ExpectedMessageBuilder()
+        .component(COMPONENT)
+        .message(message)
+        .solutions(ExpectedMessageBuilder.EXPECTED_SOLUTION_NO_SOLUTION)
+        .stackTrace(causeStr)
+        .build();
 
     Assert.assertEquals(expectedMessage, resultMessage);
   }

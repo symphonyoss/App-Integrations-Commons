@@ -9,15 +9,20 @@ import org.junit.Test;
  */
 public class MissingConfigurationExceptionTest {
 
+  private static final String EXPECTED_MESSAGE =
+      "Verify the YAML configuration file. No configuration found to the key key";
+  private static final String SOLUTION = "solutions";
+  private static final String COMPONENT = "component";
+
   @Test
   public void testMissingConfigurationException() {
-    MissingConfigurationException exception = new MissingConfigurationException("component", "key");
+    MissingConfigurationException exception = new MissingConfigurationException(COMPONENT, "key");
     String message = exception.getMessage();
-    String expected = "\n" +
-        "Component: component\n" +
-        "Message: Verify the YAML configuration file. No configuration found to the key key\n" +
-        "Solutions: \n" +
-        "No solution has been cataloged for troubleshooting this problem.\n";
+    String expected = new ExpectedMessageBuilder()
+        .component(COMPONENT)
+        .message(EXPECTED_MESSAGE)
+        .solutions(ExpectedMessageBuilder.EXPECTED_SOLUTION_NO_SOLUTION)
+        .build();
 
     Assert.assertEquals(expected, message);
   }
@@ -25,13 +30,13 @@ public class MissingConfigurationExceptionTest {
   @Test
   public void testMissingConfigurationExceptionWithSolution() {
     MissingConfigurationException exception =
-        new MissingConfigurationException("component", "key", "solution");
+        new MissingConfigurationException(COMPONENT, "key", SOLUTION);
     String message = exception.getMessage();
-    String expected = "\n" +
-        "Component: component\n" +
-        "Message: Verify the YAML configuration file. No configuration found to the key key\n" +
-        "Solutions: \n" +
-        "solution\n";
+    String expected = new ExpectedMessageBuilder()
+        .component(COMPONENT)
+        .message(EXPECTED_MESSAGE)
+        .solutions(SOLUTION)
+        .build();
 
     Assert.assertEquals(expected, message);
   }
