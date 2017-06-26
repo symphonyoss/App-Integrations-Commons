@@ -31,4 +31,8 @@ public class UnauthorizedUserException extends AuthenticationException {
     super(message, cause);
   }
 
+  public UnauthorizedUserException(String message, Throwable cause, String... solutions) {
+    super(message, cause, solutions);
+  }
+
 }

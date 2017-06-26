@@ -30,4 +30,8 @@ public class UnexpectedAuthException extends AuthenticationException {
   public UnexpectedAuthException(String message, Throwable cause) {
     super(message, cause);
   }
+
+  public UnexpectedAuthException(String message, Throwable cause, String... solutions) {
+    super(message, cause, solutions);
+  }
 }

@@ -41,4 +41,21 @@ public class ForbiddenAuthExceptionTest {
 
     Assert.assertEquals(expectedMessage, resultMessage);
   }
+
+  @Test
+  public void testUnexpectedAutoExceptionWithCauseAndSolution() {
+    String causeStr = "cause";
+    String solution = ExpectedMessageBuilder.EXPECTED_SOLUTION_NO_SOLUTION;
+    Throwable cause = new Throwable(causeStr);
+    ForbiddenAuthException exception = new ForbiddenAuthException(message, cause, solution);
+    String resultMessage = exception.getMessage();
+    String expectedMessage = new ExpectedMessageBuilder()
+        .component(COMPONENT)
+        .message(message)
+        .solutions(solution)
+        .stackTrace(causeStr)
+        .build();
+
+    Assert.assertEquals(expectedMessage, resultMessage);
+  }
 }
