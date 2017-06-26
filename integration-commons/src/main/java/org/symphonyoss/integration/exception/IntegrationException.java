@@ -53,7 +53,7 @@ public class IntegrationException extends Exception {
    * @param component The component where the exception was thrown.
    * @param message The message why the exceptions happened.
    * @param cause The root cause of the error.
-   * @param solutions The solutions provided by exception.
+   * @param solutions The solutions provided for exception.
    */
   public IntegrationException(String component, String message, Throwable cause, String... solutions) {
     super(ExceptionMessageFormatter.format(component, message, cause, solutions), cause);
