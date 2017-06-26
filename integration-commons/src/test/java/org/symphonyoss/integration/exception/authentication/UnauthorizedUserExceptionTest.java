@@ -46,14 +46,13 @@ public class UnauthorizedUserExceptionTest {
   @Test
   public void testUnexpectedAutoExceptionWithCauseAndSolution() {
     String causeStr = "cause";
-    String solution = ExpectedMessageBuilder.EXPECTED_SOLUTION_NO_SOLUTION;
     Throwable cause = new Throwable(causeStr);
-    UnauthorizedUserException exception = new UnauthorizedUserException(message, cause, solution);
+    UnauthorizedUserException exception = new UnauthorizedUserException(message, cause, ExpectedMessageBuilder.EXPECTED_SOLUTION_NO_SOLUTION);
     String resultMessage = exception.getMessage();
     String expectedMessage = new ExpectedMessageBuilder()
         .component(COMPONENT)
         .message(message)
-        .solutions(solution)
+        .solutions(ExpectedMessageBuilder.EXPECTED_SOLUTION_NO_SOLUTION)
         .stackTrace(causeStr)
         .build();
 

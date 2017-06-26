@@ -46,4 +46,15 @@ public class IntegrationException extends Exception {
   public IntegrationException(String component, String message, Throwable cause) {
     super(ExceptionMessageFormatter.format(component, message, cause), cause);
   }
+
+  /**
+   * Constructs a new IntegrationException with the component name, the specified detail message and
+   * cause.
+   * @param component The component where the exception was thrown.
+   * @param message The message why the exceptions happened.
+   * @param cause The root cause of the error.
+   */
+  public IntegrationException(String component, String message, Throwable cause, String... solutions) {
+    super(ExceptionMessageFormatter.format(component, message, cause, solutions), cause);
+  }
 }
