@@ -64,4 +64,19 @@ public class RemoteApiExceptionTest {
     Assert.assertEquals(expectedMessage, resultMessage);
   }
 
+  @Test
+  public void testRemoteApiExceptionWithCodeAndExceptionAndSolution() {
+    RemoteApiException exception = new RemoteApiException(code, e, ExpectedMessageBuilder.EXPECTED_SOLUTION_NO_SOLUTION);
+    int expectedCode = exception.getCode();
+    String resultMessage = exception.getMessage();
+    String expectedMessage = new ExpectedMessageBuilder()
+        .component(COMMONS)
+        .message(NONE)
+        .solutions(ExpectedMessageBuilder.EXPECTED_SOLUTION_NO_SOLUTION)
+        .stackTrace(StringUtils.EMPTY)
+        .build();
+
+    Assert.assertEquals(expectedCode, 0);
+    Assert.assertEquals(expectedMessage, resultMessage);
+  }
 }

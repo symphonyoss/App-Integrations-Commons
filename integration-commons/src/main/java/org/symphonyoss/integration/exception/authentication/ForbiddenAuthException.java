@@ -31,4 +31,8 @@ public class ForbiddenAuthException extends AuthenticationException {
     super(message, cause);
   }
 
+  public ForbiddenAuthException(String message, Throwable cause, String... solutions) {
+    super(message, cause, solutions);
+  }
+
 }

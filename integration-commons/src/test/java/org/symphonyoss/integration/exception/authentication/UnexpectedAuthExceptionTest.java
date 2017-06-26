@@ -41,4 +41,20 @@ public class UnexpectedAuthExceptionTest {
 
     Assert.assertEquals(expectedMessage, resultMessage);
   }
+
+  @Test
+  public void testUnexpectedAutoExceptionWithCauseAndSolution() {
+    String causeStr = "cause";
+    Throwable cause = new Throwable(causeStr);
+    UnexpectedAuthException exception = new UnexpectedAuthException(message, cause, ExpectedMessageBuilder.EXPECTED_SOLUTION_NO_SOLUTION);
+    String resultMessage = exception.getMessage();
+    String expectedMessage = new ExpectedMessageBuilder()
+        .component(COMPONENT)
+        .message(message)
+        .solutions(ExpectedMessageBuilder.EXPECTED_SOLUTION_NO_SOLUTION)
+        .stackTrace(causeStr)
+        .build();
+
+    Assert.assertEquals(expectedMessage, resultMessage);
+  }
 }
