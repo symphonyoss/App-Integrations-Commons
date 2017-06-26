@@ -18,10 +18,15 @@ package org.symphonyoss.integration.utils;
 
 import static org.junit.Assert.assertEquals;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.junit.Assert;
 import org.junit.Test;
+import org.symphonyoss.integration.json.JsonUtils;
 import org.symphonyoss.integration.model.stream.StreamType;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Unit tests for {@link WebHookConfigurationUtils}
@@ -56,5 +61,22 @@ public class WebHookConfigurationUtilsTest {
         + "\"IM\"}"));
     assertEquals(StreamType.CHATROOM, WebHookConfigurationUtils.getStreamType("{ \"streamType\": "
         + "\"CHATROOM\"}"));
+  }
+
+  @Test
+  public void testToJsonString() throws IOException {
+    JsonNode jsonFile = JsonUtils.readTree(getClass().getClassLoader().getResourceAsStream("JSONUtils.json"));
+
+    Assert.assertEquals("{\"field1\":\"value1\",\"field2\":\"value2\"}", WebHookConfigurationUtils.toJsonString(jsonFile));
+  }
+
+  @Test
+  public void testFromJsonString() throws IOException {
+    InputStream inputStream = getClass().getClassLoader().getResourceAsStream("JSONUtils.json");
+    JsonNode jsonNode = JsonUtils.readTree(inputStream);
+    String jsonTest = JsonUtils.writeValueAsString(jsonNode);
+    ObjectNode objectNode = (ObjectNode) jsonNode;
+
+    Assert.assertEquals(objectNode, WebHookConfigurationUtils.fromJsonString(jsonTest));
   }
 }

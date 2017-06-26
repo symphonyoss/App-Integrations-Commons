@@ -51,7 +51,9 @@ import org.symphonyoss.integration.IntegrationStatus;
 import org.symphonyoss.integration.MockKeystore;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
 import org.symphonyoss.integration.entity.model.User;
+import org.symphonyoss.integration.exception.IntegrationRuntimeException;
 import org.symphonyoss.integration.exception.RemoteApiException;
+import org.symphonyoss.integration.exception.authentication.ConnectivityException;
 import org.symphonyoss.integration.exception.bootstrap.CertificateNotFoundException;
 import org.symphonyoss.integration.exception.bootstrap.LoadKeyStoreException;
 import org.symphonyoss.integration.exception.bootstrap.UnexpectedBootstrapException;
@@ -74,6 +76,8 @@ import org.symphonyoss.integration.webhook.exception.StreamTypeNotFoundException
 import org.symphonyoss.integration.webhook.exception.WebHookDisabledException;
 import org.symphonyoss.integration.webhook.exception.WebHookParseException;
 import org.symphonyoss.integration.webhook.exception.WebHookUnavailableException;
+import org.symphonyoss.integration.webhook.exception.WebHookUnprocessableEntityException;
+import org.symphonyoss.integration.webhook.exception.WebhookException;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -83,8 +87,10 @@ import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.ScheduledExecutorService;
@@ -237,6 +243,42 @@ public class WebHookIntegrationTest extends MockKeystore {
       assertEquals(IntegrationStatus.FAILED_BOOTSTRAP.name(), health.getStatus());
       assertEquals(IntegrationFlags.ValueEnum.NOK, health.getFlags().getCertificateInstalled());
     }
+  }
+
+  @Test(expected = ConnectivityException.class)
+  public void testOnCreateConnectivityException()
+      throws RemoteApiException, CertificateException, NoSuchAlgorithmException, KeyStoreException,
+      IOException {
+    String certDir = mockKeyStore();
+    doReturn(certDir).when(utils).getCertsDirectory();
+
+    doThrow(ConnectivityException.class).when(authenticationProxy).authenticate(anyString());
+
+    mockWHI.onCreate(INTEGRATION_USER);
+  }
+
+  @Test(expected = IntegrationRuntimeException.class)
+  public void testOnCreateIntegrationRuntimeException()
+      throws RemoteApiException, CertificateException, NoSuchAlgorithmException, KeyStoreException,
+      IOException {
+    String certDir = mockKeyStore();
+    doReturn(certDir).when(utils).getCertsDirectory();
+
+    doThrow(IntegrationRuntimeException.class).when(authenticationProxy).authenticate(anyString());
+
+    mockWHI.onCreate(INTEGRATION_USER);
+  }
+
+  @Test(expected = UnexpectedBootstrapException.class)
+  public void testOnCreateUnexpectedBootstrapException()
+      throws RemoteApiException, CertificateException, NoSuchAlgorithmException, KeyStoreException,
+      IOException {
+    String certDir = mockKeyStore();
+    doReturn(certDir).when(utils).getCertsDirectory();
+
+    doThrow(Exception.class).when(authenticationProxy).authenticate(anyString());
+
+    mockWHI.onCreate(INTEGRATION_USER);
   }
 
   @Test
@@ -689,6 +731,56 @@ public class WebHookIntegrationTest extends MockKeystore {
             + "\"version\":\"1.0\",\"userId\":\"98568743\","
             + "\"username\":\"jiraWebHookIntegration\"}}",
         answer.getMessage().getData());
+  }
+
+  @Test(expected = WebHookUnprocessableEntityException.class)
+  public void testHandleMMLV2EventNotHandled() throws RemoteApiException, IOException {
+    doReturn(settings).when(integrationService).getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
+
+    WebHookPayload payload = new WebHookPayload(
+        new HashMap<String, String>(), new HashMap<String, String>(), "{}");
+    payload.addParameter(V2MockWebHookIntegration.EVENT_NOT_HANDLED, Boolean.TRUE.toString());
+
+    IntegrationInstance instance = mockInstance();
+    instance.setCreatorId(MOCK_USERID);
+    instance.setCreatorName(INTEGRATION_USER);
+
+    doReturn(instance).when(integrationService).getInstanceById(CONFIGURATION_ID, INSTANCE_ID, INTEGRATION_USER);
+
+    v2MockWHI.handle(instance.getInstanceId(), INTEGRATION_USER, payload);
+  }
+
+  @Test
+  public void testWebHookParseException() throws RemoteApiException {
+    doReturn(settings).when(integrationService).getIntegrationById(CONFIGURATION_ID, INTEGRATION_USER);
+
+    IntegrationInstance instance = mockInstance();
+    instance.setCreatorId(MOCK_USERID);
+    instance.setCreatorName(INTEGRATION_USER);
+
+    WebHookParseException exception = new WebHookParseException("component", "exception");
+    testWebHookParseException(instance, exception);
+
+    exception = new WebHookParseException("component", "exception", "solutions");
+    testWebHookParseException(instance, exception);
+
+    exception = new WebHookParseException("component", "exception", new RuntimeException());
+    testWebHookParseException(instance, exception);
+
+    exception = new WebHookParseException(
+        "component", "exception", new RuntimeException(), "solutions");
+    testWebHookParseException(instance, exception);
+  }
+
+  private void testWebHookParseException(
+      IntegrationInstance instance, WebHookParseException exception) throws RemoteApiException {
+
+    doThrow(exception).when(integrationService).getInstanceById(CONFIGURATION_ID, INSTANCE_ID, INTEGRATION_USER);
+    try {
+      v2MockWHI.handle(instance.getInstanceId(), INTEGRATION_USER, null);
+    } catch (WebHookParseException e) {
+      assertEquals(exception, e);
+    }
   }
 
   public static final class SendMessageAnswer implements Answer<List<Message>> {

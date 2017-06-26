@@ -38,7 +38,11 @@ public class MetadataParserTest {
 
   private static final String INVALID_TEMPLATE_FILE = "invalidTemplate.xml";
 
+  private static final String INEXISTENT_TEMPLATE_FILE = "inexistentTemplate.xml";
+
   private static final String INVALID_METADATA_FILE = "invalidMetadata.xml";
+
+  private static final String INEXISTENT_METADATA_FILE = "inexistentMetadata.xml";
 
   private static final String INPUT_FILE = "inputData.json";
 
@@ -59,6 +63,24 @@ public class MetadataParserTest {
       + "        <span>Body</span>\n"
       + "    </div>\n"
       + "</messageML>\n";
+
+  @Test
+  public void testInexistentTemplateFile() throws IOException {
+    MetadataParser parser = new MockMetadataParser(INEXISTENT_TEMPLATE_FILE, SIMPLE_METADATA);
+    parser.init();
+
+    JsonNode node = readJsonFromFile(INPUT_FILE);
+    assertNull(parser.parse(node));
+  }
+
+  @Test
+  public void testInexistentMetadataFile() throws IOException {
+    MetadataParser parser = new MockMetadataParser(TEMPLATE, INEXISTENT_METADATA_FILE);
+    parser.init();
+
+    JsonNode node = readJsonFromFile(INPUT_FILE);
+    assertNull(parser.parse(node));
+  }
 
   @Test
   public void testInvalidTemplateFile() throws IOException {

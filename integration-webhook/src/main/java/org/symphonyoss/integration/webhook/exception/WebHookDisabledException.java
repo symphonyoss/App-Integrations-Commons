@@ -25,11 +25,4 @@ public class WebHookDisabledException extends WebhookException {
     super(String.format("Webhook %s disabled!", configurationType));
   }
 
-  public WebHookDisabledException(String message, String... solutions) {
-    super(message, solutions);
-  }
-
-  public WebHookDisabledException(String message, Throwable cause, String... solutions) {
-    super(message, cause, solutions);
-  }
 }

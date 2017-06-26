@@ -18,10 +18,13 @@ package org.symphonyoss.integration.api.client.metrics;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.symphonyoss.integration.api.client.metrics.ApiMetricsConstants.CONFIGURATION_API;
 import static org.symphonyoss.integration.api.client.metrics.ApiMetricsConstants.OTHER_API;
 
 import com.codahale.metrics.Counter;
+import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,6 +62,9 @@ public class ApiMetricsControllerTest {
   @InjectMocks
   private ApiMetricsController controller = new ApiMetricsController();
 
+  @Spy
+  private MetricRegistry metricRegistry;
+
   @Before
   public void init() {
     timerByApi.put(CONFIGURATION_API, new Timer());
@@ -69,6 +75,13 @@ public class ApiMetricsControllerTest {
 
     apiFailCounters.put(CONFIGURATION_API, new Counter());
     apiFailCounters.put(OTHER_API, new Counter());
+  }
+
+  @Test
+  public void testInit() {
+    doReturn(activeApiCalls).when(metricRegistry).counter(anyString());
+    controller.init();
+    assertEquals(6, timerByApi.size());
   }
 
   @Test

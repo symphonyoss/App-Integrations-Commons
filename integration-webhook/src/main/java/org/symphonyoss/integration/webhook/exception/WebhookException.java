@@ -33,15 +33,8 @@ public abstract class WebhookException extends IntegrationRuntimeException {
     super(COMPONENT, message, solutions);
   }
 
-  public WebhookException(String message, Throwable cause, String... solutions) {
-    super(COMPONENT, message, cause, solutions);
-  }
-
   public WebhookException(String message) {
     super(COMPONENT, message);
   }
 
-  public WebhookException(String message, Throwable cause) {
-    super(COMPONENT, message, cause);
-  }
 }

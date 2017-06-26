@@ -18,6 +18,7 @@ package org.symphonyoss.integration.model.yaml;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -25,6 +26,10 @@ import org.junit.Test;
  * Created by Evandro Carrenho on 24/04/16.
  */
 public class ApiClientConfigTest {
+
+  public static final String EXPECTED_DEFAULT_INITIAL_VALUES =
+      "ApiClientConfig{connectTimeout='2000', readTimeout='4000', maxConnections='60', "
+          + "maxConnectionsPerRoute='20'}";
 
   @Test
   public void testDefaultInitialValues() {
@@ -34,6 +39,8 @@ public class ApiClientConfigTest {
     assertEquals(apiClientConfig.getConnectTimeout(), (Integer) ApiClientConfig.DEFAULT_CONNECT_TIMEOUT);
     assertEquals(apiClientConfig.getMaxConnections(), (Integer) ApiClientConfig.DEFAULT_TOTAL_CONNECTIONS);
     assertEquals(apiClientConfig.getMaxConnectionsPerRoute(), (Integer) ApiClientConfig.DEFAULT_TOTAL_CONNECTIONS_PER_ROUTE);
+
+    Assert.assertEquals(EXPECTED_DEFAULT_INITIAL_VALUES, apiClientConfig.toString());
   }
 
   @Test

@@ -175,11 +175,13 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
       healthManager.success(settings);
     } catch (ConnectivityException | RetryLifecycleException e) {
-      String message = String.format("%s. Cause: %s", e.getMessage(), e.getCause().getMessage());
+      Throwable cause = e.getCause() != null ? e.getCause() : e;
+      String message = String.format("%s. Cause: %s", e.getMessage(), cause.getMessage());
       healthManager.retry(message);
       throw e;
     } catch (IntegrationRuntimeException e) {
-      String message = String.format("%s. Cause: %s", e.getMessage(), e.getCause().getMessage());
+      Throwable cause = e.getCause() != null ? e.getCause() : e;
+      String message = String.format("%s. Cause: %s", e.getMessage(), cause.getMessage());
       healthManager.failBootstrap(message);
       throw e;
     } catch (Exception e) {

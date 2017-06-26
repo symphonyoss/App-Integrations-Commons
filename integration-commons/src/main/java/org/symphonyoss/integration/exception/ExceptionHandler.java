@@ -21,7 +21,7 @@ import javax.ws.rs.core.Response.Status;
 /**
  * Created by rsanchez on 03/08/16.
  */
-public abstract class ExceptionHandler {
+public abstract class  ExceptionHandler {
 
   protected boolean unauthorizedError(int code) {
     return Status.UNAUTHORIZED.getStatusCode() == code;

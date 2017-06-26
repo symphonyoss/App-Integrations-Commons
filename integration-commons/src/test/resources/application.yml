@@ -1,0 +1,183 @@
+
+#
+# The Admin user is required to provision data at Symphony POD during the
+# deployment process. Applications, Bot users and other configurations required
+# by the Apps will be provisioned by this user.
+#
+# The "keystore_file" must point to the keystore containg the private key to
+# authenticate the Admin user against Symphony POD. The correspondig public key
+# must be provisioned on Symphony POD beforehand.
+#
+admin_user:
+  keystore_file: /home/centos/admin.p12
+  keystore_password: changeit
+
+#
+# Apps authenticate themselves against Symphony POD through certificates.
+# The deployment process creates and provisions all required certificates, and
+# those certificates are signed with the CA cert and key indicated on the
+# signing_cert info.
+#
+signing_cert:
+  ca_cert_file: /home/centos/int-cert.pem
+  ca_key_file: /home/centos/int-key.pem
+  ca_key_password: changeit
+  caCertChainFile: caCertChainFileTest
+
+#
+# Indicate the host and port for the Symphony POD the Apps are associated with.
+#
+pod:
+  host: nexus.symphony.com
+  port: 443
+
+#
+# Indicate the host and port for the POD's Agent.
+#
+agent:
+  host: nexus.symphony.com
+  port: 8444
+
+#
+# Indicate the host and port the POD's Session Manager.
+#
+pod_session_manager:
+  host: nexus.symphony.com
+  port: 8444
+
+#
+# Indicate the host and ports for the POD's Key Manager.
+#
+key_manager:
+  host: nexus.symphony.com
+  port: 443
+
+#
+# Indicate the host and ports for the Key Manager Authentication.
+#
+key_manager_auth:
+  host: nexus.symphony.com
+  port: 8444
+
+#
+# Indicate the Integration Bridge domain, host and port.
+# Integration Bridge will only serve at localhost though HTTP, therefore
+# a proxy must be configured to set up the required SSL context for the
+# Integration Bridge.
+#
+# The Integration Bridge host is used to provision the required paths for the
+# apps and webhooks and must be accessible on port 443 through the Integration
+# Bridge proxy.
+#
+# The Trust Store file, type, and password are optional and must be used only if there is
+# a custom truststore to connect to keymanager, agent and POD. If you are installing your
+# Integration Bridge as a Symphony managed cloud server you will not need a truststore.
+# If the key manager is hosted in a VPC, meaning it is part of a separate domain, then
+# a truststore will be required.
+#
+# For a deployment using a custom Trust Store, uncomment both truststore_file and
+# truststore_type and define the file and type for the custom Trust Store.
+# Some integrations may need to access external services to gather data and enrich
+# the incoming webhook notification with further information. Ideally, the custom
+# truststore should be based on the Java CA Certificates store (plus the required
+# custom certificates), so that the Integration Bridge will be abe to establish HTTPS
+# connections with any external services. As an alternative, the required external
+# services certificates could be added to a custom Trust Store, created from scratch
+# with the custom certificates.
+#
+# To maintain the security of the system, we will need to check for the origination
+# of webhooks to make sure that all webhooks coming in are validated and not spoofs.
+#
+# If you want to make this check you should uncomment the allowed_origins section
+# and define the list of trusted origins. It's a global list used by all the applications
+# and contains the origin host name, IP address or both. The IP address can be a range
+# using CIDR notation.
+#
+# The global list of allowed_origins is an additional list to the application-specific
+# allowed_origins list (see below the applications sections of the yaml file).
+#
+integration_bridge:
+  truststore_file: /data/symphony/ib/certs/custom.truststore
+  truststore_type: jks
+  truststore_password: changeit
+  domain: .symphony.com
+  host: nexus.symphony.com
+  allowed_origins:
+    - host: ec2-107-23-104-115.compute-1.amazonaws.com
+      address: 107.23.104.115
+    - address: 192.30.252.0/22
+
+
+ApiClientConfig:
+  connectTimeout: 100
+
+# This port must be changed to 443 when server.ssl.enable is set to true and
+# the application is not behind a proxy.
+server:
+  port: 8186
+#  ssl:
+#    enabled: false
+#    key-alias: your-key-alias
+#    key-store: "relative/path/of/your/keystore_file.p12"
+#    key-store-type: PKCS12
+#    key-store-password: your-key-store-password
+#    key-password: your-key-password
+
+# This is the list of applications to be provisioned on the POD and Integration
+# Bridge. Each app entry indicates the deployment state of the application, its
+# configuration on Symphony application store, and the keystore information.
+#
+# If "state" is "REMOVED", the application will be removed from the Integration
+# Bridge host and the "enabled"/"visible" flags will be set to false at
+# Symphony application store.
+#
+# If "state" is "PROVISIONED", the application will be deployed on the
+# Integration Bridge host, it will be available at Symphony Application store
+# and its Bot user will also be provisioned on the system, with the
+# corresponding certificates.
+#
+# If "state" is "PROVISIONED", the "enabled" and "visible" flags will be set
+# accordingly at Symphony application store to control wheter the application
+# is actually enabled on the system and visible to users at Symphony Market.
+#
+# The "keystore" fields define the application certificate information as the filename, password and type.
+# All the certificate files must be in the certs directory.
+#
+# If you want to check for the origination of webhook you should uncomment the allowed_origins
+# section and define the list of trusted origins. You can define a local whitelist for
+# each application.
+applications:
+  jira:
+    name: jira
+    description: integration of jira
+    publisher: publisher
+    component: jira
+    state: PROVISIONED
+    avatar: jira.icon
+    avatarUrl: jira.com
+    enabled: true
+    visible: true
+    context: context
+    url: jira.com
+    username: jirauser
+    keystore:
+      file: jira.p12
+      password: changeit
+      type: pkcs12
+      allowedOrigins:
+        - host: ec2-107-23-104-115.compute-1.amazonaws.com
+          address: 107.23.104.115
+        - address: 192.30.252.0/22
+
+  github:
+    name: github
+    description: integration of github
+    publisher: publisher
+    component: github
+    state: PROVISIONED
+    enabled: true
+    visible: true
+    keystore:
+      file: github.p12
+      password: changeit
+      type: pkcs12
