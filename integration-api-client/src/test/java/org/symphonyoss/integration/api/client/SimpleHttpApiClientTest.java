@@ -8,6 +8,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,10 +87,10 @@ public class SimpleHttpApiClientTest {
 
   @Test
   public void testSetEntitySerializer() {
-    EntitySerializer oldES = (EntitySerializer) Whitebox.getInternalState(client, "serializer");
-    client.setEntitySerializer(new MultiPartEntitySerializer());
+    MultiPartEntitySerializer serializer = new MultiPartEntitySerializer();
+    client.setEntitySerializer(serializer);
     EntitySerializer newES = (EntitySerializer) Whitebox.getInternalState(client, "serializer");
-    assertNotEquals(oldES, newES);
+    assertEquals(serializer, newES);
   }
 
   @Test
