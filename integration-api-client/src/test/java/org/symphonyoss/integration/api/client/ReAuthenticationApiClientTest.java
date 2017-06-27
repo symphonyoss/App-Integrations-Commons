@@ -92,7 +92,7 @@ public class ReAuthenticationApiClientTest {
             IntegrationSettings.class);
 
     doThrow(remoteApiException).when(proxy)
-        .reAuthSessionOrThrow(MOCK_SESSION_TOKEN, 401, remoteApiException);
+        .reAuthSessionOrThrow(MOCK_SESSION_TOKEN, remoteApiException);
 
     reAuthApiClient.doGet(MOCK_PATH, headerParams, Collections.<String, String>emptyMap(),
         IntegrationSettings.class);
@@ -110,7 +110,7 @@ public class ReAuthenticationApiClientTest {
             IntegrationSettings.class);
 
     AuthenticationToken token = new AuthenticationToken(MOCK_NEW_SESSION_TOKEN, MOCK_KM_TOKEN);
-    doReturn(token).when(proxy).reAuthSessionOrThrow(MOCK_SESSION_TOKEN, 401, remoteApiException);
+    doReturn(token).when(proxy).reAuthSessionOrThrow(MOCK_SESSION_TOKEN, remoteApiException);
 
     IntegrationSettings expected = new IntegrationSettings();
     expected.setConfigurationId(MOCK_CONFIGURATION_ID);
@@ -156,7 +156,7 @@ public class ReAuthenticationApiClientTest {
             IntegrationSettings.class);
 
     doThrow(remoteApiException).when(proxy)
-        .reAuthSessionOrThrow(MOCK_SESSION_TOKEN, 401, remoteApiException);
+        .reAuthSessionOrThrow(MOCK_SESSION_TOKEN, remoteApiException);
 
     reAuthApiClient.doPost(MOCK_PATH, headerParams, Collections.<String, String>emptyMap(), null,
         IntegrationSettings.class);
@@ -174,7 +174,7 @@ public class ReAuthenticationApiClientTest {
             IntegrationSettings.class);
 
     AuthenticationToken token = new AuthenticationToken(MOCK_NEW_SESSION_TOKEN, MOCK_KM_TOKEN);
-    doReturn(token).when(proxy).reAuthSessionOrThrow(MOCK_SESSION_TOKEN, 401, remoteApiException);
+    doReturn(token).when(proxy).reAuthSessionOrThrow(MOCK_SESSION_TOKEN, remoteApiException);
 
     IntegrationSettings expected = new IntegrationSettings();
     expected.setConfigurationId(MOCK_CONFIGURATION_ID);
@@ -220,7 +220,7 @@ public class ReAuthenticationApiClientTest {
             IntegrationSettings.class);
 
     doThrow(remoteApiException).when(proxy)
-        .reAuthSessionOrThrow(MOCK_SESSION_TOKEN, 401, remoteApiException);
+        .reAuthSessionOrThrow(MOCK_SESSION_TOKEN, remoteApiException);
 
     reAuthApiClient.doPut(MOCK_PATH, headerParams, Collections.<String, String>emptyMap(), null,
         IntegrationSettings.class);
@@ -238,7 +238,7 @@ public class ReAuthenticationApiClientTest {
             IntegrationSettings.class);
 
     AuthenticationToken token = new AuthenticationToken(MOCK_NEW_SESSION_TOKEN, MOCK_KM_TOKEN);
-    doReturn(token).when(proxy).reAuthSessionOrThrow(MOCK_SESSION_TOKEN, 401, remoteApiException);
+    doReturn(token).when(proxy).reAuthSessionOrThrow(MOCK_SESSION_TOKEN, remoteApiException);
 
     IntegrationSettings expected = new IntegrationSettings();
     expected.setConfigurationId(MOCK_CONFIGURATION_ID);
@@ -284,7 +284,7 @@ public class ReAuthenticationApiClientTest {
             IntegrationSettings.class);
 
     doThrow(remoteApiException).when(proxy)
-        .reAuthSessionOrThrow(MOCK_SESSION_TOKEN, 401, remoteApiException);
+        .reAuthSessionOrThrow(MOCK_SESSION_TOKEN, remoteApiException);
 
     reAuthApiClient.doDelete(MOCK_PATH, headerParams, Collections.<String, String>emptyMap(),
         IntegrationSettings.class);
@@ -302,7 +302,7 @@ public class ReAuthenticationApiClientTest {
             IntegrationSettings.class);
 
     AuthenticationToken token = new AuthenticationToken(MOCK_NEW_SESSION_TOKEN, MOCK_KM_TOKEN);
-    doReturn(token).when(proxy).reAuthSessionOrThrow(MOCK_SESSION_TOKEN, 401, remoteApiException);
+    doReturn(token).when(proxy).reAuthSessionOrThrow(MOCK_SESSION_TOKEN, remoteApiException);
 
     IntegrationSettings expected = new IntegrationSettings();
     expected.setConfigurationId(MOCK_CONFIGURATION_ID);
