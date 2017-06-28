@@ -20,7 +20,7 @@ public class ConnectivityExceptionTest {
 
   @Test
   public void testConnectivityException() {
-    ConnectivityException exception = new ConnectivityException(serviceName);
+    ConnectivityException exception = new ConnectivityException(COMPONENT, serviceName);
     String resultMessage = exception.getMessage();
     String expectedMessage = new ExpectedMessageBuilder()
         .component(COMPONENT)
@@ -33,7 +33,7 @@ public class ConnectivityExceptionTest {
 
   @Test
   public void testConnectivityExceptionWithSolution() {
-    ConnectivityException exception = new ConnectivityException(serviceName, solution);
+    ConnectivityException exception = new ConnectivityException(COMPONENT, serviceName, solution);
     String resultMessage = exception.getMessage();
     String expectedMessage = new ExpectedMessageBuilder()
         .component(COMPONENT)
@@ -46,7 +46,7 @@ public class ConnectivityExceptionTest {
 
   @Test
   public void testConnectivityExceptionWithCause() {
-    ConnectivityException exception = new ConnectivityException(serviceName, cause);
+    ConnectivityException exception = new ConnectivityException(COMPONENT, serviceName, cause);
     Throwable resultCause = exception.getCause();
 
     Assert.assertEquals(cause, resultCause);
@@ -54,7 +54,7 @@ public class ConnectivityExceptionTest {
 
   @Test
   public void testConnectivityExceptionWithSolutionAndCause() {
-    ConnectivityException exception = new ConnectivityException(serviceName, cause, solution);
+    ConnectivityException exception = new ConnectivityException(COMPONENT, serviceName, cause, solution);
     String resultMessage = exception.getMessage();
     Throwable resultCause = exception.getCause();
 

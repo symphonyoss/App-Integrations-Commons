@@ -32,6 +32,8 @@ public class ConnectivityApiClientDecorator extends HttpApiClientDecorator {
 
   private String serviceName;
 
+  private static final String COMPONENT = "Connectivity Api Client";
+
   public ConnectivityApiClientDecorator(String serviceName, HttpApiClient apiClient) {
     super(apiClient);
     this.serviceName = serviceName;
@@ -99,7 +101,7 @@ public class ConnectivityApiClientDecorator extends HttpApiClientDecorator {
    * @return Specific connectivity exception
    */
   protected ConnectivityException getConnectivityException(ProcessingException e) {
-    return new ConnectivityException(serviceName, e);
+    return new ConnectivityException(COMPONENT, serviceName, e);
   }
 
 }

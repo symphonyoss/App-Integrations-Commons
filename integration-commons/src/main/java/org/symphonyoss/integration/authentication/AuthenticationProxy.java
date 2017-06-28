@@ -17,7 +17,9 @@
 package org.symphonyoss.integration.authentication;
 
 import org.symphonyoss.integration.exception.RemoteApiException;
+import org.symphonyoss.integration.exception.authentication.AuthenticationException;
 
+import java.rmi.Remote;
 import java.security.KeyStore;
 
 import javax.ws.rs.client.Client;
@@ -34,7 +36,7 @@ public interface AuthenticationProxy {
    * @param userId User identifier
    * @throws RemoteApiException
    */
-  void authenticate(String userId) throws RemoteApiException;
+  void authenticate(String userId) throws AuthenticationException;
 
   boolean isAuthenticated(String user);
 
@@ -62,13 +64,12 @@ public interface AuthenticationProxy {
    * If the provided exception is of type unauthorized, then authenticate again, else rethrow the
    * same exception
    * @param userId
-   * @param code
-   * @param e
+   * @param remoteApiException
    * @throws RemoteApiException an authorization exception thrown on FAILURE to re-auth
    */
-  void reAuthOrThrow(String userId, int code, Exception e) throws RemoteApiException;
+  void reAuthOrThrow(String userId, RemoteApiException remoteApiException) throws RemoteApiException;
 
-  AuthenticationToken reAuthSessionOrThrow(String sessionToken, int code, Exception e)
+  AuthenticationToken reAuthSessionOrThrow(String sessionToken, RemoteApiException remoteApiException)
       throws RemoteApiException;
 
   /**

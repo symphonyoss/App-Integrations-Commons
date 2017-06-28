@@ -33,6 +33,7 @@ import org.symphonyoss.integration.BaseIntegration;
 import org.symphonyoss.integration.entity.model.User;
 import org.symphonyoss.integration.exception.IntegrationRuntimeException;
 import org.symphonyoss.integration.exception.RemoteApiException;
+import org.symphonyoss.integration.exception.authentication.AuthenticationException;
 import org.symphonyoss.integration.exception.authentication.ConnectivityException;
 import org.symphonyoss.integration.exception.bootstrap.BootstrapException;
 import org.symphonyoss.integration.exception.bootstrap.RetryLifecycleException;
@@ -196,7 +197,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
   private void authenticate(String integrationUser) {
     try {
       authenticationProxy.authenticate(integrationUser);
-    } catch (RemoteApiException e) {
+    } catch (AuthenticationException e) {
       throw new RetryLifecycleException("Unexpected error when authenticating", e);
     }
   }

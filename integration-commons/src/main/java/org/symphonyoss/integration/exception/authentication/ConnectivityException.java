@@ -16,29 +16,31 @@
 
 package org.symphonyoss.integration.exception.authentication;
 
+import org.symphonyoss.integration.exception.IntegrationRuntimeException;
+
 /**
  * Should be thrown when a connectivity issue is identified while communicating with the required
  * service.
  *
  * Created by Milton Quilzini on 17/11/16.
  */
-public class ConnectivityException extends AuthenticationException {
+public class ConnectivityException extends IntegrationRuntimeException {
 
   protected static final String DEFAULT_MESSAGE = "Integration Bridge can't reach %s service!";
 
-  public ConnectivityException(String serviceName) {
-    super(String.format(DEFAULT_MESSAGE, serviceName));
+  public ConnectivityException(String component, String serviceName) {
+    super(component, String.format(DEFAULT_MESSAGE, serviceName));
   }
 
-  public ConnectivityException(String serviceName, String... solutions) {
-    super(String.format(DEFAULT_MESSAGE, serviceName), solutions);
+  public ConnectivityException(String component, String serviceName, String... solutions) {
+    super(component, String.format(DEFAULT_MESSAGE, serviceName), solutions);
   }
 
-  public ConnectivityException(String serviceName, Throwable cause) {
-    super(String.format(DEFAULT_MESSAGE, serviceName), cause);
+  public ConnectivityException(String component, String serviceName, Throwable cause) {
+    super(component, String.format(DEFAULT_MESSAGE, serviceName), cause);
   }
 
-  public ConnectivityException(String serviceName, Throwable cause, String... solutions) {
-    super(String.format(DEFAULT_MESSAGE, serviceName), cause, solutions);
+  public ConnectivityException(String component, String serviceName, Throwable cause, String... solutions) {
+    super(component, String.format(DEFAULT_MESSAGE, serviceName), cause, solutions);
   }
 }

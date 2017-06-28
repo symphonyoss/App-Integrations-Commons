@@ -52,7 +52,7 @@ public class ReAuthenticationApiClient extends HttpApiClientDecorator {
       }
 
       try {
-        AuthenticationToken token = proxy.reAuthSessionOrThrow(sessionToken, e.getCode(), e);
+        AuthenticationToken token = proxy.reAuthSessionOrThrow(sessionToken, e);
         headerParams.put(SESSION_TOKEN_HEADER, token.getSessionToken());
 
         return apiClient.doGet(path, headerParams, queryParams, returnType);
@@ -76,7 +76,7 @@ public class ReAuthenticationApiClient extends HttpApiClientDecorator {
       }
 
       try {
-        AuthenticationToken token = proxy.reAuthSessionOrThrow(sessionToken, e.getCode(), e);
+        AuthenticationToken token = proxy.reAuthSessionOrThrow(sessionToken, e);
         headerParams.put(SESSION_TOKEN_HEADER, token.getSessionToken());
 
         return apiClient.doPost(path, headerParams, queryParams, payload, returnType);
@@ -99,7 +99,7 @@ public class ReAuthenticationApiClient extends HttpApiClientDecorator {
       }
 
       try {
-        AuthenticationToken token = proxy.reAuthSessionOrThrow(sessionToken, e.getCode(), e);
+        AuthenticationToken token = proxy.reAuthSessionOrThrow(sessionToken, e);
         headerParams.put(SESSION_TOKEN_HEADER, token.getSessionToken());
 
         return apiClient.doPut(path, headerParams, queryParams, payload, returnType);
@@ -122,7 +122,7 @@ public class ReAuthenticationApiClient extends HttpApiClientDecorator {
       }
 
       try {
-        AuthenticationToken token = proxy.reAuthSessionOrThrow(sessionToken, e.getCode(), e);
+        AuthenticationToken token = proxy.reAuthSessionOrThrow(sessionToken, e);
         headerParams.put(SESSION_TOKEN_HEADER, token.getSessionToken());
 
         return apiClient.doDelete(path, headerParams, queryParams, returnType);
