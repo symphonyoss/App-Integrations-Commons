@@ -32,7 +32,7 @@ public class ConnectivityApiClientDecorator extends HttpApiClientDecorator {
 
   private String serviceName;
 
-  private static final String COMPONENT = "Authentication Proxy";
+  private static final String COMPONENT = "Connectivity Api Client";
 
   public ConnectivityApiClientDecorator(String serviceName, HttpApiClient apiClient) {
     super(apiClient);
