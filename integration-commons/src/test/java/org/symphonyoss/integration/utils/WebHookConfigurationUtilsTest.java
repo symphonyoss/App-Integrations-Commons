@@ -23,16 +23,20 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Assert;
 import org.junit.Test;
 import org.symphonyoss.integration.json.JsonUtils;
+import org.symphonyoss.integration.model.config.IntegrationInstance;
 import org.symphonyoss.integration.model.stream.StreamType;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 /**
  * Unit tests for {@link WebHookConfigurationUtils}
  * Created by rsanchez on 13/10/16.
  */
 public class WebHookConfigurationUtilsTest {
+
+  private static final String OPTIONAL_PROPERTIES = "{ \"lastPostedDate\": 1, \"owner\": \"owner\", \"streams\": [ \"stream1\", \"stream2\"] }";
 
   @Test
   public void testNullOptionalProperties() throws IOException {
@@ -78,5 +82,14 @@ public class WebHookConfigurationUtilsTest {
     ObjectNode objectNode = (ObjectNode) jsonNode;
 
     Assert.assertEquals(objectNode, WebHookConfigurationUtils.fromJsonString(jsonTest));
+  }
+
+  @Test
+  public void testGetStreams() throws IOException {
+    ArrayList<String> expected = new ArrayList<>();
+    expected.add("stream1");
+    expected.add("stream2");
+
+    Assert.assertEquals(expected, WebHookConfigurationUtils.getStreams(OPTIONAL_PROPERTIES));
   }
 }
