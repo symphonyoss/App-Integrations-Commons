@@ -35,4 +35,12 @@ public class LoadKeyStoreException extends BootstrapException {
   public LoadKeyStoreException(String message, Exception cause) {
     super(message, cause);
   }
+
+  public LoadKeyStoreException(String message, Exception cause, String... solutions) {
+    super(message, cause, solutions);
+  }
+
+  public LoadKeyStoreException(String message, String... solutions) {
+    super(message, solutions);
+  }
 }
