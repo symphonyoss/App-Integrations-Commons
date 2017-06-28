@@ -17,6 +17,7 @@
 package org.symphonyoss.integration.authentication;
 
 import org.symphonyoss.integration.exception.RemoteApiException;
+import org.symphonyoss.integration.exception.authentication.AuthenticationException;
 
 import java.rmi.Remote;
 import java.security.KeyStore;
@@ -35,7 +36,7 @@ public interface AuthenticationProxy {
    * @param userId User identifier
    * @throws RemoteApiException
    */
-  void authenticate(String userId) throws RemoteApiException;
+  void authenticate(String userId) throws AuthenticationException;
 
   boolean isAuthenticated(String user);
 
