@@ -60,7 +60,7 @@ public class IntegrationException extends Exception {
   }
 
   /**
-   * Constructs a new IntegrationException with the component name and the specified detail message, and
+   * Constructs a new IntegrationException with the component name, the specified detail message, and
    * the solutions provided for this exception.
    * @param component The component where the exception was thrown.
    * @param message The message why the exceptions happened.
