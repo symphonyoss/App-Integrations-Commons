@@ -44,13 +44,18 @@ public class RemoteApiException extends IntegrationException {
     this.code = code;
   }
 
-  public int getCode() {
-    return code;
-  }
-
   public RemoteApiException(int code, String message, String... solutions) {
     super(COMPONENT, message, solutions);
     this.code = code;
+  }
+
+  public RemoteApiException(int code, String message, Exception e, String... solutions) {
+    super(COMPONENT, message, e, solutions);
+    this.code = code;
+  }
+
+  public int getCode() {
+    return code;
   }
 
 }
