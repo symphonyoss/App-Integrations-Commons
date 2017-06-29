@@ -14,8 +14,8 @@ public class MissingConfigurationException extends IntegrationRuntimeException {
     super(component, String.format(DEFAULT_MESSAGE, key));
   }
 
-  public MissingConfigurationException(String component, String key, String... solutions) {
-    super(component, String.format(DEFAULT_MESSAGE, key), solutions);
+  public MissingConfigurationException(String component, String message, String... solutions) {
+    super(component, message, solutions);
   }
 
 }
