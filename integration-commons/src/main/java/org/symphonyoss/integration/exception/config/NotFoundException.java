@@ -23,16 +23,8 @@ package org.symphonyoss.integration.exception.config;
  */
 public class NotFoundException extends RemoteConfigurationException {
 
-  public NotFoundException() {
-    super();
-  }
-
-  public NotFoundException(String message) {
-    super(message);
-  }
-
-  public NotFoundException(Throwable cause) {
-    super(cause);
+  public NotFoundException(String message, Throwable cause, String... solutions) {
+    super(message, cause, solutions);
   }
 
 }

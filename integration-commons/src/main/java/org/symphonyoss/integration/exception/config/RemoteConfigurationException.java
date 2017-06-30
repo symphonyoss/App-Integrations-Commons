@@ -21,16 +21,7 @@ package org.symphonyoss.integration.exception.config;
  */
 public class RemoteConfigurationException extends IntegrationConfigException {
 
-  public RemoteConfigurationException() {
-    super("Unable to retrieve configurations.");
+  public RemoteConfigurationException(String message, Throwable cause, String... solutions) {
+    super(message, cause, solutions);
   }
-
-  public RemoteConfigurationException(String message) {
-    super("Unable to retrieve configurations. " + message);
-  }
-
-  public RemoteConfigurationException(Throwable cause) {
-    super("Unable to retrieve configurations.", cause);
-  }
-
 }
