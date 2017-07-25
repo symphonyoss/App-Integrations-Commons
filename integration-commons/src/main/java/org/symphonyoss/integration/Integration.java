@@ -18,6 +18,7 @@ package org.symphonyoss.integration;
 
 import org.symphonyoss.integration.model.config.IntegrationSettings;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
+import org.symphonyoss.integration.model.yaml.AppAuthenticationModel;
 
 import java.util.Set;
 
@@ -63,5 +64,11 @@ public interface Integration {
    * @return Integration whitelist.
    */
   Set<String> getIntegrationWhiteList();
+
+  /**
+   * Retrieve integration authentication properties.
+   * @return Integration authentication properties
+   */
+  AppAuthenticationModel getAuthenticationModel();
 
 }

@@ -168,6 +168,12 @@ applications:
         - host: ec2-107-23-104-115.compute-1.amazonaws.com
           address: 107.23.104.115
         - address: 192.30.252.0/22
+    auth:
+      applicationName: Symphony Integration for JIRA
+      applicationURL: https://${integration_bridge.host}:${integration_bridge.port:443}/integration
+      properties:
+        consumerKey: symphony_consumer
+        consumerName: Symphony Consumer
 
   github:
     name: github
