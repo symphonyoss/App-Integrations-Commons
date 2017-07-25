@@ -188,6 +188,7 @@
         <module>integration-metrics</module>
         <module>integration-webhook</module>
         <module>integration-api-client</module>
+        <module>integration-authorization</module>
     </modules>
 
     <properties>
