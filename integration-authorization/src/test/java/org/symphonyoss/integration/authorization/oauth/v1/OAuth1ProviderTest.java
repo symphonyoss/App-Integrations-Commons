@@ -16,21 +16,111 @@
 
 package org.symphonyoss.integration.authorization.oauth.v1;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.io.IOException;
 
 /**
  * Unit tests for {@link OAuth1Provider}.
  * Created by campidelli on 25-jul-17.
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(OAuth1Provider.class)
 public class OAuth1ProviderTest {
 
+  static final String TOKEN = "token123";
+  static final String BASE_URL = "http://www.symphony.com";
+  static final String REQUEST_TEMPORARY_TOKEN_URL = BASE_URL + "/reqTempToken";
+  static final String AUTHORIZATION_CALLBACK_URL = BASE_URL + "/myCallback";
+  static final String AUTHORIZE_TEMPORARY_TOKEN_URL = BASE_URL + "/authTempToken";
+  static final String REQUEST_ACCESS_TOKEN_URL = BASE_URL + "/reqAccessToken";
+  static final String CONSUMER_KEY = "OauthKey";
+  static final String PRIVATE_KEY = "MIICeQIBADANBgkqhkiG9w0BAQEFAASCAmMwggJfAgEAAoGBAN8wcS"
+      + "F5AE7sL30p2mnM0X3T1OZy4BDfxucZTYdYmg99vqv6uVQyjc4zKOHRiwnCh2GwatT4jBfoQfWx6VUmvcxKHuZwcVCH"
+      + "F/u/Vw85wsMDpD4pBglpX1GsFlfSQe1E115X7mHD7tHlkQHvtVplf5BmYxM6G2EljBmiRRQq4OLbAgMBAAECgYEAxu"
+      + "54h6tAWRgvo9IgOVk0CIE9LEKL8L5knStybQbOGqyrvMJ3WdLNjlMPR2fsE8DtxmbmcfkvdUexMvtmzF0BoWDvJgqn"
+      + "GaUr9l0gZfGCR0ir2PBJ7V9OOJz5ug4ExLz6S9WNV6RdtXOSXSbNG3/L+56tocA05JpZrZaUfK43V0ECQQDyjkokOr"
+      + "k54DwdnSH86V2bXn+RlzAyumhfGKJpC7pbeZgcSJtkbV9RslEr+TcVuuJyHZGeWtPEStl1BaKnvRLxAkEA649aVUD1"
+      + "b9Cly+Q2l7KbgDjny5k/Ezw7JK3hjYEKQrHjgkMejOuKSkeRz2imWD8PLoJ01GgMXLIiu+F1lb06iwJBAI7NJuldiV"
+      + "+BnOLyd+gmnG20nPZiRIYZKQmTv0qJFRZ16A/+zz25Br1adl+lQcERXfBBaFIKt1KBnrU+tBx9PIECQQCLquG6rttX"
+      + "wvSrIdMkuufsbNEzLNfzRcEjjF2yExLMXMEymS1iDL5gMHNJ8RjANhOAViWDU3YQ+CYUFCgt8pblAkEAhM5ky54f3U"
+      + "ViEO29UyWv2ZNaZPd17bSr8HAo/lxXyju4TRNRB3vIq79lMNalX5HKHlI9EST7xXLh110xXRH9/Q\\=\\=";
+
+  @Mock
+  private OAuth1GetTemporaryToken mockOAuth1GetTemporaryToken;
+
+  @Mock
+  private OAuth1GetAccessToken mockOAuth1GetAccessToken;
+
+  @InjectMocks
+  private OAuth1Provider authProvider =
+      new OAuth1ProviderMock(CONSUMER_KEY, PRIVATE_KEY, REQUEST_TEMPORARY_TOKEN_URL,
+          AUTHORIZATION_CALLBACK_URL, AUTHORIZE_TEMPORARY_TOKEN_URL, REQUEST_ACCESS_TOKEN_URL);
+
   @Test
-  public void testRequestTemporaryToken() {
-    assertTrue(true);
+  public void testRequestTemporaryToken() throws Exception {
+    PowerMockito.whenNew(OAuth1GetTemporaryToken.class)
+        .withAnyArguments()
+        .thenReturn(mockOAuth1GetTemporaryToken);
+
+    doReturn(TOKEN).when(mockOAuth1GetTemporaryToken).getValue();
+
+    String temporaryToken = authProvider.requestTemporaryToken();
+    assertEquals(TOKEN, temporaryToken);
+  }
+
+  @Test
+  public void testRequestAuthorizationUrl() throws Exception {
+    String expected = AUTHORIZE_TEMPORARY_TOKEN_URL + "?oauth_token=" + TOKEN;
+    String result = authProvider.requestAuthorizationUrl(TOKEN);
+    assertEquals(expected, result);
+  }
+
+  @Test
+  public void testRequestAcessToken() throws Exception {
+    PowerMockito.whenNew(OAuth1GetAccessToken.class)
+        .withAnyArguments()
+        .thenReturn(mockOAuth1GetAccessToken);
+
+    doReturn(TOKEN).when(mockOAuth1GetAccessToken).getValue();
+
+    String temporaryToken = authProvider.requestAcessToken(StringUtils.EMPTY, StringUtils.EMPTY);
+    assertEquals(TOKEN, temporaryToken);
+  }
+
+  @Test(expected = OAuth1Exception.class)
+  public void testRequestTemporaryTokenOAuth1Exception() throws Exception {
+    PowerMockito.whenNew(OAuth1GetTemporaryToken.class)
+        .withAnyArguments()
+        .thenReturn(mockOAuth1GetTemporaryToken);
+
+    doThrow(IOException.class).when(mockOAuth1GetTemporaryToken).getValue();
+    authProvider.requestTemporaryToken();
+
+    fail("Should have thrown OAuth1Exception.");
+  }
+
+  @Test(expected = OAuth1Exception.class)
+  public void testRequestAccessTokenOAuth1Exception() throws Exception {
+    PowerMockito.whenNew(OAuth1GetAccessToken.class)
+        .withAnyArguments()
+        .thenReturn(mockOAuth1GetAccessToken);
+
+    doThrow(IOException.class).when(mockOAuth1GetAccessToken).getValue();
+    authProvider.requestAcessToken(StringUtils.EMPTY, StringUtils.EMPTY);
+
+    fail("Should have thrown OAuth1Exception.");
   }
 }

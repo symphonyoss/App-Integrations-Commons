@@ -7,10 +7,6 @@ import org.symphonyoss.integration.authorization.AuthorizationException;
  */
 public class OAuth1Exception extends AuthorizationException {
 
-  public OAuth1Exception(String message, String... solutions) {
-    super(message, solutions);
-  }
-
   public OAuth1Exception(String message, Throwable cause, String... solutions) {
     super(message, cause, solutions);
   }

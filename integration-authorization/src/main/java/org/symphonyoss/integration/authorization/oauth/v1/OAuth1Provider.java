@@ -32,7 +32,7 @@ public abstract class OAuth1Provider {
         getRequestTemporaryTokenUrl(), getConsumerKey(), getPrivateKey(),
         getAuthorizationCallbackUrl());
     try {
-      return temporaryToken.execute().token;
+      return temporaryToken.getValue();
     } catch (IOException e) {
       throw new OAuth1Exception("'Request temporary token' server url is invalid or unreachable.",
           e, "Verify if the informed 'Request temporary token' server url is valid and reachable.");
@@ -65,7 +65,7 @@ public abstract class OAuth1Provider {
         getRequestAccessTokenUrl(), getConsumerKey(), getPrivateKey(),
         temporaryToken, verifier);
     try {
-      return accessToken.execute().token;
+      return accessToken.getValue();
     } catch (IOException e) {
       throw new OAuth1Exception("'Request access token' server url is invalid or unreachable.",
           e, "Verify if the informed 'Request access token' server url is valid and reachable.");
