@@ -45,7 +45,7 @@ public class OAuth1GetTemporaryTokenTest {
         AUTHORIZATION_CALLBACK_URL);
 
     assertEquals(CONSUMER_KEY, token.consumerKey);
-    assertEquals(AUTHORIZATION_CALLBACK_URL, token.callback);
+    assertEquals(AUTHORIZATION_CALLBACK_URL.toString(), token.callback);
   }
 
   @Test(expected = HttpResponseException.class)

@@ -31,6 +31,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Unit tests for {@link OAuth1Provider}.
@@ -40,12 +42,13 @@ import java.io.IOException;
 @PrepareForTest(OAuth1Provider.class)
 public class OAuth1ProviderTest {
 
+
+  static final URL BASE_URL = makeUrl("http://www.symphony.com");
+  static final URL REQUEST_TEMPORARY_TOKEN_URL = makeUrl(BASE_URL, "/reqTempToken");
+  static final URL AUTHORIZATION_CALLBACK_URL = makeUrl(BASE_URL, "/myCallback");
+  static final URL AUTHORIZE_TEMPORARY_TOKEN_URL = makeUrl(BASE_URL, "/authTempToken");
+  static final URL REQUEST_ACCESS_TOKEN_URL = makeUrl(BASE_URL, "/reqAccessToken");
   static final String TOKEN = "token123";
-  static final String BASE_URL = "http://www.symphony.com";
-  static final String REQUEST_TEMPORARY_TOKEN_URL = BASE_URL + "/reqTempToken";
-  static final String AUTHORIZATION_CALLBACK_URL = BASE_URL + "/myCallback";
-  static final String AUTHORIZE_TEMPORARY_TOKEN_URL = BASE_URL + "/authTempToken";
-  static final String REQUEST_ACCESS_TOKEN_URL = BASE_URL + "/reqAccessToken";
   static final String CONSUMER_KEY = "OauthKey";
   static final String PRIVATE_KEY = "MIICeQIBADANBgkqhkiG9w0BAQEFAASCAmMwggJfAgEAAoGBAN8wcS"
       + "F5AE7sL30p2mnM0X3T1OZy4BDfxucZTYdYmg99vqv6uVQyjc4zKOHRiwnCh2GwatT4jBfoQfWx6VUmvcxKHuZwcVCH"
@@ -122,5 +125,21 @@ public class OAuth1ProviderTest {
     authProvider.requestAcessToken(StringUtils.EMPTY, StringUtils.EMPTY);
 
     fail("Should have thrown OAuth1Exception.");
+  }
+
+  private static URL makeUrl(String urlString) {
+    try {
+      return new URL(urlString);
+    } catch (MalformedURLException e) {
+      throw new OAuth1Exception("Invalid URL.", e, null);
+    }
+  }
+
+  private static URL makeUrl(URL baseUrl, String urlString) {
+    try {
+      return new URL(baseUrl, urlString);
+    } catch (MalformedURLException e) {
+      throw new OAuth1Exception("Invalid URL.", e, null);
+    }
   }
 }

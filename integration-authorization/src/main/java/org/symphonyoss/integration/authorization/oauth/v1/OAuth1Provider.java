@@ -3,6 +3,7 @@ package org.symphonyoss.integration.authorization.oauth.v1;
 import com.google.api.client.auth.oauth.OAuthAuthorizeTemporaryTokenUrl;
 
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * Provides a generic implementation of OAuth 1.0 basic dance.
@@ -11,17 +12,35 @@ import java.io.IOException;
  */
 public abstract class OAuth1Provider {
 
+  /**
+   * @return The consumer key used to identify the third-party app.
+   */
   public abstract String getConsumerKey();
 
+  /**
+   * @return Private key used to start the OAuth dance.
+   */
   public abstract String getPrivateKey();
 
-  public abstract String getRequestTemporaryTokenUrl();
+  /**
+   * @return The URL used to request the temporary token.
+   */
+  public abstract URL getRequestTemporaryTokenUrl();
 
-  public abstract String getAuthorizationCallbackUrl();
+  /**
+   * @return The URL to be called when the user authorize the app usage.
+   */
+  public abstract URL getAuthorizationCallbackUrl();
 
-  public abstract String getAuthorizeTemporaryTokenUrl();
+  /**
+   * @return The URL used to show to the user a page with the authorization form.
+   */
+  public abstract URL getAuthorizeTemporaryTokenUrl();
 
-  public abstract String getRequestAccessTokenUrl();
+  /**
+   * @return The URL used to request the access token.
+   */
+  public abstract URL getRequestAccessTokenUrl();
 
   /**
    * Starts the OAuth dance by asking for a temporary token.
@@ -45,7 +64,7 @@ public abstract class OAuth1Provider {
    * @return Authorization URL.
    */
   public String requestAuthorizationUrl(String temporaryToken) {
-    String baseUrl = getAuthorizeTemporaryTokenUrl();
+    String baseUrl = getAuthorizeTemporaryTokenUrl().toString();
 
     OAuthAuthorizeTemporaryTokenUrl authorizationURL = new OAuthAuthorizeTemporaryTokenUrl(baseUrl);
     authorizationURL.temporaryToken = temporaryToken;

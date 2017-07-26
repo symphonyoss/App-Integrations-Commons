@@ -16,6 +16,8 @@
 
 package org.symphonyoss.integration.authorization.oauth.v1;
 
+import java.net.URL;
+
 /**
  * Implementation of the abstract class {@link OAuth1Provider}.
  * Created by campidelli on 26-jul-17.
@@ -24,14 +26,14 @@ public class OAuth1ProviderMock extends OAuth1Provider {
 
   private String consumerKey;
   private String privateKey;
-  private String requestTemporaryTokenUrl;
-  private String authorizationCallbackUrl;
-  private String authorizeTemporaryTokenUrl;
-  private String requestAccessTokenUrl;
+  private URL requestTemporaryTokenUrl;
+  private URL authorizationCallbackUrl;
+  private URL authorizeTemporaryTokenUrl;
+  private URL requestAccessTokenUrl;
 
   public OAuth1ProviderMock(String consumerKey, String privateKey,
-      String requestTemporaryTokenUrl, String authorizationCallbackUrl,
-      String authorizeTemporaryTokenUrl, String requestAccessTokenUrl) {
+      URL requestTemporaryTokenUrl, URL authorizationCallbackUrl,
+      URL authorizeTemporaryTokenUrl, URL requestAccessTokenUrl) {
     this.consumerKey = consumerKey;
     this.privateKey = privateKey;
     this.requestTemporaryTokenUrl = requestTemporaryTokenUrl;
@@ -51,22 +53,22 @@ public class OAuth1ProviderMock extends OAuth1Provider {
   }
 
   @Override
-  public String getRequestTemporaryTokenUrl() {
+  public URL getRequestTemporaryTokenUrl() {
     return requestTemporaryTokenUrl;
   }
 
   @Override
-  public String getAuthorizationCallbackUrl() {
+  public URL getAuthorizationCallbackUrl() {
     return authorizationCallbackUrl;
   }
 
   @Override
-  public String getAuthorizeTemporaryTokenUrl() {
+  public URL getAuthorizeTemporaryTokenUrl() {
     return authorizeTemporaryTokenUrl;
   }
 
   @Override
-  public String getRequestAccessTokenUrl() {
+  public URL getRequestAccessTokenUrl() {
     return requestAccessTokenUrl;
   }
 }

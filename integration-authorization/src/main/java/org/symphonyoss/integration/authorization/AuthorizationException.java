@@ -3,6 +3,8 @@ package org.symphonyoss.integration.authorization;
 import org.symphonyoss.integration.exception.IntegrationRuntimeException;
 
 /**
+ * Exception used to inform runtime exceptions regarding authorization process.
+ *
  * Created by campidelli on 7/25/17.
  */
 public abstract class AuthorizationException extends IntegrationRuntimeException {

@@ -5,6 +5,7 @@ import com.google.api.client.http.apache.ApacheHttpTransport;
 import org.symphonyoss.integration.authorization.oauth.OAuthRsaSignerFactory;
 
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * Holds all necessary attributes to start the OAuth dance by getting a temporary token.
@@ -20,13 +21,13 @@ public class OAuth1GetTemporaryToken extends OAuthGetTemporaryToken {
    * @param privateKey  private key in PKCS8 format
    * @param authorizationCallbackUrl encoded callback URL.
    */
-  public OAuth1GetTemporaryToken(String requestTemporaryTokenUrl, String consumerKey,
-      String privateKey, String authorizationCallbackUrl) {
-    super(requestTemporaryTokenUrl);
+  public OAuth1GetTemporaryToken(URL requestTemporaryTokenUrl, String consumerKey,
+      String privateKey, URL authorizationCallbackUrl) {
+    super(requestTemporaryTokenUrl.toString());
     this.usePost = true;
     this.consumerKey = consumerKey;
     this.transport = new ApacheHttpTransport();
-    this.callback = authorizationCallbackUrl;
+    this.callback = authorizationCallbackUrl.toString();
     this.signer = OAuthRsaSignerFactory.getOAuthRsaSigner(privateKey);
   }
 
