@@ -17,7 +17,7 @@
 package org.symphonyoss.integration.api.client;
 
 import org.symphonyoss.integration.exception.RemoteApiException;
-import org.symphonyoss.integration.exception.authentication.ConnectivityException;
+import org.symphonyoss.integration.authentication.exception.ConnectivityException;
 
 import java.io.IOException;
 import java.util.Map;
