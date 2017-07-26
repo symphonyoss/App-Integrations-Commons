@@ -17,6 +17,7 @@
 package org.symphonyoss.integration;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -157,4 +158,8 @@ public class BaseIntegrationTest extends MockKeystore {
     assertEquals(APP_ID, health.getName());
   }
 
+  @Test
+  public void testAuthModel() {
+    assertNull(integration.getAuthenticationModel());
+  }
 }

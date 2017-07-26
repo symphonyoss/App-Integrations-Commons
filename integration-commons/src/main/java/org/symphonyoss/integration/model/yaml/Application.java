@@ -62,6 +62,8 @@ public class Application {
 
   private WhiteList whiteList = new WhiteList();
 
+  private AppAuthenticationModel auth;
+
   public String getId() {
     return id;
   }
@@ -193,5 +195,13 @@ public class Application {
    */
   public Set<String> getWhiteList() {
     return whiteList.getWhiteList(allowedOrigins);
+  }
+
+  public AppAuthenticationModel getAuth() {
+    return auth;
+  }
+
+  public void setAuth(AppAuthenticationModel auth) {
+    this.auth = auth;
   }
 }

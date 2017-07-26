@@ -27,6 +27,8 @@ public class IntegrationBridge {
 
   private String host;
 
+  private String port;
+
   private String domain;
 
   private List<AllowedOrigin> allowedOrigins;
@@ -53,6 +55,14 @@ public class IntegrationBridge {
 
   public void setHost(String host) {
     this.host = host;
+  }
+
+  public String getPort() {
+    return port;
+  }
+
+  public void setPort(String port) {
+    this.port = port;
   }
 
   public List<AllowedOrigin> getAllowedOrigins() {
@@ -94,4 +104,5 @@ public class IntegrationBridge {
   public Set<String> getWhiteList() {
     return whiteList.getWhiteList(allowedOrigins);
   }
+
 }
