@@ -35,6 +35,7 @@ import org.symphonyoss.integration.authorization.oauth.OAuthRsaSignerFactory;
 import org.symphonyoss.integration.logging.LogMessageSource;
 
 import java.net.UnknownHostException;
+import java.security.PublicKey;
 
 /**
  * Unit tests for {@link OAuth1GetTemporaryToken}.
@@ -72,5 +73,10 @@ public class OAuth1GetTemporaryTokenTest {
   @Test(expected = OAuth1Exception.class)
   public void testInvalidPrivateKey() {
     OAuthRsaSigner rsaSigner = rsaSignerFactory.getOAuthRsaSigner("?");
+  }
+
+  @Test(expected = OAuth1Exception.class)
+  public void testInvalidPublicKey() {
+    PublicKey publicKey = rsaSignerFactory.getPublicKey("?");
   }
 }
