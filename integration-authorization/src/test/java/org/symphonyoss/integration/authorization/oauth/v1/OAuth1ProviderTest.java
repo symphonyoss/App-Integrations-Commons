@@ -146,6 +146,14 @@ public class OAuth1ProviderTest {
     fail("Should have thrown OAuth1Exception.");
   }
 
+  @Test(expected = OAuth1Exception.class)
+  public void testUnconfiguredProvider() throws Exception {
+    ((OAuth1ProviderMock) authProvider).setConfigured(false);
+    authProvider.requestAcessToken(StringUtils.EMPTY, StringUtils.EMPTY);
+
+    fail("Should have thrown OAuth1Exception.");
+  }
+
   private static URL makeUrl(String urlString) {
     try {
       return new URL(urlString);

@@ -14,5 +14,9 @@ public abstract class AuthorizationException extends IntegrationRuntimeException
   public AuthorizationException(String message, Throwable cause, String... solutions) {
     super(COMPONENT, message, cause, solutions);
   }
+
+  public AuthorizationException(String message, String... solutions) {
+    super(COMPONENT, message, solutions);
+  }
 }
 

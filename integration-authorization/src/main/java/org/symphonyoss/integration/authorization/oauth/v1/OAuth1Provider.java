@@ -10,7 +10,6 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.symphonyoss.integration.authorization.oauth.OAuthRsaSignerFactory;
 import org.symphonyoss.integration.logging.LogMessageSource;
 
@@ -22,7 +21,6 @@ import java.net.URL;
  *
  * Created by campidelli on 24-jul-2017.
  */
-@Component
 public abstract class OAuth1Provider {
 
   @Autowired
@@ -36,6 +34,8 @@ public abstract class OAuth1Provider {
    * @return Temporary tokenL.
    */
   public String requestTemporaryToken() {
+    checkConfiguration();
+
     OAuthRsaSigner rsaSigner = rsaSignerFactory.getOAuthRsaSigner(getPrivateKey());
     OAuth1GetTemporaryToken temporaryToken = new OAuth1GetTemporaryToken(
         getRequestTemporaryTokenUrl(), getConsumerKey(), rsaSigner,
@@ -55,6 +55,8 @@ public abstract class OAuth1Provider {
    * @return Authorization URL.
    */
   public String requestAuthorizationUrl(String temporaryToken) {
+    checkConfiguration();
+
     String baseUrl = getAuthorizeTemporaryTokenUrl().toString();
 
     OAuthAuthorizeTemporaryTokenUrl authorizationURL = new OAuthAuthorizeTemporaryTokenUrl(baseUrl);
@@ -71,6 +73,8 @@ public abstract class OAuth1Provider {
    * @return Authorization URL.
    */
   public String requestAcessToken(String temporaryToken, String verifier) {
+    checkConfiguration();
+
     OAuthRsaSigner rsaSigner = rsaSignerFactory.getOAuthRsaSigner(getPrivateKey());
     OAuth1GetAccessToken accessToken = new OAuth1GetAccessToken(
         getRequestAccessTokenUrl(), getConsumerKey(), rsaSigner,
@@ -95,6 +99,7 @@ public abstract class OAuth1Provider {
    */
   public HttpResponse makeAuthorizedRequest(String accessToken, URL resourceUrl, String httpMethod,
       HttpContent httpContent) {
+    checkConfiguration();
 
     OAuthParameters parameters = new OAuthParameters();
     parameters.consumerKey = getConsumerKey();
@@ -113,6 +118,19 @@ public abstract class OAuth1Provider {
           logMessage.getMessage("integration.authorization.make.request.invalid.solution"));
     }
   }
+
+  private void checkConfiguration() {
+    if (!isConfigured()) {
+      throw new OAuth1Exception(
+          logMessage.getMessage("integration.authorization.auth.is.not.configured"),
+          logMessage.getMessage("integration.authorization.auth.is.not.configured.solution"));
+    }
+  }
+
+  /**
+   * @return <code>true</code> when this provider is configured and ready to be used.
+   */
+  protected abstract boolean isConfigured();
 
   /**
    * @return The consumer key used to identify the third-party app.

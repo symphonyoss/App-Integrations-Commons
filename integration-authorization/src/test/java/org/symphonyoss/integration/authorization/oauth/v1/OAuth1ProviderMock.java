@@ -24,6 +24,7 @@ import java.net.URL;
  */
 public class OAuth1ProviderMock extends OAuth1Provider {
 
+  private boolean configured;
   private String consumerKey;
   private String privateKey;
   private URL requestTemporaryTokenUrl;
@@ -40,6 +41,16 @@ public class OAuth1ProviderMock extends OAuth1Provider {
     this.authorizationCallbackUrl = authorizationCallbackUrl;
     this.authorizeTemporaryTokenUrl = authorizeTemporaryTokenUrl;
     this.requestAccessTokenUrl = requestAccessTokenUrl;
+    this.configured = true;
+  }
+
+  void setConfigured(boolean configured) {
+    this.configured = configured;
+  }
+
+  @Override
+  protected boolean isConfigured() {
+    return configured;
   }
 
   @Override

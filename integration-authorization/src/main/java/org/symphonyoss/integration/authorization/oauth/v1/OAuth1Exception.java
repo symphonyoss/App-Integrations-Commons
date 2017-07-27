@@ -12,5 +12,9 @@ public class OAuth1Exception extends AuthorizationException {
   public OAuth1Exception(String message, Throwable cause, String... solutions) {
     super(message, cause, solutions);
   }
+
+  public OAuth1Exception(String message, String... solutions) {
+    super(message, solutions);
+  }
 }
 
