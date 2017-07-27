@@ -67,20 +67,4 @@ public class OAuthRsaSignerFactory {
           e, logMessage.getMessage("integration.authorization.invalid.publickey.solution"));
     }
   }
-
-  public PublicKey getPublicKey(String publicKey) {
-    try {
-      byte[] encoded = Base64.decodeBase64(publicKey);
-      X509EncodedKeySpec spec = new X509EncodedKeySpec(encoded);
-
-      KeyFactory kf = KeyFactory.getInstance("RSA");
-      return kf.generatePublic(spec);
-    } catch (NoSuchAlgorithmException e) {
-      throw new OAuth1Exception("'RSA' algorithm not found.", e,
-          "Verify the available signature algorithms supported by your Java installation. "
-              + "There must be one called 'RSA'.");
-    } catch (InvalidKeySpecException e) {
-      throw new OAuth1Exception("Informed public key is invalid.", e, "Generate the public key again.");
-    }
-  }
 }
