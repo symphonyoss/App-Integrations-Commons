@@ -1,6 +1,7 @@
 package org.symphonyoss.integration.authorization.oauth.v1;
 
 import com.google.api.client.auth.oauth.OAuthGetTemporaryToken;
+import com.google.api.client.auth.oauth.OAuthRsaSigner;
 import com.google.api.client.http.apache.ApacheHttpTransport;
 import org.symphonyoss.integration.authorization.oauth.OAuthRsaSignerFactory;
 
@@ -22,13 +23,13 @@ public class OAuth1GetTemporaryToken extends OAuthGetTemporaryToken {
    * @param authorizationCallbackUrl encoded callback URL.
    */
   public OAuth1GetTemporaryToken(URL requestTemporaryTokenUrl, String consumerKey,
-      String privateKey, URL authorizationCallbackUrl) {
+      OAuthRsaSigner privateKey, URL authorizationCallbackUrl) {
     super(requestTemporaryTokenUrl.toString());
     this.usePost = true;
     this.consumerKey = consumerKey;
     this.transport = new ApacheHttpTransport();
     this.callback = authorizationCallbackUrl.toString();
-    this.signer = OAuthRsaSignerFactory.getOAuthRsaSigner(privateKey);
+    this.signer = privateKey;
   }
 
   /**

@@ -21,14 +21,19 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
+import com.google.api.client.http.HttpMethods;
+import com.google.api.client.http.HttpResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.symphonyoss.integration.authorization.oauth.OAuthRsaSignerFactory;
+import org.symphonyoss.integration.logging.LogMessageSource;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -43,7 +48,7 @@ import java.net.URL;
 public class OAuth1ProviderTest {
 
 
-  static final URL BASE_URL = makeUrl("http://www.symphony.com");
+  static final URL BASE_URL = makeUrl("http://www.1nv4lidh0st.com");
   static final URL REQUEST_TEMPORARY_TOKEN_URL = makeUrl(BASE_URL, "/reqTempToken");
   static final URL AUTHORIZATION_CALLBACK_URL = makeUrl(BASE_URL, "/myCallback");
   static final URL AUTHORIZE_TEMPORARY_TOKEN_URL = makeUrl(BASE_URL, "/authTempToken");
@@ -62,10 +67,16 @@ public class OAuth1ProviderTest {
       + "ViEO29UyWv2ZNaZPd17bSr8HAo/lxXyju4TRNRB3vIq79lMNalX5HKHlI9EST7xXLh110xXRH9/Q\\=\\=";
 
   @Mock
+  LogMessageSource logMessage;
+
+  @Mock
   private OAuth1GetTemporaryToken mockOAuth1GetTemporaryToken;
 
   @Mock
   private OAuth1GetAccessToken mockOAuth1GetAccessToken;
+
+  @Spy
+  OAuthRsaSignerFactory rsaSignerFactory = new OAuthRsaSignerFactory();
 
   @InjectMocks
   private OAuth1Provider authProvider =
@@ -101,6 +112,14 @@ public class OAuth1ProviderTest {
 
     String temporaryToken = authProvider.requestAcessToken(StringUtils.EMPTY, StringUtils.EMPTY);
     assertEquals(TOKEN, temporaryToken);
+  }
+
+  @Test(expected = OAuth1Exception.class)
+  public void testMakeInvalidAuthorizedRequest() throws Exception {
+    HttpResponse response = authProvider.makeAuthorizedRequest(
+        TOKEN, BASE_URL, HttpMethods.GET, null);
+
+    fail("Should have thrown OAuth1Exception.");
   }
 
   @Test(expected = OAuth1Exception.class)

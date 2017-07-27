@@ -24,12 +24,17 @@ import static org.symphonyoss.integration.authorization.oauth.v1.OAuth1ProviderT
 import static org.symphonyoss.integration.authorization.oauth.v1.OAuth1ProviderTest
     .REQUEST_TEMPORARY_TOKEN_URL;
 
-import com.google.api.client.http.HttpResponseException;
+import com.google.api.client.auth.oauth.OAuthRsaSigner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.symphonyoss.integration.authorization.oauth.OAuthRsaSignerFactory;
+import org.symphonyoss.integration.logging.LogMessageSource;
 
-import java.io.IOException;
+import java.net.UnknownHostException;
 
 /**
  * Unit tests for {@link OAuth1GetTemporaryToken}.
@@ -38,27 +43,34 @@ import java.io.IOException;
 @RunWith(MockitoJUnitRunner.class)
 public class OAuth1GetTemporaryTokenTest {
 
+  @Mock
+  LogMessageSource logMessage;
+
+  @InjectMocks
+  OAuthRsaSignerFactory rsaSignerFactory;
+
   @Test
   public void testConstructor() {
+    OAuthRsaSigner rsaSigner = rsaSignerFactory.getOAuthRsaSigner(PRIVATE_KEY);
     OAuth1GetTemporaryToken token = new OAuth1GetTemporaryToken(
-        REQUEST_TEMPORARY_TOKEN_URL, CONSUMER_KEY, PRIVATE_KEY,
+        REQUEST_TEMPORARY_TOKEN_URL, CONSUMER_KEY, rsaSigner,
         AUTHORIZATION_CALLBACK_URL);
 
     assertEquals(CONSUMER_KEY, token.consumerKey);
     assertEquals(AUTHORIZATION_CALLBACK_URL.toString(), token.callback);
   }
 
-  @Test(expected = HttpResponseException.class)
+  @Test(expected = UnknownHostException.class)
   public void testInvalidExecution() throws Exception {
+    OAuthRsaSigner rsaSigner = rsaSignerFactory.getOAuthRsaSigner(PRIVATE_KEY);
     OAuth1GetTemporaryToken token = new OAuth1GetTemporaryToken(
-        REQUEST_TEMPORARY_TOKEN_URL, CONSUMER_KEY, PRIVATE_KEY,
+        REQUEST_TEMPORARY_TOKEN_URL, CONSUMER_KEY, rsaSigner,
         AUTHORIZATION_CALLBACK_URL);
     token.getValue();
   }
 
   @Test(expected = OAuth1Exception.class)
   public void testInvalidPrivateKey() {
-    new OAuth1GetTemporaryToken(REQUEST_TEMPORARY_TOKEN_URL, CONSUMER_KEY, "?",
-        AUTHORIZATION_CALLBACK_URL);
+    OAuthRsaSigner rsaSigner = rsaSignerFactory.getOAuthRsaSigner("?");
   }
 }

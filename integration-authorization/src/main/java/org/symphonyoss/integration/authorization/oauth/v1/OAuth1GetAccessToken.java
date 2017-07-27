@@ -2,6 +2,7 @@ package org.symphonyoss.integration.authorization.oauth.v1;
 
 import com.google.api.client.auth.oauth.OAuthGetAccessToken;
 import com.google.api.client.auth.oauth.OAuthGetTemporaryToken;
+import com.google.api.client.auth.oauth.OAuthRsaSigner;
 import com.google.api.client.http.apache.ApacheHttpTransport;
 import org.symphonyoss.integration.authorization.oauth.OAuthRsaSignerFactory;
 
@@ -23,13 +24,13 @@ public class OAuth1GetAccessToken extends OAuthGetAccessToken {
    * @param temporaryToken temporary token.
    * @param verifier verifier code authorized by the user.
    */
-  public OAuth1GetAccessToken(URL requestAccessTokenUrl, String consumerKey, String privateKey,
-      String temporaryToken, String verifier) {
+  public OAuth1GetAccessToken(URL requestAccessTokenUrl, String consumerKey,
+      OAuthRsaSigner privateKey, String temporaryToken, String verifier) {
     super(requestAccessTokenUrl.toString());
     this.usePost = true;
     this.consumerKey = consumerKey;
     this.transport = new ApacheHttpTransport();
-    this.signer = OAuthRsaSignerFactory.getOAuthRsaSigner(privateKey);
+    this.signer = privateKey;
     this.temporaryToken = temporaryToken;
     this.verifier = verifier;
   }
