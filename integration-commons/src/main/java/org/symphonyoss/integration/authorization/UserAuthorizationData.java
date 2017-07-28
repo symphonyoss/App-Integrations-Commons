@@ -66,4 +66,23 @@ public class UserAuthorizationData {
     this.data = data;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) { return true; }
+    if (o == null || getClass() != o.getClass()) { return false; }
+
+    UserAuthorizationData that = (UserAuthorizationData) o;
+
+    if (url != null ? !url.equals(that.url) : that.url != null) { return false; }
+    if (userId != null ? !userId.equals(that.userId) : that.userId != null) { return false; }
+    return data != null ? data.equals(that.data) : that.data == null;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = url != null ? url.hashCode() : 0;
+    result = 31 * result + (userId != null ? userId.hashCode() : 0);
+    result = 31 * result + (data != null ? data.hashCode() : 0);
+    return result;
+  }
 }

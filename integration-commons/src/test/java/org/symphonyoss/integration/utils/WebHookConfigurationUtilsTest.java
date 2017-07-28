@@ -17,18 +17,20 @@
 package org.symphonyoss.integration.utils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Assert;
 import org.junit.Test;
 import org.symphonyoss.integration.json.JsonUtils;
-import org.symphonyoss.integration.model.config.IntegrationInstance;
 import org.symphonyoss.integration.model.stream.StreamType;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Unit tests for {@link WebHookConfigurationUtils}
@@ -39,13 +41,23 @@ public class WebHookConfigurationUtilsTest {
   private static final String OPTIONAL_PROPERTIES = "{ \"lastPostedDate\": 1, \"owner\": \"owner\", \"streams\": [ \"stream1\", \"stream2\"] }";
 
   @Test
-  public void testNullOptionalProperties() throws IOException {
+  public void testGetStreamTypeWithNullOptionalProperties() throws IOException {
     assertEquals(StreamType.NONE, WebHookConfigurationUtils.getStreamType(null));
   }
 
   @Test(expected = IOException.class)
-  public void testInvalidOptionalProperties() throws IOException {
+  public void testGetStreamTypeWithInvalidOptionalProperties() throws IOException {
     WebHookConfigurationUtils.getStreamType("");
+  }
+
+  @Test
+  public void testGetOwnerWithNullOptionalProperties() throws IOException {
+    assertNull(WebHookConfigurationUtils.getOwner(null));
+  }
+
+  @Test(expected = IOException.class)
+  public void testGetOwnerTypeWithInvalidOptionalProperties() throws IOException {
+    WebHookConfigurationUtils.getOwner("");
   }
 
   @Test
@@ -65,6 +77,11 @@ public class WebHookConfigurationUtilsTest {
         + "\"IM\"}"));
     assertEquals(StreamType.CHATROOM, WebHookConfigurationUtils.getStreamType("{ \"streamType\": "
         + "\"CHATROOM\"}"));
+  }
+
+  @Test
+  public void testGetOwner() throws IOException {
+    assertEquals(new Long(123456), WebHookConfigurationUtils.getOwner("{ \"owner\": \"123456\"}"));
   }
 
   @Test
@@ -91,5 +108,21 @@ public class WebHookConfigurationUtilsTest {
     expected.add("stream2");
 
     Assert.assertEquals(expected, WebHookConfigurationUtils.getStreams(OPTIONAL_PROPERTIES));
+  }
+
+  @Test
+  public void testGetSupportedNotificationsNullOptionalProperties() throws IOException {
+    List<String> supportedNotifications = WebHookConfigurationUtils.getSupportedNotifications(null);
+    assertTrue(supportedNotifications.isEmpty());
+  }
+
+  @Test
+  public void testGetSupportedNotifications() throws IOException {
+    String optionalProperties = "{ \"notifications\": [ \"test1\", \"test2\" ] }";
+
+    List<String> supportedNotifications = WebHookConfigurationUtils.getSupportedNotifications(optionalProperties);
+    assertEquals(2, supportedNotifications.size());
+    assertEquals("test1", supportedNotifications.get(0));
+    assertEquals("test2", supportedNotifications.get(1));
   }
 }
