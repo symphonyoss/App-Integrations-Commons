@@ -62,7 +62,7 @@ public class Application {
 
   private WhiteList whiteList = new WhiteList();
 
-  private AppAuthenticationModel auth;
+  private AppAuthorizationModel authorization;
 
   public String getId() {
     return id;
@@ -197,11 +197,11 @@ public class Application {
     return whiteList.getWhiteList(allowedOrigins);
   }
 
-  public AppAuthenticationModel getAuth() {
-    return auth;
+  public AppAuthorizationModel getAuthorization() {
+    return authorization;
   }
 
-  public void setAuth(AppAuthenticationModel auth) {
-    this.auth = auth;
+  public void setAuthorization(AppAuthorizationModel authorization) {
+    this.authorization = authorization;
   }
 }

@@ -159,7 +159,7 @@ public class BaseIntegrationTest extends MockKeystore {
   }
 
   @Test
-  public void testAuthModel() {
-    assertNull(integration.getAuthenticationModel());
+  public void testAuthorizationModel() {
+    assertNull(integration.getAuthorizationModel());
   }
 }

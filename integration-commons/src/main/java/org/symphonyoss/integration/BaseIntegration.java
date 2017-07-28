@@ -21,7 +21,7 @@ import static org.symphonyoss.integration.model.yaml.Keystore.DEFAULT_KEYSTORE_T
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.symphonyoss.integration.model.yaml.AppAuthenticationModel;
+import org.symphonyoss.integration.model.yaml.AppAuthorizationModel;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
 import org.symphonyoss.integration.exception.bootstrap.LoadKeyStoreException;
 import org.symphonyoss.integration.healthcheck.IntegrationHealthManager;
@@ -126,7 +126,7 @@ public abstract class BaseIntegration implements Integration {
   }
 
   @Override
-  public AppAuthenticationModel getAuthenticationModel() {
+  public AppAuthorizationModel getAuthorizationModel() {
     return null;
   }
 
