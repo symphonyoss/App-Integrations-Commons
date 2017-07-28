@@ -23,11 +23,27 @@ import java.net.URL;
  */
 public abstract class OAuth1Provider {
 
-  @Autowired
-  LogMessageSource logMessage;
+  private static final String REQUEST_TEMP_TOKEN = "integration.authorization.request.temp.token";
+
+  private static final String REQUEST_TEMP_TOKEN_SOLUTION = REQUEST_TEMP_TOKEN + ".solution";
+
+  private static final String REQUEST_ACCESS_TOKEN = "integration.authorization.request.accesstoken";
+
+  private static final String REQUEST_ACCESS_TOKEN_SOLUTION = REQUEST_ACCESS_TOKEN + ".solution";
+
+  private static final String INVALID_REQUEST = "integration.authorization.make.request.invalid";
+
+  private static final String INVALID_REQUEST_SOLUTION = INVALID_REQUEST + ".solution";
+
+  private static final String NOT_CONFIGURED = "integration.authorization.auth.is.not.configured";
+
+  private static final String NOT_CONFIGURED_SOLUTION = NOT_CONFIGURED + ".solution";
 
   @Autowired
-  OAuthRsaSignerFactory rsaSignerFactory;
+  private LogMessageSource logMessage;
+
+  @Autowired
+  private OAuthRsaSignerFactory rsaSignerFactory;
 
   /**
    * Starts the OAuth dance by asking for a temporary token.
@@ -43,9 +59,8 @@ public abstract class OAuth1Provider {
     try {
       return temporaryToken.getValue();
     } catch (IOException e) {
-      throw new OAuth1Exception(
-          logMessage.getMessage("integration.authorization.request.temp.token"), e,
-          logMessage.getMessage("integration.authorization.request.temp.token.solution"));
+      throw new OAuth1Exception(logMessage.getMessage(REQUEST_TEMP_TOKEN), e,
+          logMessage.getMessage(REQUEST_TEMP_TOKEN_SOLUTION));
     }
   }
 
@@ -82,9 +97,8 @@ public abstract class OAuth1Provider {
     try {
       return accessToken.getValue();
     } catch (IOException e) {
-      throw new OAuth1Exception(
-          logMessage.getMessage("integration.authorization.request.access.token"), e,
-          logMessage.getMessage("integration.authorization.request.access.token.solution"));
+      throw new OAuth1Exception(logMessage.getMessage(REQUEST_ACCESS_TOKEN), e,
+          logMessage.getMessage(REQUEST_ACCESS_TOKEN_SOLUTION));
     }
   }
 
@@ -113,17 +127,14 @@ public abstract class OAuth1Provider {
           httpContent);
       return request.execute();
     } catch (IOException e) {
-      throw new OAuth1Exception(
-          logMessage.getMessage("integration.authorization.make.request.invalid"), e,
-          logMessage.getMessage("integration.authorization.make.request.invalid.solution"));
+      throw new OAuth1Exception(logMessage.getMessage(INVALID_REQUEST), e,
+          logMessage.getMessage(INVALID_REQUEST_SOLUTION));
     }
   }
 
   private void checkConfiguration() {
     if (!isConfigured()) {
-      throw new OAuth1Exception(
-          logMessage.getMessage("integration.authorization.auth.is.not.configured"),
-          logMessage.getMessage("integration.authorization.auth.is.not.configured.solution"));
+      throw new OAuth1Exception(logMessage.getMessage(NOT_CONFIGURED), logMessage.getMessage(NOT_CONFIGURED_SOLUTION));
     }
   }
 

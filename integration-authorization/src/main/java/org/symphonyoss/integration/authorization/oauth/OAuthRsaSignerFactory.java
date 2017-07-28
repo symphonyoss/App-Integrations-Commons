@@ -23,8 +23,20 @@ import java.security.spec.X509EncodedKeySpec;
 @Component
 public class OAuthRsaSignerFactory {
 
+  private static final String RSA_NOT_FOUND = "integration.authorization.rsa.notfound";
+
+  private static final String RSA_NOT_FOUND_SOLUTION = RSA_NOT_FOUND + ".solution";
+
+  private static final String INVALID_PRIVATE_KEY = "integration.authorization.invalid.privatekey";
+
+  private static final String INVALID_PRIVATE_KEY_SOLUTION = INVALID_PRIVATE_KEY + ".solution";
+
+  private static final String INVALID_PUBLIC_KEY = "integration.authorization.invalid.publickey";
+
+  private static final String INVALID_PUBLIC_KEY_SOLUTION = INVALID_PUBLIC_KEY + ".solution";
+
   @Autowired
-  LogMessageSource logMessage;
+  private LogMessageSource logMessage;
 
   /**
    * @param privateKey private key in PKCS8 syntax.
@@ -44,11 +56,11 @@ public class OAuthRsaSignerFactory {
       KeyFactory kf = KeyFactory.getInstance("RSA");
       return kf.generatePrivate(keySpec);
     } catch (NoSuchAlgorithmException e) {
-      throw new OAuth1Exception(logMessage.getMessage("integration.authorization.rsa.notfound"),
-          e, logMessage.getMessage("integration.authorization.rsa.notfound.solution"));
+      throw new OAuth1Exception(logMessage.getMessage(RSA_NOT_FOUND), e,
+          logMessage.getMessage(RSA_NOT_FOUND_SOLUTION));
     } catch (InvalidKeySpecException e) {
-      throw new OAuth1Exception(logMessage.getMessage("integration.authorization.invalid.privatekey"),
-          e, logMessage.getMessage("integration.authorization.invalid.privatekey.solution"));
+      throw new OAuth1Exception(logMessage.getMessage(INVALID_PRIVATE_KEY), e,
+          logMessage.getMessage(INVALID_PRIVATE_KEY_SOLUTION));
     }
   }
 
@@ -60,11 +72,11 @@ public class OAuthRsaSignerFactory {
       KeyFactory kf = KeyFactory.getInstance("RSA");
       return kf.generatePublic(spec);
     } catch (NoSuchAlgorithmException e) {
-      throw new OAuth1Exception(logMessage.getMessage("integration.authorization.rsa.notfound"),
-          e, logMessage.getMessage("integration.authorization.rsa.notfound.solution"));
+      throw new OAuth1Exception(logMessage.getMessage(RSA_NOT_FOUND), e,
+          logMessage.getMessage(RSA_NOT_FOUND_SOLUTION));
     } catch (InvalidKeySpecException e) {
-      throw new OAuth1Exception(logMessage.getMessage("integration.authorization.invalid.publickey"),
-          e, logMessage.getMessage("integration.authorization.invalid.publickey.solution"));
+      throw new OAuth1Exception(logMessage.getMessage(INVALID_PUBLIC_KEY), e,
+          logMessage.getMessage(INVALID_PUBLIC_KEY_SOLUTION));
     }
   }
 }
