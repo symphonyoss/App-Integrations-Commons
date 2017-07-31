@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.symphonyoss.integration.exception.RemoteApiException;
-import org.symphonyoss.integration.exception.authentication.ConnectivityException;
+import org.symphonyoss.integration.authentication.exception.ConnectivityException;
 import org.symphonyoss.integration.model.config.IntegrationSettings;
 
 import java.io.IOException;

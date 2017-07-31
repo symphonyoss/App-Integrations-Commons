@@ -52,12 +52,17 @@ public class ReAuthenticationApiClient extends HttpApiClientDecorator {
       }
 
       try {
-        AuthenticationToken token = proxy.reAuthSessionOrThrow(sessionToken, e);
+        AuthenticationToken token = proxy.reAuthSession(sessionToken, e.getCode());
+
+        if (token == null) {
+          throw e;
+        }
+
         headerParams.put(SESSION_TOKEN_HEADER, token.getSessionToken());
 
         return apiClient.doGet(path, headerParams, queryParams, returnType);
       } catch (RemoteApiException e1) {
-        throw e;
+        throw e1;
       }
     }
   }
@@ -76,12 +81,17 @@ public class ReAuthenticationApiClient extends HttpApiClientDecorator {
       }
 
       try {
-        AuthenticationToken token = proxy.reAuthSessionOrThrow(sessionToken, e);
+        AuthenticationToken token = proxy.reAuthSession(sessionToken, e.getCode());
+
+        if (token == null) {
+          throw e;
+        }
+
         headerParams.put(SESSION_TOKEN_HEADER, token.getSessionToken());
 
         return apiClient.doPost(path, headerParams, queryParams, payload, returnType);
       } catch (RemoteApiException e1) {
-        throw e;
+        throw e1;
       }
     }
   }
@@ -99,12 +109,17 @@ public class ReAuthenticationApiClient extends HttpApiClientDecorator {
       }
 
       try {
-        AuthenticationToken token = proxy.reAuthSessionOrThrow(sessionToken, e);
+        AuthenticationToken token = proxy.reAuthSession(sessionToken, e.getCode());
+
+        if (token == null) {
+          throw e;
+        }
+
         headerParams.put(SESSION_TOKEN_HEADER, token.getSessionToken());
 
         return apiClient.doPut(path, headerParams, queryParams, payload, returnType);
       } catch (RemoteApiException e1) {
-        throw e;
+        throw e1;
       }
     }
   }
@@ -122,12 +137,17 @@ public class ReAuthenticationApiClient extends HttpApiClientDecorator {
       }
 
       try {
-        AuthenticationToken token = proxy.reAuthSessionOrThrow(sessionToken, e);
+        AuthenticationToken token = proxy.reAuthSession(sessionToken, e.getCode());
+
+        if (token == null) {
+          throw e;
+        }
+
         headerParams.put(SESSION_TOKEN_HEADER, token.getSessionToken());
 
         return apiClient.doDelete(path, headerParams, queryParams, returnType);
       } catch (RemoteApiException e1) {
-        throw e;
+        throw e1;
       }
     }
   }

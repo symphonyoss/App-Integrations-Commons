@@ -184,6 +184,8 @@
     </dependencies>
 
     <modules>
+        <module>integration-logging</module>
+        <module>integration-auth-commons</module>
         <module>integration-commons</module>
         <module>integration-metrics</module>
         <module>integration-webhook</module>
