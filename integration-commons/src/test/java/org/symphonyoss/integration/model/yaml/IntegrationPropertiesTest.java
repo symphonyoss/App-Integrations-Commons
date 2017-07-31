@@ -134,10 +134,11 @@ public class IntegrationPropertiesTest {
     assertEquals("pkcs12", application.getKeystore().getType());
     assertEquals("changeit", application.getKeystore().getPassword());
     assertEquals("PROVISIONED", application.getState().name());
-    assertEquals("Symphony Integration for JIRA", application.getAuth().getApplicationName());
-    assertEquals("https://nexus.symphony.com:443/integration", application.getAuth().getApplicationURL());
+    assertEquals("Symphony Integration for JIRA", application.getAuthorization().getApplicationName());
+    assertEquals("https://nexus.symphony.com:443/integration", application.getAuthorization().getApplicationURL());
 
-    Map<String, Object> authProperties = application.getAuth().getProperties();
+    Map<String, Object> authProperties = application.getAuthorization().getProperties();
+
     assertEquals("symphony_consumer", authProperties.get("consumerKey"));
     assertEquals("Symphony Consumer", authProperties.get("consumerName"));
   }

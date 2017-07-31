@@ -172,6 +172,11 @@ public class EntityBuilderTest {
     Assert.assertEquals(expected, result);
   }
 
+  @Test(expected = RuntimeException.class)
+  public void testCreateBuilderWithNullEntity() throws JAXBException, EntityXMLGeneratorException {
+    EntityBuilder.forEntity(null);
+  }
+
   @Test
   public void testCreateBuilderWithAnEntity() throws JAXBException, EntityXMLGeneratorException {
     String xml = "<entity type=\"com.symphony.integration.sfdc.event.opportunityNotification\" "
@@ -203,6 +208,11 @@ public class EntityBuilderTest {
   public void testCreateNestedEntityWithSpecificTypeEmpty() throws EntityXMLGeneratorException {
     EntityBuilder builder = EntityBuilder.forNestedEntity("");
     String result = builder.generateXML();
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void testCreateNestedEntityNullValue() throws EntityXMLGeneratorException {
+    EntityBuilder.forNestedEntity(null, null);
   }
 
   @Test

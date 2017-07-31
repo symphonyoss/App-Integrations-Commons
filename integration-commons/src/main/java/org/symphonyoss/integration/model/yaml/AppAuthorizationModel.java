@@ -20,11 +20,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Retrieve authentication properties from an specific application.
+ * Retrieve authorization properties from an specific application.
  *
  * Created by rsanchez on 24/07/17.
  */
-public class AppAuthenticationModel {
+public class AppAuthorizationModel {
 
   private String applicationName;
 
