@@ -157,9 +157,4 @@ public class BaseIntegrationTest extends MockKeystore {
     assertEquals(NOT_AVAILABLE, health.getVersion());
     assertEquals(APP_ID, health.getName());
   }
-
-  @Test
-  public void testAuthorizationModel() {
-    assertNull(integration.getAuthorizationModel());
-  }
 }

@@ -1,15 +1,19 @@
 package org.symphonyoss.integration.authorization;
 
-import org.symphonyoss.integration.exception.IntegrationRuntimeException;
+import org.symphonyoss.integration.exception.IntegrationException;
 
 /**
- * Exception used to inform runtime exceptions regarding authorization process.
+ * Class used to inform exceptions regarding authorization process.
  *
  * Created by campidelli on 7/25/17.
  */
-public abstract class AuthorizationException extends IntegrationRuntimeException {
+public class AuthorizationException extends IntegrationException {
 
   private static final String COMPONENT = "Third-party integration/app authorization.";
+
+  public AuthorizationException(String message, Throwable cause) {
+    super(COMPONENT, message, cause);
+  }
 
   public AuthorizationException(String message, Throwable cause, String... solutions) {
     super(COMPONENT, message, cause, solutions);

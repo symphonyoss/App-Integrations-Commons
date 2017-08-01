@@ -49,7 +49,7 @@ public class OAuth1GetAccessTokenTest {
   OAuthRsaSignerFactory rsaSignerFactory;
 
   @Test
-  public void testConstructor() {
+  public void testConstructor() throws OAuth1Exception {
     OAuthRsaSigner rsaSigner = rsaSignerFactory.getOAuthRsaSigner(PRIVATE_KEY);
     OAuth1GetAccessToken token = new OAuth1GetAccessToken(
         REQUEST_TEMPORARY_TOKEN_URL, CONSUMER_KEY, rsaSigner,

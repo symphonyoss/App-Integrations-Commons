@@ -36,7 +36,7 @@ public class UserAuthorizationDataTest {
     data1.setUserId(MOCK_USER_ID);
     data1.setUrl(MOCK_URL);
 
-    UserAuthorizationData data2 = new UserAuthorizationData(MOCK_USER_ID, MOCK_URL);
+    UserAuthorizationData data2 = new UserAuthorizationData(MOCK_URL, MOCK_USER_ID);
 
     assertEquals(data1, data2);
     assertEquals(data1.hashCode(), data2.hashCode());

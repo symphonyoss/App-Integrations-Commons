@@ -51,7 +51,7 @@ public class OAuth1GetTemporaryTokenTest {
   OAuthRsaSignerFactory rsaSignerFactory;
 
   @Test
-  public void testConstructor() {
+  public void testConstructor() throws OAuth1Exception {
     OAuthRsaSigner rsaSigner = rsaSignerFactory.getOAuthRsaSigner(PRIVATE_KEY);
     OAuth1GetTemporaryToken token = new OAuth1GetTemporaryToken(
         REQUEST_TEMPORARY_TOKEN_URL, CONSUMER_KEY, rsaSigner,
@@ -71,12 +71,12 @@ public class OAuth1GetTemporaryTokenTest {
   }
 
   @Test(expected = OAuth1Exception.class)
-  public void testInvalidPrivateKey() {
+  public void testInvalidPrivateKey() throws OAuth1Exception {
     OAuthRsaSigner rsaSigner = rsaSignerFactory.getOAuthRsaSigner("?");
   }
 
   @Test(expected = OAuth1Exception.class)
-  public void testInvalidPublicKey() {
+  public void testInvalidPublicKey() throws OAuth1Exception {
     PublicKey publicKey = rsaSignerFactory.getPublicKey("?");
   }
 }

@@ -16,11 +16,8 @@
 
 package org.symphonyoss.integration;
 
-import org.symphonyoss.integration.authorization.UserAuthorizationData;
-import org.symphonyoss.integration.exception.authentication.UnauthorizedUserException;
 import org.symphonyoss.integration.model.config.IntegrationSettings;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
-import org.symphonyoss.integration.model.yaml.AppAuthorizationModel;
 
 import java.util.Set;
 
@@ -66,21 +63,4 @@ public interface Integration {
    * @return Integration whitelist.
    */
   Set<String> getIntegrationWhiteList();
-
-  /**
-   * Retrieve integration authorization properties.
-   * @return Integration authentication properties
-   */
-  AppAuthorizationModel getAuthorizationModel();
-
-  /**
-   * Verify if the user authorization properties are valid. This verification should be performed
-   * by each integration.
-   *
-   * @param authData User authorization properties
-   * @throws UnauthorizedUserException If the user authorization properties are invalid or have
-   * expired.
-   */
-  void verifyUserAuthorizationData(UserAuthorizationData authData);
-
 }

@@ -37,9 +37,15 @@ public class UserAuthorizationData {
 
   public UserAuthorizationData() {}
 
-  public UserAuthorizationData(Long userId, String url) {
-    this.userId = userId;
+  public UserAuthorizationData(String url, Long userId) {
     this.url = url;
+    this.userId = userId;
+  }
+
+  public UserAuthorizationData(String url, Long userId, Object data) {
+    this.url = url;
+    this.userId = userId;
+    this.data = data;
   }
 
   public String getUrl() {

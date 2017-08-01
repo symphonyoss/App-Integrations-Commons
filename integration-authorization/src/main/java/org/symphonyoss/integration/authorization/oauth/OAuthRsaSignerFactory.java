@@ -42,13 +42,13 @@ public class OAuthRsaSignerFactory {
    * @param privateKey private key in PKCS8 syntax.
    * @return OAuthRsaSigner
    */
-  public OAuthRsaSigner getOAuthRsaSigner(String privateKey) {
+  public OAuthRsaSigner getOAuthRsaSigner(String privateKey) throws OAuth1Exception {
     OAuthRsaSigner oAuthRsaSigner = new OAuthRsaSigner();
     oAuthRsaSigner.privateKey = getPrivateKey(privateKey);
     return oAuthRsaSigner;
   }
 
-  public PrivateKey getPrivateKey(String privateKey) {
+  public PrivateKey getPrivateKey(String privateKey) throws OAuth1Exception {
     byte[] privateBytes = Base64.decodeBase64(privateKey);
     PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateBytes);
 
@@ -64,7 +64,7 @@ public class OAuthRsaSignerFactory {
     }
   }
 
-  public PublicKey getPublicKey(String publicKey) {
+  public PublicKey getPublicKey(String publicKey) throws OAuth1Exception {
     try {
       byte[] encoded = Base64.decodeBase64(publicKey);
       X509EncodedKeySpec spec = new X509EncodedKeySpec(encoded);

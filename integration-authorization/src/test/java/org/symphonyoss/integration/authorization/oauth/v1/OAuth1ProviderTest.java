@@ -158,7 +158,7 @@ public class OAuth1ProviderTest {
     try {
       return new URL(urlString);
     } catch (MalformedURLException e) {
-      throw new OAuth1Exception("Invalid URL.", e, null);
+      throw new RuntimeException("Invalid URL.", e);
     }
   }
 
@@ -166,7 +166,7 @@ public class OAuth1ProviderTest {
     try {
       return new URL(baseUrl, urlString);
     } catch (MalformedURLException e) {
-      throw new OAuth1Exception("Invalid URL.", e, null);
+      throw new RuntimeException("Invalid URL.", e);
     }
   }
 }

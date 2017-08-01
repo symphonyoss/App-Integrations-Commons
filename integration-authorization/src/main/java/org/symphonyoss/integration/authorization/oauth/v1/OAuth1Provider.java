@@ -48,8 +48,9 @@ public abstract class OAuth1Provider {
   /**
    * Starts the OAuth dance by asking for a temporary token.
    * @return Temporary tokenL.
+   * @throws OAuth1Exception when there is a problem with this operation.
    */
-  public String requestTemporaryToken() {
+  public String requestTemporaryToken() throws OAuth1Exception {
     checkConfiguration();
 
     OAuthRsaSigner rsaSigner = rsaSignerFactory.getOAuthRsaSigner(getPrivateKey());
@@ -68,8 +69,9 @@ public abstract class OAuth1Provider {
    * Return a URL to be authorized by the user.
    * @param temporaryToken The previously generated temporary token.
    * @return Authorization URL.
+   * @throws OAuth1Exception when there is a problem with this operation.
    */
-  public String requestAuthorizationUrl(String temporaryToken) {
+  public String requestAuthorizationUrl(String temporaryToken) throws OAuth1Exception {
     checkConfiguration();
 
     String baseUrl = getAuthorizeTemporaryTokenUrl().toString();
@@ -86,8 +88,9 @@ public abstract class OAuth1Provider {
    * @param temporaryToken temporary token.
    * @param verifier verifier code authorized by the user.
    * @return Authorization URL.
+   * @throws OAuth1Exception when there is a problem with this operation.
    */
-  public String requestAcessToken(String temporaryToken, String verifier) {
+  public String requestAcessToken(String temporaryToken, String verifier) throws OAuth1Exception {
     checkConfiguration();
 
     OAuthRsaSigner rsaSigner = rsaSignerFactory.getOAuthRsaSigner(getPrivateKey());
@@ -110,9 +113,10 @@ public abstract class OAuth1Provider {
    * @param httpMethod HTTP method to be used (GET, POST, PUT or DELETE).
    * @param httpContent HTTP POST or PUT content to be sent.
    * @return HttpResponse contaning the status code and response data.
+   * @throws OAuth1Exception when there is a problem with this operation.
    */
   public HttpResponse makeAuthorizedRequest(String accessToken, URL resourceUrl, String httpMethod,
-      HttpContent httpContent) {
+      HttpContent httpContent) throws OAuth1Exception {
     checkConfiguration();
 
     OAuthParameters parameters = new OAuthParameters();
@@ -132,7 +136,7 @@ public abstract class OAuth1Provider {
     }
   }
 
-  private void checkConfiguration() {
+  private void checkConfiguration() throws OAuth1Exception {
     if (!isConfigured()) {
       throw new OAuth1Exception(logMessage.getMessage(NOT_CONFIGURED), logMessage.getMessage(NOT_CONFIGURED_SOLUTION));
     }
