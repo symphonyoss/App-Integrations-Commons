@@ -29,12 +29,12 @@ public class AuthorizationPayload {
   /**
    * Holds parameters from one's request.
    */
-  private Map<String, String> parameters = new HashMap<>();
+  private Map<String, String> parameters;
 
   /**
    * Holds headers from one's request.
    */
-  private Map<String, String> headers = new HashMap<>();
+  private Map<String, String> headers;
 
   /**
    * Payload body.

@@ -15,8 +15,22 @@ public interface AuthorizedIntegration extends Integration {
    */
   AppAuthorizationModel getAuthorizationModel();
 
+  /**
+   * Check if a user is authorized to perform calls to a resource provided by a given url.
+   * @param url Resource url.
+   * @param userId User id.
+   * @return <code>true</code> if the user is authorized.
+   * @throws AuthorizationException Thrown in any case of error.
+   */
   boolean isUserAuthorized(String url, Long userId) throws AuthorizationException;
 
+  /**
+   * Get an authorization url for user to perform calls to a resource provided by a given url.
+   * @param url Resource url.
+   * @param userId User id.
+   * @return An authorization url.
+   * @throws AuthorizationException Thrown in any case of error.
+   */
   String getAuthorizationUrl(String url, Long userId) throws AuthorizationException;
 
   /**
@@ -26,5 +40,4 @@ public interface AuthorizedIntegration extends Integration {
    * @throws AuthorizationException when a problem occur with this operation.
    */
   void authorize(AuthorizationPayload authorizationPayload) throws AuthorizationException;
-
 }

@@ -47,7 +47,6 @@ import java.net.URL;
 @PrepareForTest(OAuth1Provider.class)
 public class OAuth1ProviderTest {
 
-
   static final URL BASE_URL = makeUrl("http://www.1nv4lidh0st.com");
   static final URL REQUEST_TEMPORARY_TOKEN_URL = makeUrl(BASE_URL, "/reqTempToken");
   static final URL AUTHORIZATION_CALLBACK_URL = makeUrl(BASE_URL, "/myCallback");
