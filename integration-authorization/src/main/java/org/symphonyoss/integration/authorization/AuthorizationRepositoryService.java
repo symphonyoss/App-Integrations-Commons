@@ -15,7 +15,7 @@ public interface AuthorizationRepositoryService {
    * @param data Data to be saved.
    * @throws AuthorizationException Thrown in case of error.
    */
-  void save(String configurationId, UserAuthorizationData data) throws AuthorizationException;
+  void save(String integrationUser, String configurationId, UserAuthorizationData data) throws AuthorizationException;
 
   /**
    * Find a user authorization data that matches with the given url and userId
@@ -25,8 +25,8 @@ public interface AuthorizationRepositoryService {
    * @return Data found or null otherwise.
    * @throws AuthorizationException Thrown in case of error.
    */
-  UserAuthorizationData find(String configurationId, String url, Long userId)
-      throws AuthorizationException;
+  UserAuthorizationData find(String integrationUser, String configurationId, String url,
+      Long userId) throws AuthorizationException;
 
   /**
    * Search for user data based on a map of filters.
@@ -35,6 +35,6 @@ public interface AuthorizationRepositoryService {
    * @return List contaning the found data entries or empty.
    * @throws AuthorizationException Thrown in case of error.
    */
-  List<UserAuthorizationData> search(String configurationId, Map<String, String> filter)
-      throws AuthorizationException;
+  List<UserAuthorizationData> search(String integrationUser, String configurationId,
+      Map<String, String> filter) throws AuthorizationException;
 }
