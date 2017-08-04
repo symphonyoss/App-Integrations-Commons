@@ -39,6 +39,8 @@ public class IntegrationProperties {
 
   private static final String APPS_CONTEXT = "apps";
 
+  private static final String INTEGRATION_CONTEXT = "integration";
+
   private AdminUser adminUser;
 
   private ConnectionInfo pod;
@@ -279,6 +281,20 @@ public class IntegrationProperties {
     }
 
     return String.format("https://%s/%s/%s", getIntegrationBridge().getHost(), APPS_CONTEXT, application.getContext());
+  }
+
+  public String getIntegrationBridgeUrl() {
+    if ((integrationBridge == null) || (StringUtils.isEmpty(integrationBridge.getHost()))){
+      return StringUtils.EMPTY;
+    }
+
+    String port = agent.getPort();
+
+    if (StringUtils.isEmpty(port)) {
+      port = DEFAULT_HTTPS_PORT;
+    }
+
+    return String.format("https://%s:%s/%s", integrationBridge.getHost(), port, INTEGRATION_CONTEXT);
   }
 
   @Override
