@@ -847,6 +847,7 @@
                         <configuration>
                             <formats>
                                 <format>html</format>
+                                <format>xml</format>
                             </formats>
                             <check>
                                 <totalLineRate>90</totalLineRate>
