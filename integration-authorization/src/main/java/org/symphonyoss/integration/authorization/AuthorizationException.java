@@ -11,10 +11,6 @@ public class AuthorizationException extends IntegrationException {
 
   private static final String COMPONENT = "Third-party integration/app authorization.";
 
-  public AuthorizationException(String message, Throwable cause) {
-    super(COMPONENT, message, cause);
-  }
-
   public AuthorizationException(String message, Throwable cause, String... solutions) {
     super(COMPONENT, message, cause, solutions);
   }
