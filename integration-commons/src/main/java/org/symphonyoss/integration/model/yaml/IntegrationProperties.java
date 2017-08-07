@@ -288,7 +288,7 @@ public class IntegrationProperties {
       return StringUtils.EMPTY;
     }
 
-    String port = agent.getPort();
+    String port = integrationBridge.getPort();
 
     if (StringUtils.isEmpty(port)) {
       port = DEFAULT_HTTPS_PORT;
