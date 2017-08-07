@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.symphonyoss.integration.exception.EntityXMLGeneratorException;
+import org.symphonyoss.integration.parser.SafeString;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -218,7 +219,8 @@ public class EntityBuilderTest {
   @Test
   public void testCreateMentionEntity() throws EntityXMLGeneratorException {
     EntityBuilder builder = EntityBuilder.forNestedEntity(MENTION_TYPE);
-    builder.attribute(USER_ID, 123l).attributeIfNotEmpty(NAME_ENTITY_FIELD, "Caue Marcondes");
+    builder.attribute(USER_ID, 123l).attributeIfNotEmpty(
+        NAME_ENTITY_FIELD, new SafeString("Caue Marcondes"));
     String result = builder.generateXML();
 
     String expected = "<entity type=\"com.symphony.mention\" version=\"1.0\">"

@@ -60,4 +60,17 @@ public class JsonUtils {
     return objectMapper.writeValueAsString(value);
   }
 
+  /**
+   * Read value from a JSON object and convert to another class
+   *
+   * @param value Object that represents JSON object
+   * @param clazz Class to be converted
+   * @return
+   * @throws IOException
+   */
+  public static <T> T readValue(Object value, Class<T> clazz) throws IOException {
+    String json = objectMapper.writeValueAsString(value);
+    return objectMapper.readValue(json, clazz);
+  }
+
 }

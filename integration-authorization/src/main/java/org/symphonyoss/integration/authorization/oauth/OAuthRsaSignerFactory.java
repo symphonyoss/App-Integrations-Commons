@@ -16,7 +16,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 /**
- * Builds a RSA Signer based on a PKCS8 private key.
+ * Deals with public and private RSA keys.
  *
  * Created by campidelli on 25-jul-2017.
  */
@@ -39,16 +39,23 @@ public class OAuthRsaSignerFactory {
   private LogMessageSource logMessage;
 
   /**
+   * Creates a RSA signer based on a given private key.
    * @param privateKey private key in PKCS8 syntax.
    * @return OAuthRsaSigner
    */
-  public OAuthRsaSigner getOAuthRsaSigner(String privateKey) {
+  public OAuthRsaSigner getOAuthRsaSigner(String privateKey) throws OAuth1Exception {
     OAuthRsaSigner oAuthRsaSigner = new OAuthRsaSigner();
     oAuthRsaSigner.privateKey = getPrivateKey(privateKey);
     return oAuthRsaSigner;
   }
 
-  public PrivateKey getPrivateKey(String privateKey) {
+  /**
+   * Convert the passed String into a PrivateKey.
+   * @param privateKey String format of a key.
+   * @return PrivateKey converted.
+   * @throws OAuth1Exception Thrown in case of error.
+   */
+  public PrivateKey getPrivateKey(String privateKey) throws OAuth1Exception {
     byte[] privateBytes = Base64.decodeBase64(privateKey);
     PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateBytes);
 
@@ -64,7 +71,13 @@ public class OAuthRsaSignerFactory {
     }
   }
 
-  public PublicKey getPublicKey(String publicKey) {
+  /**
+   * Convert the passed String into a PublicKey.
+   * @param publicKey String format of a key.
+   * @return PublicKey converted.
+   * @throws OAuth1Exception Thrown in case of error.
+   */
+  public PublicKey getPublicKey(String publicKey) throws OAuth1Exception {
     try {
       byte[] encoded = Base64.decodeBase64(publicKey);
       X509EncodedKeySpec spec = new X509EncodedKeySpec(encoded);

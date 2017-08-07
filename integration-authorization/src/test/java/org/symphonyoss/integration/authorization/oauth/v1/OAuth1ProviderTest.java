@@ -47,7 +47,6 @@ import java.net.URL;
 @PrepareForTest(OAuth1Provider.class)
 public class OAuth1ProviderTest {
 
-
   static final URL BASE_URL = makeUrl("http://www.1nv4lidh0st.com");
   static final URL REQUEST_TEMPORARY_TOKEN_URL = makeUrl(BASE_URL, "/reqTempToken");
   static final URL AUTHORIZATION_CALLBACK_URL = makeUrl(BASE_URL, "/myCallback");
@@ -158,7 +157,7 @@ public class OAuth1ProviderTest {
     try {
       return new URL(urlString);
     } catch (MalformedURLException e) {
-      throw new OAuth1Exception("Invalid URL.", e, null);
+      throw new RuntimeException("Invalid URL.", e);
     }
   }
 
@@ -166,7 +165,7 @@ public class OAuth1ProviderTest {
     try {
       return new URL(baseUrl, urlString);
     } catch (MalformedURLException e) {
-      throw new OAuth1Exception("Invalid URL.", e, null);
+      throw new RuntimeException("Invalid URL.", e);
     }
   }
 }
