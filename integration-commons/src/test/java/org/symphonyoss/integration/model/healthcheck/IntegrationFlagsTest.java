@@ -16,8 +16,12 @@
 
 package org.symphonyoss.integration.model.healthcheck;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.symphonyoss.integration.model.healthcheck.IntegrationFlags.ValueEnum.NOK;
+import static org.symphonyoss.integration.model.healthcheck.IntegrationFlags.ValueEnum.NOT_APPLICABLE;
+import static org.symphonyoss.integration.model.healthcheck.IntegrationFlags.ValueEnum.OK;
 
 import org.junit.Test;
 
@@ -32,23 +36,36 @@ public class IntegrationFlagsTest {
     IntegrationFlags flags = new IntegrationFlags();
     assertFalse(flags.isUp());
 
-    flags.setParserInstalled(IntegrationFlags.ValueEnum.NOK);
-    flags.setConfiguratorInstalled(IntegrationFlags.ValueEnum.NOK);
-    flags.setCertificateInstalled(IntegrationFlags.ValueEnum.NOK);
-    flags.setUserAuthenticated(IntegrationFlags.ValueEnum.NOK);
+    flags.setParserInstalled(NOK);
+    flags.setConfiguratorInstalled(NOK);
+    flags.setUserCertificateInstalled(NOK);
+    flags.setUserAuthenticated(NOK);
+    flags.setAppCertificateInstalled(NOT_APPLICABLE);
     assertFalse(flags.isUp());
 
-    flags.setParserInstalled(IntegrationFlags.ValueEnum.OK);
+    flags.setParserInstalled(OK);
     assertFalse(flags.isUp());
 
-    flags.setConfiguratorInstalled(IntegrationFlags.ValueEnum.OK);
+    flags.setConfiguratorInstalled(OK);
     assertFalse(flags.isUp());
 
-    flags.setCertificateInstalled(IntegrationFlags.ValueEnum.OK);
+    flags.setUserCertificateInstalled(OK);
     assertFalse(flags.isUp());
 
-    flags.setUserAuthenticated(IntegrationFlags.ValueEnum.OK);
+    flags.setUserAuthenticated(OK);
     assertTrue(flags.isUp());
+
+    flags.setAppCertificateInstalled(OK);
+    assertTrue(flags.isUp());
+
+    assertEquals(OK, flags.getParserInstalled());
+    assertEquals(OK, flags.getConfiguratorInstalled());
+    assertEquals(OK, flags.getUserCertificateInstalled());
+    assertEquals(OK, flags.getUserAuthenticated());
+    assertEquals(OK, flags.getAppCertificateInstalled());
+
+    flags.setAppCertificateInstalled(NOK);
+    assertFalse(flags.isUp());
   }
 
 }

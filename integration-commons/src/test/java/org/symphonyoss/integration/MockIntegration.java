@@ -16,8 +16,6 @@ import java.util.Set;
  */
 public class MockIntegration extends BaseIntegration {
 
-  private IntegrationHealth health = new IntegrationHealth();
-
   public MockIntegration() {}
 
   public MockIntegration(IntegrationProperties properties, IntegrationUtils utils,
@@ -45,11 +43,7 @@ public class MockIntegration extends BaseIntegration {
 
   @Override
   public IntegrationHealth getHealthStatus() {
-    return health;
-  }
-
-  public void setHealth(IntegrationHealth health) {
-    this.health = health;
+    return healthManager.getHealth();
   }
 
   @Override

@@ -18,6 +18,7 @@ package org.symphonyoss.integration.healthcheck;
 
 import static javax.ws.rs.core.MediaType.WILDCARD;
 import static org.symphonyoss.integration.model.healthcheck.IntegrationFlags.ValueEnum.NOK;
+import static org.symphonyoss.integration.model.healthcheck.IntegrationFlags.ValueEnum.NOT_APPLICABLE;
 import static org.symphonyoss.integration.model.healthcheck.IntegrationFlags.ValueEnum.OK;
 
 import com.google.common.cache.CacheBuilder;
@@ -104,7 +105,8 @@ public class IntegrationHealthManager {
   public IntegrationHealthManager() {
     this.flags.setParserInstalled(OK);
     this.flags.setConfiguratorInstalled(NOK);
-    this.flags.setCertificateInstalled(NOK);
+    this.flags.setUserCertificateInstalled(NOK);
+    this.flags.setAppCertificateInstalled(NOT_APPLICABLE);
     this.flags.setUserAuthenticated(NOK);
 
     this.health.setStatus(IntegrationStatus.INACTIVE.name());
@@ -319,8 +321,12 @@ public class IntegrationHealthManager {
     this.flags.setConfiguratorInstalled(value);
   }
 
-  public void certificateInstalled(IntegrationFlags.ValueEnum value) {
-    this.flags.setCertificateInstalled(value);
+  public void userCertificateInstalled(IntegrationFlags.ValueEnum value) {
+    this.flags.setUserCertificateInstalled(value);
+  }
+
+  public void appCertificateInstalled(IntegrationFlags.ValueEnum value) {
+    this.flags.setAppCertificateInstalled(value);
   }
 
   public void userAuthenticated(IntegrationFlags.ValueEnum value) {

@@ -29,7 +29,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.symphonyoss.integration.utils.WebHookConfigurationUtils.LAST_POSTED_DATE;
 
@@ -50,6 +49,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.symphonyoss.integration.IntegrationStatus;
 import org.symphonyoss.integration.MockKeystore;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
+import org.symphonyoss.integration.authentication.api.AppAuthenticationProxy;
 import org.symphonyoss.integration.entity.model.User;
 import org.symphonyoss.integration.exception.IntegrationRuntimeException;
 import org.symphonyoss.integration.exception.RemoteApiException;
@@ -77,7 +77,6 @@ import org.symphonyoss.integration.webhook.exception.WebHookDisabledException;
 import org.symphonyoss.integration.webhook.exception.WebHookParseException;
 import org.symphonyoss.integration.webhook.exception.WebHookUnavailableException;
 import org.symphonyoss.integration.webhook.exception.WebHookUnprocessableEntityException;
-import org.symphonyoss.integration.webhook.exception.WebhookException;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -90,7 +89,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.ScheduledExecutorService;
@@ -142,6 +140,9 @@ public class WebHookIntegrationTest extends MockKeystore {
 
   @MockBean
   private AuthenticationProxy authenticationProxy;
+
+  @MockBean
+  private AppAuthenticationProxy appAuthenticationProxy;
 
   @MockBean
   private UserService userService;
@@ -226,7 +227,7 @@ public class WebHookIntegrationTest extends MockKeystore {
     } catch (CertificateNotFoundException e) {
       IntegrationHealth health = mockWHI.getHealthStatus();
       assertEquals(IntegrationStatus.FAILED_BOOTSTRAP.name(), health.getStatus());
-      assertEquals(IntegrationFlags.ValueEnum.NOK, health.getFlags().getCertificateInstalled());
+      assertEquals(IntegrationFlags.ValueEnum.NOK, health.getFlags().getUserCertificateInstalled());
     }
   }
 
@@ -241,7 +242,7 @@ public class WebHookIntegrationTest extends MockKeystore {
     } catch (LoadKeyStoreException e) {
       IntegrationHealth health = mockWHI.getHealthStatus();
       assertEquals(IntegrationStatus.FAILED_BOOTSTRAP.name(), health.getStatus());
-      assertEquals(IntegrationFlags.ValueEnum.NOK, health.getFlags().getCertificateInstalled());
+      assertEquals(IntegrationFlags.ValueEnum.NOK, health.getFlags().getUserCertificateInstalled());
     }
   }
 
@@ -291,7 +292,7 @@ public class WebHookIntegrationTest extends MockKeystore {
 
     IntegrationHealth health = mockWHI.getHealthStatus();
     assertEquals(IntegrationStatus.ACTIVE.name(), health.getStatus());
-    assertEquals(IntegrationFlags.ValueEnum.OK, health.getFlags().getCertificateInstalled());
+    assertEquals(IntegrationFlags.ValueEnum.OK, health.getFlags().getUserCertificateInstalled());
   }
 
   @Test

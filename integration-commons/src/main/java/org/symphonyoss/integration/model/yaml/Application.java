@@ -52,6 +52,8 @@ public class Application {
 
   private Keystore keystore;
 
+  private Keystore appKeystore;
+
   private String url;
 
   private String avatar;
@@ -155,6 +157,14 @@ public class Application {
 
   public void setKeystore(Keystore keystore) {
     this.keystore = keystore;
+  }
+
+  public Keystore getAppKeystore() {
+    return appKeystore;
+  }
+
+  public void setAppKeystore(Keystore appKeystore) {
+    this.appKeystore = appKeystore;
   }
 
   public String getUrl() {

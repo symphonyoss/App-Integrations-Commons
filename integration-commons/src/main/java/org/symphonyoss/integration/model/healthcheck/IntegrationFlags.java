@@ -33,7 +33,8 @@ public class IntegrationFlags {
 
   private ValueEnum parserInstalled;
   private ValueEnum configuratorInstalled;
-  private ValueEnum certificateInstalled;
+  private ValueEnum userCertificateInstalled;
+  private ValueEnum appCertificateInstalled;
   private ValueEnum userAuthenticated;
 
   @JsonProperty("parser_installed")
@@ -54,13 +55,22 @@ public class IntegrationFlags {
     this.configuratorInstalled = configuratorInstalled;
   }
 
-  @JsonProperty("certificate_installed")
-  public ValueEnum getCertificateInstalled() {
-    return certificateInstalled;
+  @JsonProperty("user_certificate_installed")
+  public ValueEnum getUserCertificateInstalled() {
+    return userCertificateInstalled;
   }
 
-  public void setCertificateInstalled(ValueEnum certificateInstalled) {
-    this.certificateInstalled = certificateInstalled;
+  public void setUserCertificateInstalled(ValueEnum userCertificateInstalled) {
+    this.userCertificateInstalled = userCertificateInstalled;
+  }
+
+  @JsonProperty("app_certificate_installed")
+  public ValueEnum getAppCertificateInstalled() {
+    return appCertificateInstalled;
+  }
+
+  public void setAppCertificateInstalled(ValueEnum appCertificateInstalled) {
+    this.appCertificateInstalled = appCertificateInstalled;
   }
 
   @JsonProperty("user_authenticated")
@@ -74,12 +84,14 @@ public class IntegrationFlags {
 
   public enum ValueEnum {
     OK,
-    NOK;
+    NOK,
+    NOT_APPLICABLE;
   }
 
   @JsonIgnore
   public boolean isUp() {
     return parserInstalled == ValueEnum.OK && configuratorInstalled == ValueEnum.OK
-        && certificateInstalled == ValueEnum.OK && userAuthenticated == ValueEnum.OK;
+        && userCertificateInstalled == ValueEnum.OK && userAuthenticated == ValueEnum.OK
+        && (appCertificateInstalled == ValueEnum.OK || appCertificateInstalled == ValueEnum.NOT_APPLICABLE);
   }
 }

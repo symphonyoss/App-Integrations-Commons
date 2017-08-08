@@ -156,19 +156,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
     setupHealthManager(integrationUser);
 
-    try {
-      registerUser(integrationUser);
-    } catch (BootstrapException e) {
-      healthManager.certificateInstalled(NOK);
-
-      healthManager.failBootstrap(e.getMessage());
-      throw e;
-    } catch (Exception e) {
-      healthManager.failBootstrap(e.getMessage());
-      throw new UnexpectedBootstrapException(
-          String.format("Something went wrong when bootstrapping the integration %s",
-              integrationUser), e);
-    }
+    registerUser(integrationUser);
 
     try {
       authenticate(integrationUser);
@@ -190,7 +178,6 @@ public abstract class WebHookIntegration extends BaseIntegration {
       throw new UnexpectedBootstrapException(
           String.format("Something went wrong when bootstrapping the integration %s",
               integrationUser), e);
-
     }
   }
 

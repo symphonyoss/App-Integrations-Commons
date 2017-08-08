@@ -133,6 +133,9 @@ public class IntegrationPropertiesTest {
     assertEquals("jira.p12", application.getKeystore().getFile());
     assertEquals("pkcs12", application.getKeystore().getType());
     assertEquals("changeit", application.getKeystore().getPassword());
+    assertEquals("jira_app.p12", application.getAppKeystore().getFile());
+    assertEquals("pkcs12", application.getAppKeystore().getType());
+    assertEquals("testapp", application.getAppKeystore().getPassword());
     assertEquals("PROVISIONED", application.getState().name());
     assertEquals("Symphony Integration for JIRA", application.getAuthorization().getApplicationName());
     assertEquals("https://nexus.symphony.com:443/integration", application.getAuthorization().getApplicationURL());

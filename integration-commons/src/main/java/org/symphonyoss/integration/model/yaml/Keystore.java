@@ -28,6 +28,8 @@ public class Keystore {
 
   public static final String DEFAULT_KEYSTORE_TYPE_SUFFIX = ".p12";
 
+  public static final String DEFAULT_KEYSTORE_APP_SUFFIX = "_app";
+
   private String file;
 
   private String password;
