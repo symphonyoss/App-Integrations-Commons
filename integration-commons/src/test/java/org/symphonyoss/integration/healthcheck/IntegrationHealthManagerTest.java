@@ -97,7 +97,8 @@ public class IntegrationHealthManagerTest {
 
     IntegrationFlags flags = integrationHealth.getFlags();
     assertEquals(IntegrationFlags.ValueEnum.OK, flags.getParserInstalled());
-    assertEquals(IntegrationFlags.ValueEnum.NOK, flags.getCertificateInstalled());
+    assertEquals(IntegrationFlags.ValueEnum.NOK, flags.getUserCertificateInstalled());
+    assertEquals(IntegrationFlags.ValueEnum.NOT_APPLICABLE, flags.getAppCertificateInstalled());
     assertEquals(IntegrationFlags.ValueEnum.NOK, flags.getConfiguratorInstalled());
     assertEquals(IntegrationFlags.ValueEnum.NOK, flags.getUserAuthenticated());
   }
@@ -200,7 +201,8 @@ public class IntegrationHealthManagerTest {
   @Test
   public void testFlagsUpdate() {
     healthManager.parserInstalled(IntegrationFlags.ValueEnum.NOK);
-    healthManager.certificateInstalled(IntegrationFlags.ValueEnum.OK);
+    healthManager.userCertificateInstalled(IntegrationFlags.ValueEnum.OK);
+    healthManager.appCertificateInstalled(IntegrationFlags.ValueEnum.OK);
     healthManager.configuratorInstalled(IntegrationFlags.ValueEnum.OK);
     healthManager.userAuthenticated(IntegrationFlags.ValueEnum.OK);
 
@@ -208,7 +210,8 @@ public class IntegrationHealthManagerTest {
 
     IntegrationFlags flags = integrationHealth.getFlags();
     assertEquals(IntegrationFlags.ValueEnum.NOK, flags.getParserInstalled());
-    assertEquals(IntegrationFlags.ValueEnum.OK, flags.getCertificateInstalled());
+    assertEquals(IntegrationFlags.ValueEnum.OK, flags.getUserCertificateInstalled());
+    assertEquals(IntegrationFlags.ValueEnum.OK, flags.getAppCertificateInstalled());
     assertEquals(IntegrationFlags.ValueEnum.OK, flags.getConfiguratorInstalled());
     assertEquals(IntegrationFlags.ValueEnum.OK, flags.getUserAuthenticated());
   }
@@ -259,7 +262,7 @@ public class IntegrationHealthManagerTest {
 
   @Test
   public void testFlagsUserNotAuthenticated() {
-    healthManager.certificateInstalled(IntegrationFlags.ValueEnum.OK);
+    healthManager.userCertificateInstalled(IntegrationFlags.ValueEnum.OK);
 
     mockApplications();
     mockIntegrationBridge();

@@ -3,7 +3,9 @@ package org.symphonyoss.integration.model.yaml;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,22 @@ public class IntegrationPropertiesTest {
 
   private void validateLoginURL() {
     assertEquals("https://nexus.symphony.com:443/login", integrationProperties.getLoginUrl());
+
+    ConnectionInfo connectionInfo = integrationProperties.getPod();
+
+    integrationProperties.setPod(null);
+    assertEquals(StringUtils.EMPTY, integrationProperties.getLoginUrl());
+
+    integrationProperties.setPod(new ConnectionInfo());
+    assertEquals(StringUtils.EMPTY, integrationProperties.getLoginUrl());
+
+    ConnectionInfo mock = new ConnectionInfo();
+    mock.setHost(connectionInfo.getHost());
+
+    integrationProperties.setPod(mock);
+    assertEquals("https://nexus.symphony.com:443/login", integrationProperties.getLoginUrl());
+
+    integrationProperties.setPod(connectionInfo);
   }
 
   private void validateNumberOfApplications() {
@@ -59,6 +77,22 @@ public class IntegrationPropertiesTest {
     assertNull(integrationProperties.getKeyManagerAuth().getMinVersion());
     assertEquals("https://nexus.symphony.com:8444/keyauth", integrationProperties.getKeyManagerAuthUrl());
     assertEquals("ConnectionInfo{host='nexus.symphony.com', port='8444'}", integrationProperties.getKeyManagerAuth().toString());
+
+    ConnectionInfo connectionInfo = integrationProperties.getKeyManagerAuth();
+
+    integrationProperties.setKeyManagerAuth(null);
+    assertEquals(StringUtils.EMPTY, integrationProperties.getKeyManagerAuthUrl());
+
+    integrationProperties.setKeyManagerAuth(new ConnectionInfo());
+    assertEquals(StringUtils.EMPTY, integrationProperties.getKeyManagerAuthUrl());
+
+    ConnectionInfo mock = new ConnectionInfo();
+    mock.setHost(connectionInfo.getHost());
+
+    integrationProperties.setKeyManagerAuth(mock);
+    assertEquals("https://nexus.symphony.com:443/keyauth", integrationProperties.getKeyManagerAuthUrl());
+
+    integrationProperties.setKeyManagerAuth(connectionInfo);
   }
 
   private void validateKeyManager() {
@@ -67,6 +101,22 @@ public class IntegrationPropertiesTest {
     assertNull(integrationProperties.getKeyManager().getMinVersion());
     assertEquals("https://nexus.symphony.com:443/relay", integrationProperties.getKeyManagerUrl());
     assertEquals("ConnectionInfo{host='nexus.symphony.com', port='443'}", integrationProperties.getKeyManager().toString());
+
+    ConnectionInfo connectionInfo = integrationProperties.getKeyManager();
+
+    integrationProperties.setKeyManager(null);
+    assertEquals(StringUtils.EMPTY, integrationProperties.getKeyManagerUrl());
+
+    integrationProperties.setKeyManager(new ConnectionInfo());
+    assertEquals(StringUtils.EMPTY, integrationProperties.getKeyManagerUrl());
+
+    ConnectionInfo mock = new ConnectionInfo();
+    mock.setHost(connectionInfo.getHost());
+
+    integrationProperties.setKeyManager(mock);
+    assertEquals("https://nexus.symphony.com:443/relay", integrationProperties.getKeyManagerUrl());
+
+    integrationProperties.setKeyManager(connectionInfo);
   }
 
   private void validatePodSession() {
@@ -75,6 +125,23 @@ public class IntegrationPropertiesTest {
     assertNull(integrationProperties.getPodSessionManager().getMinVersion());
     assertEquals("https://nexus.symphony.com:8444/sessionauth", integrationProperties.getSessionManagerAuthUrl());
     assertEquals("ConnectionInfo{host='nexus.symphony.com', port='8444'}", integrationProperties.getPodSessionManager().toString());
+
+    ConnectionInfo connectionInfo = integrationProperties.getPodSessionManager();
+
+    integrationProperties.setPodSessionManager(null);
+    assertEquals(StringUtils.EMPTY, integrationProperties.getSessionManagerAuthUrl());
+
+    integrationProperties.setPodSessionManager(new ConnectionInfo());
+    assertEquals(StringUtils.EMPTY, integrationProperties.getSessionManagerAuthUrl());
+
+    ConnectionInfo mock = new ConnectionInfo();
+    mock.setHost(connectionInfo.getHost());
+
+    integrationProperties.setPodSessionManager(mock);
+    assertEquals("https://nexus.symphony.com:443/sessionauth",
+        integrationProperties.getSessionManagerAuthUrl());
+
+    integrationProperties.setPodSessionManager(connectionInfo);
   }
 
   private void validatePod() {
@@ -84,6 +151,25 @@ public class IntegrationPropertiesTest {
     assertEquals("https://nexus.symphony.com:443/pod", integrationProperties.getPodUrl());
     assertEquals("ConnectionInfo{host='nexus.symphony.com', port='443'}", integrationProperties.getPod().toString());
     assertEquals("https://nexus.symphony.com:443", integrationProperties.getSymphonyUrl().toString());
+
+    ConnectionInfo connectionInfo = integrationProperties.getPod();
+
+    integrationProperties.setPod(null);
+    assertEquals(StringUtils.EMPTY, integrationProperties.getSymphonyUrl());
+    assertEquals(StringUtils.EMPTY, integrationProperties.getPodUrl());
+
+    integrationProperties.setPod(new ConnectionInfo());
+    assertEquals(StringUtils.EMPTY, integrationProperties.getSymphonyUrl());
+    assertEquals(StringUtils.EMPTY, integrationProperties.getPodUrl());
+
+    ConnectionInfo mock = new ConnectionInfo();
+    mock.setHost(connectionInfo.getHost());
+
+    integrationProperties.setPod(mock);
+    assertEquals("https://nexus.symphony.com:443", integrationProperties.getSymphonyUrl());
+    assertEquals("https://nexus.symphony.com:443/pod", integrationProperties.getPodUrl());
+
+    integrationProperties.setPod(connectionInfo);
   }
 
   private void validateAdminUser() {
@@ -96,6 +182,22 @@ public class IntegrationPropertiesTest {
     assertEquals("8444", integrationProperties.getAgent().getPort());
     assertNull(integrationProperties.getAgent().getMinVersion());
     assertEquals("https://nexus.symphony.com:8444/agent", integrationProperties.getAgentUrl());
+
+    ConnectionInfo connectionInfo = integrationProperties.getAgent();
+
+    integrationProperties.setAgent(null);
+    assertEquals(StringUtils.EMPTY, integrationProperties.getAgentUrl());
+
+    integrationProperties.setAgent(new ConnectionInfo());
+    assertEquals(StringUtils.EMPTY, integrationProperties.getAgentUrl());
+
+    ConnectionInfo mock = new ConnectionInfo();
+    mock.setHost(connectionInfo.getHost());
+
+    integrationProperties.setAgent(mock);
+    assertEquals("https://nexus.symphony.com:443/agent", integrationProperties.getAgentUrl());
+
+    integrationProperties.setAgent(connectionInfo);
   }
 
   private void validateSigningCert() {
@@ -113,11 +215,28 @@ public class IntegrationPropertiesTest {
     assertEquals("changeit", integrationProperties.getIntegrationBridge().getTruststorePassword());
 
     assertNull(integrationProperties.getIntegrationBridge().getPort());
+
+    assertEquals("https://nexus.symphony.com:443/integration", integrationProperties.getIntegrationBridgeUrl());
+
+    IntegrationBridge integrationBridge = integrationProperties.getIntegrationBridge();
+
+    integrationProperties.setIntegrationBridge(null);
+    assertEquals(StringUtils.EMPTY, integrationProperties.getIntegrationBridgeUrl());
+    assertTrue(integrationProperties.getGlobalWhiteList().isEmpty());
+
+    integrationProperties.setIntegrationBridge(new IntegrationBridge());
+    assertEquals(StringUtils.EMPTY, integrationProperties.getIntegrationBridgeUrl());
+
+    integrationProperties.setIntegrationBridge(integrationBridge);
   }
 
   private void validateApplication() {
+    assertNull(integrationProperties.getApplication("test"));
+    assertEquals("test", integrationProperties.getApplicationId("test"));
+
     assertNotNull(integrationProperties.getApplicationId("jira"));
     assertEquals("https://nexus.symphony.com/apps/context", integrationProperties.getApplicationUrl("jira"));
+    assertEquals(StringUtils.EMPTY, integrationProperties.getApplicationUrl("test"));
 
     Application application = integrationProperties.getApplication("jira");
     assertEquals("jira.icon", application.getAvatar());
@@ -133,6 +252,9 @@ public class IntegrationPropertiesTest {
     assertEquals("jira.p12", application.getKeystore().getFile());
     assertEquals("pkcs12", application.getKeystore().getType());
     assertEquals("changeit", application.getKeystore().getPassword());
+    assertEquals("jira_app.p12", application.getAppKeystore().getFile());
+    assertEquals("pkcs12", application.getAppKeystore().getType());
+    assertEquals("testapp", application.getAppKeystore().getPassword());
     assertEquals("PROVISIONED", application.getState().name());
     assertEquals("Symphony Integration for JIRA", application.getAuthorization().getApplicationName());
     assertEquals("https://nexus.symphony.com:443/integration", application.getAuthorization().getApplicationURL());
@@ -141,6 +263,13 @@ public class IntegrationPropertiesTest {
 
     assertEquals("symphony_consumer", authProperties.get("consumerKey"));
     assertEquals("Symphony Consumer", authProperties.get("consumerName"));
+
+    IntegrationBridge integrationBridge = integrationProperties.getIntegrationBridge();
+
+    integrationProperties.setIntegrationBridge(null);
+    assertEquals(StringUtils.EMPTY, integrationProperties.getApplicationUrl("jira"));
+
+    integrationProperties.setIntegrationBridge(integrationBridge);
   }
 
 }

@@ -17,6 +17,7 @@
 package org.symphonyoss.integration.webhook;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -29,7 +30,8 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.symphonyoss.integration.utils.WebHookConfigurationUtils.LAST_POSTED_DATE;
 
@@ -50,6 +52,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.symphonyoss.integration.IntegrationStatus;
 import org.symphonyoss.integration.MockKeystore;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
+import org.symphonyoss.integration.authentication.api.AppAuthenticationProxy;
 import org.symphonyoss.integration.entity.model.User;
 import org.symphonyoss.integration.exception.IntegrationRuntimeException;
 import org.symphonyoss.integration.exception.RemoteApiException;
@@ -77,7 +80,6 @@ import org.symphonyoss.integration.webhook.exception.WebHookDisabledException;
 import org.symphonyoss.integration.webhook.exception.WebHookParseException;
 import org.symphonyoss.integration.webhook.exception.WebHookUnavailableException;
 import org.symphonyoss.integration.webhook.exception.WebHookUnprocessableEntityException;
-import org.symphonyoss.integration.webhook.exception.WebhookException;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -90,12 +92,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.ws.rs.ProcessingException;
+import javax.ws.rs.core.MediaType;
 
 /**
  * Test class responsible to test the flows in the {@link WebHookIntegration}.
@@ -142,6 +144,9 @@ public class WebHookIntegrationTest extends MockKeystore {
 
   @MockBean
   private AuthenticationProxy authenticationProxy;
+
+  @MockBean
+  private AppAuthenticationProxy appAuthenticationProxy;
 
   @MockBean
   private UserService userService;
@@ -226,7 +231,7 @@ public class WebHookIntegrationTest extends MockKeystore {
     } catch (CertificateNotFoundException e) {
       IntegrationHealth health = mockWHI.getHealthStatus();
       assertEquals(IntegrationStatus.FAILED_BOOTSTRAP.name(), health.getStatus());
-      assertEquals(IntegrationFlags.ValueEnum.NOK, health.getFlags().getCertificateInstalled());
+      assertEquals(IntegrationFlags.ValueEnum.NOK, health.getFlags().getUserCertificateInstalled());
     }
   }
 
@@ -241,7 +246,7 @@ public class WebHookIntegrationTest extends MockKeystore {
     } catch (LoadKeyStoreException e) {
       IntegrationHealth health = mockWHI.getHealthStatus();
       assertEquals(IntegrationStatus.FAILED_BOOTSTRAP.name(), health.getStatus());
-      assertEquals(IntegrationFlags.ValueEnum.NOK, health.getFlags().getCertificateInstalled());
+      assertEquals(IntegrationFlags.ValueEnum.NOK, health.getFlags().getUserCertificateInstalled());
     }
   }
 
@@ -291,7 +296,7 @@ public class WebHookIntegrationTest extends MockKeystore {
 
     IntegrationHealth health = mockWHI.getHealthStatus();
     assertEquals(IntegrationStatus.ACTIVE.name(), health.getStatus());
-    assertEquals(IntegrationFlags.ValueEnum.OK, health.getFlags().getCertificateInstalled());
+    assertEquals(IntegrationFlags.ValueEnum.OK, health.getFlags().getUserCertificateInstalled());
   }
 
   @Test
@@ -608,7 +613,15 @@ public class WebHookIntegrationTest extends MockKeystore {
 
   @Test
   public void testWhiteList() {
+    mockWHI.onConfigChange(null);
+
     Set<String> integrationWhiteList = mockWHI.getIntegrationWhiteList();
+    assertNotNull(integrationWhiteList);
+    assertTrue(integrationWhiteList.isEmpty());
+
+    mockWHI.onConfigChange(settings);
+
+    integrationWhiteList = mockWHI.getIntegrationWhiteList();
     assertNotNull(integrationWhiteList);
     assertEquals(3, integrationWhiteList.size());
 
@@ -781,6 +794,26 @@ public class WebHookIntegrationTest extends MockKeystore {
     } catch (WebHookParseException e) {
       assertEquals(exception, e);
     }
+  }
+
+  @Test
+  public void testSupportedContentType() {
+    assertTrue(mockWHI.isSupportedContentType(MediaType.APPLICATION_JSON_TYPE));
+
+    mockWHI.setMediaType(MediaType.WILDCARD_TYPE);
+    assertTrue(mockWHI.isSupportedContentType(MediaType.APPLICATION_JSON_TYPE));
+
+    mockWHI.setMediaType(MediaType.APPLICATION_JSON_TYPE);
+    assertTrue(mockWHI.isSupportedContentType(MediaType.APPLICATION_JSON_TYPE));
+    assertFalse(mockWHI.isSupportedContentType(MediaType.APPLICATION_XML_TYPE));
+
+    mockWHI.setMediaType(MediaType.WILDCARD_TYPE);
+  }
+
+  @Test
+  public void testOnDestroy() {
+    mockWHI.onDestroy();
+    verify(authenticationProxy, times(1)).invalidate(INTEGRATION_USER);
   }
 
   public static final class SendMessageAnswer implements Answer<List<Message>> {

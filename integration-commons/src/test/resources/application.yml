@@ -168,6 +168,10 @@ applications:
         - host: ec2-107-23-104-115.compute-1.amazonaws.com
           address: 107.23.104.115
         - address: 192.30.252.0/22
+    app_keystore:
+      file: jira_app.p12
+      password: testapp
+      type: pkcs12
     authorization:
       applicationName: Symphony Integration for JIRA
       applicationURL: https://${integration_bridge.host}:${integration_bridge.port:443}/integration

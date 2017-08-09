@@ -17,6 +17,7 @@
 package org.symphonyoss.integration.webhook.parser;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import org.symphonyoss.integration.event.MessageMLVersionUpdatedEventData;
 import org.symphonyoss.integration.model.message.MessageMLVersion;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -55,6 +57,11 @@ public class WebHookParserResolverTest {
   public void testInit() {
     resolver.init();
     assertEquals(v1Factory, resolver.getFactory());
+
+    resolver = new MockWebHookParserResolver(Collections.<WebHookParserFactory>emptyList());
+    resolver.init();
+
+    assertNull(resolver.getFactory());
   }
 
   @Test

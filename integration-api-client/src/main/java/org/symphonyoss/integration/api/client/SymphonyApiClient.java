@@ -41,7 +41,7 @@ public abstract class SymphonyApiClient implements HttpApiClient {
   @PostConstruct
   public void init() {
     String url = getBasePath();
-    buildHttpClient(url);
+    this.client = buildHttpClient(url);
   }
 
   protected abstract String getBasePath();
@@ -52,7 +52,7 @@ public abstract class SymphonyApiClient implements HttpApiClient {
    * logging, and metric counters.
    * @param basePath Base path
    */
-  private void buildHttpClient(String basePath) {
+  protected HttpApiClient buildHttpClient(String basePath) {
     AuthenticationProxyApiClient simpleClient = new AuthenticationProxyApiClient(serializer, proxy);
     simpleClient.setBasePath(basePath);
 
@@ -64,7 +64,7 @@ public abstract class SymphonyApiClient implements HttpApiClient {
 
     TraceLoggingApiClient traceLoggingApiClient = new TraceLoggingApiClient(reAuthApiClient);
 
-    this.client = new MetricsHttpApiClient(metricsController, traceLoggingApiClient);
+    return new MetricsHttpApiClient(metricsController, traceLoggingApiClient);
   }
 
   @Override

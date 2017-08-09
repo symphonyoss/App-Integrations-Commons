@@ -53,13 +53,17 @@ public class MockKeystore {
 
   protected String mockKeyStore()
       throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
+    return mockKeyStore(APP_ID + DEFAULT_KEYSTORE_TYPE_SUFFIX);
+  }
+
+  protected String mockKeyStore(String filename)
+      throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
     KeyStore ks = KeyStore.getInstance(DEFAULT_KEYSTORE_TYPE);
 
     char[] password = DEFAULT_KEYSTORE_PASSWORD.toCharArray();
     ks.load(null, password);
 
     // Store away the keystore.
-    String filename = APP_ID + DEFAULT_KEYSTORE_TYPE_SUFFIX;
     String certsDir = mockCertDir();
     String storeLocation = certsDir + filename;
 
