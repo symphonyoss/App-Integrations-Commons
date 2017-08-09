@@ -27,6 +27,7 @@ import org.symphonyoss.integration.webhook.exception.WebHookParseException;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.symphonyoss.integration.messageml.MessageMLFormatConstants.MESSAGEML_END;
@@ -39,6 +40,8 @@ import static org.symphonyoss.integration.messageml.MessageMLFormatConstants.MES
 @TestComponent
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class MockWebHookIntegration extends WebHookIntegration {
+
+  private MediaType mediaType;
 
   @Override
   public Message parse(WebHookPayload input) throws WebHookParseException {
@@ -62,13 +65,22 @@ public class MockWebHookIntegration extends WebHookIntegration {
     return message;
   }
 
+  public void setMediaType(MediaType mediaType) {
+    this.mediaType = mediaType;
+  }
+
   /**
    * @see WebHookIntegration#getSupportedContentTypes()
    */
   @Override
   public List<MediaType> getSupportedContentTypes() {
+    if (mediaType == null) {
+      return Collections.emptyList();
+    }
+
     List<MediaType> supportedContentTypes = new ArrayList<>();
-    supportedContentTypes.add(MediaType.WILDCARD_TYPE);
+    supportedContentTypes.add(mediaType);
+
     return supportedContentTypes;
   }
 }

@@ -17,6 +17,7 @@
 package org.symphonyoss.integration.webhook;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -29,6 +30,8 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.symphonyoss.integration.utils.WebHookConfigurationUtils.LAST_POSTED_DATE;
 
@@ -94,6 +97,7 @@ import java.util.TimeZone;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.ws.rs.ProcessingException;
+import javax.ws.rs.core.MediaType;
 
 /**
  * Test class responsible to test the flows in the {@link WebHookIntegration}.
@@ -609,7 +613,15 @@ public class WebHookIntegrationTest extends MockKeystore {
 
   @Test
   public void testWhiteList() {
+    mockWHI.onConfigChange(null);
+
     Set<String> integrationWhiteList = mockWHI.getIntegrationWhiteList();
+    assertNotNull(integrationWhiteList);
+    assertTrue(integrationWhiteList.isEmpty());
+
+    mockWHI.onConfigChange(settings);
+
+    integrationWhiteList = mockWHI.getIntegrationWhiteList();
     assertNotNull(integrationWhiteList);
     assertEquals(3, integrationWhiteList.size());
 
@@ -782,6 +794,26 @@ public class WebHookIntegrationTest extends MockKeystore {
     } catch (WebHookParseException e) {
       assertEquals(exception, e);
     }
+  }
+
+  @Test
+  public void testSupportedContentType() {
+    assertTrue(mockWHI.isSupportedContentType(MediaType.APPLICATION_JSON_TYPE));
+
+    mockWHI.setMediaType(MediaType.WILDCARD_TYPE);
+    assertTrue(mockWHI.isSupportedContentType(MediaType.APPLICATION_JSON_TYPE));
+
+    mockWHI.setMediaType(MediaType.APPLICATION_JSON_TYPE);
+    assertTrue(mockWHI.isSupportedContentType(MediaType.APPLICATION_JSON_TYPE));
+    assertFalse(mockWHI.isSupportedContentType(MediaType.APPLICATION_XML_TYPE));
+
+    mockWHI.setMediaType(MediaType.WILDCARD_TYPE);
+  }
+
+  @Test
+  public void testOnDestroy() {
+    mockWHI.onDestroy();
+    verify(authenticationProxy, times(1)).invalidate(INTEGRATION_USER);
   }
 
   public static final class SendMessageAnswer implements Answer<List<Message>> {
