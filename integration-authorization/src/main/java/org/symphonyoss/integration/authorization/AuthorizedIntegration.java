@@ -1,7 +1,9 @@
 package org.symphonyoss.integration.authorization;
 
 import org.symphonyoss.integration.Integration;
+import org.symphonyoss.integration.jira.authorization.oauth.v1.JiraOAuth1Exception;
 import org.symphonyoss.integration.model.yaml.AppAuthorizationModel;
+import org.symphonyoss.integration.jira.authorization.oauth.v1.JiraOAuth1Provider;
 
 /**
  * Contract containing the minimum responsibility of a authorized integration.
@@ -40,4 +42,24 @@ public interface AuthorizedIntegration extends Integration {
    * @throws AuthorizationException when a problem occur with this operation.
    */
   void authorize(AuthorizationPayload authorizationPayload) throws AuthorizationException;
+
+  /**
+   * Get an access token for user to perform calls to a resource provided by a given url.
+   * @param url Resource url.
+   * @param userId User id.
+   * @return An access token.
+   * @throws AuthorizationException Thrown in any case of error.
+   */
+  String getAccessToken(String url, Long userId) throws AuthorizationException;
+
+  /**
+   * Get aprovider for user to perform calls to a resource provided by a given url.
+   * @param url Resource url.
+   * @return A JiraOAuth1Provider.
+   * @throws JiraOAuth1Exception Thrown in any case of error.
+   */
+  JiraOAuth1Provider getJiraOAuth1Provider(String url) throws JiraOAuth1Exception;
+
+
+
 }
