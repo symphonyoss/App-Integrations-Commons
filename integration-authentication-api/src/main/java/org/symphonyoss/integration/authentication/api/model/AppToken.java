@@ -14,6 +14,14 @@ public class AppToken {
 
   private String symphonyToken;
 
+  public AppToken() { }
+
+  public AppToken(String appId, String appToken, String symphonyToken) {
+    this.appId = appId;
+    this.appToken = appToken;
+    this.symphonyToken = symphonyToken;
+  }
+
   public String getAppId() {
     return appId;
   }
