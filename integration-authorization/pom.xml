@@ -48,10 +48,5 @@
             <artifactId>powermock-api-mockito</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.symphonyoss.symphony.integrations</groupId>
-            <artifactId>integration-jira</artifactId>
-            <version>1.4.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 </project>
