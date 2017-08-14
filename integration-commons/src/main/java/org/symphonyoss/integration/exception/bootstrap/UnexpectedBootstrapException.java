@@ -27,4 +27,7 @@ public class UnexpectedBootstrapException extends BootstrapException {
     super(message, cause);
   }
 
+  public UnexpectedBootstrapException(String message, String... solutions) {
+    super(message, solutions);
+  }
 }
