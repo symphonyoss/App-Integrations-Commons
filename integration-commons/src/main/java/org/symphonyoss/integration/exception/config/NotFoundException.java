@@ -27,4 +27,7 @@ public class NotFoundException extends RemoteConfigurationException {
     super(message, cause, solutions);
   }
 
+  public NotFoundException(String message, String... solutions) {
+    super(message, solutions);
+  }
 }

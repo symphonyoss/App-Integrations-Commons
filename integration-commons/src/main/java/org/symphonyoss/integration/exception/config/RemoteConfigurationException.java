@@ -24,4 +24,8 @@ public class RemoteConfigurationException extends IntegrationConfigException {
   public RemoteConfigurationException(String message, Throwable cause, String... solutions) {
     super(message, cause, solutions);
   }
+
+  public RemoteConfigurationException(String message, String... solutions) {
+    super(message, solutions);
+  }
 }
