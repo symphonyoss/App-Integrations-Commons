@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration.exception.config;
+package org.symphonyoss.integration.exception.authentication;
 
 /**
- * Returned when trying to post message but not exists configuration.
+ * Thrown when a required parameter is missing during the authentication process.
  *
- * Created by Cassiano Repache on 12/04/17.
+ * Created by campidelli on 15/08/17.
  */
-public class NotFoundException extends RemoteConfigurationException {
+public class MissingRequiredParameterException extends AuthenticationException {
 
-  public NotFoundException(String message, Throwable cause, String... solutions) {
-    super(message, cause, solutions);
+  public MissingRequiredParameterException(String message, String... solutions) {
+    super(message, solutions);
   }
+
 }
