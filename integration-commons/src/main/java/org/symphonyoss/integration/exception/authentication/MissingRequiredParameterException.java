@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration.exception.config;
+package org.symphonyoss.integration.exception.authentication;
 
 /**
- * Created by mquilzini on 31/05/16.
+ * Thrown when a required parameter is missing during the authentication process.
+ *
+ * Created by campidelli on 15/08/17.
  */
-public class RemoteConfigurationException extends IntegrationConfigException {
+public class MissingRequiredParameterException extends AuthenticationException {
 
-  public RemoteConfigurationException(String message, Throwable cause, String... solutions) {
-    super(message, cause, solutions);
+  public MissingRequiredParameterException(String message, String... solutions) {
+    super(message, solutions);
   }
+
 }
