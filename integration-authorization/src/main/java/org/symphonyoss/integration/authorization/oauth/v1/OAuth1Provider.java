@@ -28,7 +28,8 @@ public abstract class OAuth1Provider {
 
   private static final String REQUEST_TEMP_TOKEN_SOLUTION = REQUEST_TEMP_TOKEN + ".solution";
 
-  private static final String REQUEST_ACCESS_TOKEN = "integration.authorization.request.accesstoken";
+  private static final String REQUEST_ACCESS_TOKEN =
+      "integration.authorization.request.accesstoken";
 
   private static final String REQUEST_ACCESS_TOKEN_SOLUTION = REQUEST_ACCESS_TOKEN + ".solution";
 
@@ -117,7 +118,7 @@ public abstract class OAuth1Provider {
    * @throws OAuth1Exception when there is a problem with this operation.
    */
   public HttpResponse makeAuthorizedRequest(String accessToken, URL resourceUrl, String httpMethod,
-      HttpContent httpContent) throws OAuth1Exception, OAuth1HttpRequestException {
+      HttpContent httpContent) throws OAuth1Exception {
     checkConfiguration();
 
     OAuthParameters parameters = new OAuthParameters();
@@ -131,8 +132,6 @@ public abstract class OAuth1Provider {
       HttpRequest request = requestFactory.buildRequest(httpMethod, new GenericUrl(resourceUrl),
           httpContent);
       return request.execute();
-    } catch (HttpResponseException e) {
-      throw new OAuth1HttpRequestException(e.getStatusMessage(), e.getStatusCode());
     } catch (IOException e) {
       throw new OAuth1Exception(logMessage.getMessage(INVALID_REQUEST), e,
           logMessage.getMessage(INVALID_REQUEST_SOLUTION));
@@ -141,7 +140,8 @@ public abstract class OAuth1Provider {
 
   private void checkConfiguration() throws OAuth1Exception {
     if (!isConfigured()) {
-      throw new OAuth1Exception(logMessage.getMessage(NOT_CONFIGURED), logMessage.getMessage(NOT_CONFIGURED_SOLUTION));
+      throw new OAuth1Exception(logMessage.getMessage(NOT_CONFIGURED),
+          logMessage.getMessage(NOT_CONFIGURED_SOLUTION));
     }
   }
 
