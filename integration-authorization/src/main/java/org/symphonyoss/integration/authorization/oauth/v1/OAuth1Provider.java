@@ -8,6 +8,7 @@ import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
+import com.google.api.client.http.HttpResponseException;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.symphonyoss.integration.authorization.oauth.OAuthRsaSignerFactory;
@@ -116,7 +117,7 @@ public abstract class OAuth1Provider {
    * @throws OAuth1Exception when there is a problem with this operation.
    */
   public HttpResponse makeAuthorizedRequest(String accessToken, URL resourceUrl, String httpMethod,
-      HttpContent httpContent) throws OAuth1Exception {
+      HttpContent httpContent) throws OAuth1Exception, OAuth1HttpRequestException {
     checkConfiguration();
 
     OAuthParameters parameters = new OAuthParameters();
@@ -130,6 +131,8 @@ public abstract class OAuth1Provider {
       HttpRequest request = requestFactory.buildRequest(httpMethod, new GenericUrl(resourceUrl),
           httpContent);
       return request.execute();
+    } catch (HttpResponseException e) {
+      throw new OAuth1HttpRequestException(e.getStatusMessage(), e.getStatusCode());
     } catch (IOException e) {
       throw new OAuth1Exception(logMessage.getMessage(INVALID_REQUEST), e,
           logMessage.getMessage(INVALID_REQUEST_SOLUTION));
