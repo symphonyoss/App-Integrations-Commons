@@ -1,6 +1,7 @@
 package org.symphonyoss.integration.authorization;
 
 import org.symphonyoss.integration.Integration;
+import org.symphonyoss.integration.authorization.oauth.v1.OAuth1HttpRequestException;
 import org.symphonyoss.integration.model.yaml.AppAuthorizationModel;
 import org.symphonyoss.integration.authorization.oauth.v1.OAuth1Provider;
 import org.symphonyoss.integration.authorization.oauth.v1.OAuth1Exception;
@@ -24,7 +25,8 @@ public interface AuthorizedIntegration extends Integration {
    * @return <code>true</code> if the user is authorized.
    * @throws AuthorizationException Thrown in any case of error.
    */
-  boolean isUserAuthorized(String url, Long userId) throws AuthorizationException;
+  boolean isUserAuthorized(String url, Long userId) throws AuthorizationException,
+      OAuth1HttpRequestException;
 
   /**
    * Get an authorization url for user to perform calls to a resource provided by a given url.
