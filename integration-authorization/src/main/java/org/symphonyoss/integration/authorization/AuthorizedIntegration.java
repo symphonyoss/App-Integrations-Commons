@@ -46,7 +46,7 @@ public interface AuthorizedIntegration extends Integration {
 
   /**
    * Get an access token for user to perform calls to an external system resource.
-   * @param url Resource url.
+   * @param url Integration URL.
    * @param userId User id.
    * @return An access token.
    * @throws AuthorizationException Thrown in any case of error.
