@@ -3,6 +3,8 @@ package org.symphonyoss.integration.authorization.oauth.v1;
 import org.symphonyoss.integration.exception.IntegrationException;
 
 /**
+ * Exception used to inform runtime exceptions regarding OAuth1HttpRequestException process.
+ *
  * Created by alexandre-silva-daitan on 14/08/17.
  */
 public class  OAuth1HttpRequestException extends IntegrationException {
