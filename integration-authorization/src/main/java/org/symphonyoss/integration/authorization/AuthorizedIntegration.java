@@ -25,8 +25,7 @@ public interface AuthorizedIntegration extends Integration {
    * @return <code>true</code> if the user is authorized.
    * @throws AuthorizationException Thrown in any case of error.
    */
-  boolean isUserAuthorized(String url, Long userId) throws AuthorizationException,
-      OAuth1HttpRequestException;
+  boolean isUserAuthorized(String url, Long userId) throws AuthorizationException;
 
   /**
    * Get an authorization url for user to perform calls to a resource provided by a given url.
