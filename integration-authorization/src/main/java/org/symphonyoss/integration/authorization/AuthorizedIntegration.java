@@ -45,7 +45,7 @@ public interface AuthorizedIntegration extends Integration {
   void authorize(AuthorizationPayload authorizationPayload) throws AuthorizationException;
 
   /**
-   * Get an access token for user to perform calls to a resource provided by a given url.
+   * Get an access token for user to perform calls to an external system resource.
    * @param url Resource url.
    * @param userId User id.
    * @return An access token.
