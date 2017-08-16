@@ -17,10 +17,7 @@
 package org.symphonyoss.integration.authorization;
 
 import org.symphonyoss.integration.Integration;
-import org.symphonyoss.integration.authorization.oauth.v1.OAuth1HttpRequestException;
 import org.symphonyoss.integration.model.yaml.AppAuthorizationModel;
-import org.symphonyoss.integration.authorization.oauth.v1.OAuth1Provider;
-import org.symphonyoss.integration.authorization.oauth.v1.OAuth1Exception;
 
 /**
  * Contract containing the minimum responsibility of a authorized integration.
