@@ -28,6 +28,9 @@ public class AppTokenTest {
     assertEquals(APP_ID, token.getAppId());
     assertEquals(appToken, token.getAppToken());
     assertEquals(symphonyToken, token.getSymphonyToken());
+
+    AppToken otherToken = new AppToken(APP_ID, appToken, symphonyToken);
+    assertEquals(token, otherToken);
   }
 
 }

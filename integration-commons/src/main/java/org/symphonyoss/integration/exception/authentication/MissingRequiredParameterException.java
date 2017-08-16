@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration.exception.bootstrap;
+package org.symphonyoss.integration.exception.authentication;
 
 /**
- * Unexpected exception during the bootstrap process.
+ * Thrown when a required parameter is missing during the authentication process.
  *
- * Created by cmarcondes on 10/26/16.
+ * Created by campidelli on 15/08/17.
  */
-public class UnexpectedBootstrapException extends BootstrapException {
+public class MissingRequiredParameterException extends AuthenticationException {
 
-  public UnexpectedBootstrapException(String message, Exception cause) {
-    super(message, cause);
-  }
-
-  public UnexpectedBootstrapException(String message, String... solutions) {
+  public MissingRequiredParameterException(String message, String... solutions) {
     super(message, solutions);
   }
+
 }
