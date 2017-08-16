@@ -54,7 +54,7 @@ public interface AuthorizedIntegration extends Integration {
   String getAccessToken(String url, Long userId) throws AuthorizationException;
 
   /**
-   * Get aprovider for user to perform calls to a resource provided by a given url.
+   * Get an OAuth1 provider for user to perform calls to an external system resource.
    * @param url Resource url.
    * @return A OAuth1Provider.
    * @throws OAuth1Exception Thrown in any case of error.
