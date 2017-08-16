@@ -55,12 +55,9 @@ public interface AuthorizedIntegration extends Integration {
 
   /**
    * Get an OAuth1 provider for user to perform calls to an external system resource.
-   * @param url Resource url.
+   * @param url Integration URL.
    * @return A OAuth1Provider.
    * @throws OAuth1Exception Thrown in any case of error.
    */
   OAuth1Provider getOAuth1Provider(String url) throws OAuth1Exception;
-
-
-
 }
