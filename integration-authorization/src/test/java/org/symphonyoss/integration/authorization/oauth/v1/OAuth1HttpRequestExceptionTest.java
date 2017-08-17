@@ -2,7 +2,6 @@ package org.symphonyoss.integration.authorization.oauth.v1;
 
 import static org.junit.Assert.assertEquals;
 
-import com.google.api.client.http.HttpResponse;
 import org.junit.Test;
 import org.symphonyoss.integration.exception.ExpectedMessageBuilder;
 

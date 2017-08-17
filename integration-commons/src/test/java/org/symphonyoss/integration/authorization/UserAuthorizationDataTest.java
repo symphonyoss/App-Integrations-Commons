@@ -38,8 +38,13 @@ public class UserAuthorizationDataTest {
 
     UserAuthorizationData data2 = new UserAuthorizationData(MOCK_URL, MOCK_USER_ID);
 
+    UserAuthorizationData data3 = new UserAuthorizationData(MOCK_URL, MOCK_USER_ID, data2);
+
     assertEquals(data1, data2);
     assertEquals(data1.hashCode(), data2.hashCode());
+    assertEquals(data2, data3.getData());
+    assertEquals(data1.getUrl(), data3.getUrl());
+    assertEquals(data1.getUserId(), data3.getUserId());
   }
 
 }
