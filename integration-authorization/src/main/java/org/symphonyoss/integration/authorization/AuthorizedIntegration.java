@@ -17,10 +17,7 @@
 package org.symphonyoss.integration.authorization;
 
 import org.symphonyoss.integration.Integration;
-import org.symphonyoss.integration.authorization.oauth.v1.OAuth1HttpRequestException;
 import org.symphonyoss.integration.model.yaml.AppAuthorizationModel;
-import org.symphonyoss.integration.authorization.oauth.v1.OAuth1Provider;
-import org.symphonyoss.integration.authorization.oauth.v1.OAuth1Exception;
 
 /**
  * Contract containing the minimum responsibility of a authorized integration.
@@ -69,11 +66,4 @@ public interface AuthorizedIntegration extends Integration {
    */
   String getAccessToken(String url, Long userId) throws AuthorizationException;
 
-  /**
-   * Get an OAuth1 provider for user to perform calls to an external system resource.
-   * @param url Integration URL.
-   * @return A OAuth1Provider.
-   * @throws OAuth1Exception Thrown in any case of error.
-   */
-  OAuth1Provider getOAuth1Provider(String url) throws OAuth1Exception;
 }
