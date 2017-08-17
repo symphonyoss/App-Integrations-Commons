@@ -29,13 +29,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.symphonyoss.integration.authorization.oauth.OAuthRsaSignerFactory;
 import org.symphonyoss.integration.logging.LogMessageSource;
+import org.symphonyoss.integration.utils.RsaKeyUtils;
 
 import java.net.UnknownHostException;
-import java.security.PublicKey;
 
 /**
  * Unit tests for {@link OAuth1GetTemporaryToken}.
@@ -48,7 +46,7 @@ public class OAuth1GetTemporaryTokenTest {
   LogMessageSource logMessage;
 
   @InjectMocks
-  OAuthRsaSignerFactory rsaSignerFactory;
+  RsaKeyUtils rsaSignerFactory;
 
   @Test
   public void testConstructor() throws OAuth1Exception {
@@ -68,15 +66,5 @@ public class OAuth1GetTemporaryTokenTest {
         REQUEST_TEMPORARY_TOKEN_URL, CONSUMER_KEY, rsaSigner,
         AUTHORIZATION_CALLBACK_URL);
     token.getValue();
-  }
-
-  @Test(expected = OAuth1Exception.class)
-  public void testInvalidPrivateKey() throws OAuth1Exception {
-    OAuthRsaSigner rsaSigner = rsaSignerFactory.getOAuthRsaSigner("?");
-  }
-
-  @Test(expected = OAuth1Exception.class)
-  public void testInvalidPublicKey() throws OAuth1Exception {
-    PublicKey publicKey = rsaSignerFactory.getPublicKey("?");
   }
 }

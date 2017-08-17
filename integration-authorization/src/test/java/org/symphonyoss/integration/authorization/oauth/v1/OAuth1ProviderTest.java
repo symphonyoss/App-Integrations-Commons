@@ -32,7 +32,7 @@ import org.mockito.Spy;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.symphonyoss.integration.authorization.oauth.OAuthRsaSignerFactory;
+import org.symphonyoss.integration.utils.RsaKeyUtils;
 import org.symphonyoss.integration.logging.LogMessageSource;
 
 import java.io.IOException;
@@ -75,7 +75,7 @@ public class OAuth1ProviderTest {
   private OAuth1GetAccessToken mockOAuth1GetAccessToken;
 
   @Spy
-  OAuthRsaSignerFactory rsaSignerFactory = new OAuthRsaSignerFactory();
+  RsaKeyUtils rsaSignerFactory = new RsaKeyUtils();
 
   @InjectMocks
   private OAuth1Provider authProvider =

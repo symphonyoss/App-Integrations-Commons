@@ -106,6 +106,16 @@
                 <version>${guava.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.google.oauth-client</groupId>
+                <artifactId>google-oauth-client</artifactId>
+                <version>${google.oauth.client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${io.jsonwebtoken.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.lmax</groupId>
                 <artifactId>disruptor</artifactId>
                 <version>${lmax-disruptor.version}</version>
@@ -217,6 +227,7 @@
         <webapp.directory>${project.artifactId}</webapp.directory>
 
         <!-- compile -->
+        <io.jsonwebtoken.version>0.7.0</io.jsonwebtoken.version>
         <google.oauth.client.version>1.22.0</google.oauth.client.version>
         <commons.lang3.version>3.4</commons.lang3.version>
         <commons-codec.version>1.4</commons-codec.version>

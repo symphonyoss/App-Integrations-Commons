@@ -10,7 +10,7 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.symphonyoss.integration.authorization.oauth.OAuthRsaSignerFactory;
+import org.symphonyoss.integration.utils.RsaKeyUtils;
 import org.symphonyoss.integration.logging.LogMessageSource;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ public abstract class OAuth1Provider {
   private LogMessageSource logMessage;
 
   @Autowired
-  private OAuthRsaSignerFactory rsaSignerFactory;
+  private RsaKeyUtils rsaSignerFactory;
 
   /**
    * Starts the OAuth dance by asking for a temporary token.
