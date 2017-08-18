@@ -16,8 +16,6 @@
 
 package org.symphonyoss.integration.exception;
 
-import org.symphonyoss.integration.exception.IntegrationRuntimeException;
-
 /**
  * Integration wasn't initialized properly.
  *

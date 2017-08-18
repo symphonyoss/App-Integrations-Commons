@@ -18,10 +18,13 @@ package org.symphonyoss.integration.authorization.oauth.v1;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
 import com.google.api.client.http.HttpMethods;
+import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
@@ -73,6 +76,9 @@ public class OAuth1ProviderTest {
 
   @Mock
   private OAuth1GetAccessToken mockOAuth1GetAccessToken;
+
+  @Mock
+  private HttpRequest mockHttpRequest;
 
   @Spy
   OAuthRsaSignerFactory rsaSignerFactory = new OAuthRsaSignerFactory();
@@ -151,6 +157,17 @@ public class OAuth1ProviderTest {
     authProvider.requestAcessToken(StringUtils.EMPTY, StringUtils.EMPTY);
 
     fail("Should have thrown OAuth1Exception.");
+  }
+
+  @Test(expected = OAuth1HttpRequestException.class)
+  public void testInvalidHttpRequest() throws Exception {
+    doThrow(new OAuth1HttpRequestException(anyString(), anyInt())).when(mockHttpRequest).execute();
+    PowerMockito.whenNew(HttpRequest.class).withAnyArguments().thenReturn(mockHttpRequest);
+
+    HttpResponse response = authProvider.makeAuthorizedRequest(
+        "", BASE_URL, HttpMethods.GET, null);
+
+    fail("Should have thrown OAuth1HttpRequestException");
   }
 
   private static URL makeUrl(String urlString) {
