@@ -159,17 +159,6 @@ public class OAuth1ProviderTest {
     fail("Should have thrown OAuth1Exception.");
   }
 
-  @Test(expected = OAuth1HttpRequestException.class)
-  public void testInvalidHttpRequest() throws Exception {
-    doThrow(new OAuth1HttpRequestException(anyString(), anyInt())).when(mockHttpRequest).execute();
-    PowerMockito.whenNew(HttpRequest.class).withAnyArguments().thenReturn(mockHttpRequest);
-
-    HttpResponse response = authProvider.makeAuthorizedRequest(
-        "", BASE_URL, HttpMethods.GET, null);
-
-    fail("Should have thrown OAuth1HttpRequestException");
-  }
-
   private static URL makeUrl(String urlString) {
     try {
       return new URL(urlString);
