@@ -34,7 +34,7 @@ public class IntegrationUnavailableExceptionTest {
   @Test
   public void testIntegrationUnavailableExceptionWithMessageAndSolution() {
     IntegrationUnavailableException exception =
-        new IntegrationUnavailableException(MESSAGE, SOLUTION);
+        new IntegrationUnavailableException(COMPONENT, MESSAGE, SOLUTION);
     String resultMessage = exception.getMessage();
 
     String expectedMessage = new ExpectedMessageBuilder().component(COMPONENT)
