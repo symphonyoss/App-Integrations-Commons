@@ -1,5 +1,7 @@
 package org.symphonyoss.integration.authentication.api.model;
 
+import java.util.Objects;
+
 /**
  * Holds the JWT authentication user data
  * Created by campidelli on 16/08/17.
@@ -113,5 +115,31 @@ public class JwtUser {
 
   public void setAvatarSmallUrl(String avatarSmallUrl) {
     this.avatarSmallUrl = avatarSmallUrl;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) { return true; }
+    if (o == null || getClass() != o.getClass()) { return false; }
+    JwtUser jwtUser = (JwtUser) o;
+    return Objects.equals(id, jwtUser.id) &&
+        Objects.equals(emailAddress, jwtUser.emailAddress) &&
+        Objects.equals(username, jwtUser.username) &&
+        Objects.equals(firstName, jwtUser.firstName) &&
+        Objects.equals(lastName, jwtUser.lastName) &&
+        Objects.equals(displayName, jwtUser.displayName) &&
+        Objects.equals(title, jwtUser.title) &&
+        Objects.equals(company, jwtUser.company) &&
+        Objects.equals(companyId, jwtUser.companyId) &&
+        Objects.equals(location, jwtUser.location) &&
+        Objects.equals(avatarUrl, jwtUser.avatarUrl) &&
+        Objects.equals(avatarSmallUrl, jwtUser.avatarSmallUrl);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, emailAddress, username, firstName, lastName, displayName, title,
+        company,
+        companyId, location, avatarUrl, avatarSmallUrl);
   }
 }

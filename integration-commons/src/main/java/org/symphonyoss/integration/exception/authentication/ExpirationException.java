@@ -17,17 +17,14 @@
 package org.symphonyoss.integration.exception.authentication;
 
 /**
- * Thrown when, during the authentication process, a given parameter is malformed.
+ * Thrown when a a token or JWT has expired.
  *
- * Created by campidelli on 17/08/17.
+ * Created by campidelli on 18/08/17.
  */
-public class MalformedParameterException extends AuthenticationException {
+public class ExpirationException extends AuthenticationException {
 
-  public MalformedParameterException(String message, Throwable cause, String... solutions) {
-    super(message, cause, solutions);
+  public ExpirationException(String message, Throwable e, String... solutions) {
+    super(message, e, solutions);
   }
 
-  public MalformedParameterException(String message, String... solutions) {
-    super(message, solutions);
-  }
 }
