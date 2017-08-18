@@ -16,8 +16,6 @@
 
 package org.symphonyoss.integration.exception;
 
-import org.symphonyoss.integration.exception.IntegrationRuntimeException;
-
 /**
  * Integration wasn't initialized properly.
  *
@@ -31,7 +29,8 @@ public class IntegrationUnavailableException extends IntegrationRuntimeException
     super(COMPONENT, String.format("Configuration %s unavailable", configurationType));
   }
 
-  public IntegrationUnavailableException(String message, String... solutions) {
-    super(COMPONENT, message, solutions);
+  public IntegrationUnavailableException(String component, String message, String... solutions) {
+    super(component, message, solutions);
   }
+
 }
