@@ -1,7 +1,6 @@
 package org.symphonyoss.integration.authentication.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.Date;
 import java.util.Objects;
@@ -23,19 +22,19 @@ public class JwtPayload {
   private String userId;
 
   @JsonProperty("exp")
-  @JsonDeserialize(using = UnixTimestampDeserializer.class)
-  private Date expirationDate;
+  private Long expirationDateInSeconds;
 
   private JwtUser user;
 
-  public JwtPayload() { }
+  public JwtPayload() {
+  }
 
   public JwtPayload(String applicationId, String companyName, String userId,
-      Date expirationDate, JwtUser user) {
+      Long expirationDateInSeconds, JwtUser user) {
     this.applicationId = applicationId;
     this.companyName = companyName;
     this.userId = userId;
-    this.expirationDate = expirationDate;
+    this.expirationDateInSeconds = expirationDateInSeconds;
     this.user = user;
   }
 
@@ -63,12 +62,12 @@ public class JwtPayload {
     this.userId = userId;
   }
 
-  public Date getExpirationDate() {
-    return expirationDate;
+  public Long getExpirationDateInSeconds() {
+    return expirationDateInSeconds;
   }
 
-  public void setExpirationDate(Date expirationDate) {
-    this.expirationDate = expirationDate;
+  public void setExpirationDateInSeconds(Long expirationDateInSeconds) {
+    this.expirationDateInSeconds = expirationDateInSeconds;
   }
 
   public JwtUser getUser() {
@@ -79,6 +78,13 @@ public class JwtPayload {
     this.user = user;
   }
 
+  public Date getExpirationDate() {
+    if (expirationDateInSeconds == null || expirationDateInSeconds == 0) {
+      return null;
+    }
+    return new Date(Long.valueOf(expirationDateInSeconds + "000"));
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) { return true; }
@@ -87,12 +93,12 @@ public class JwtPayload {
     return Objects.equals(applicationId, that.applicationId) &&
         Objects.equals(companyName, that.companyName) &&
         Objects.equals(userId, that.userId) &&
-        Objects.equals(expirationDate, that.expirationDate) &&
+        Objects.equals(expirationDateInSeconds, that.expirationDateInSeconds) &&
         Objects.equals(user, that.user);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(applicationId, companyName, userId, expirationDate, user);
+    return Objects.hash(applicationId, companyName, userId, expirationDateInSeconds, user);
   }
 }

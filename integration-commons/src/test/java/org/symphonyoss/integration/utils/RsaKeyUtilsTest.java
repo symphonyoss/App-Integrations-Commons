@@ -1,9 +1,7 @@
 package org.symphonyoss.integration.utils;
 
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
 
-import com.google.api.client.auth.oauth.OAuthRsaSigner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -11,14 +9,12 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.symphonyoss.integration.exception.authentication.UnexpectedAuthException;
 import org.symphonyoss.integration.logging.LogMessageSource;
+import sun.misc.BASE64Encoder;
 
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
-
-import sun.misc.BASE64Encoder;
 
 /**
  * Test class to validate {@link RsaKeyUtils}
@@ -46,25 +42,45 @@ public class RsaKeyUtilsTest {
 
   private static final String PUBLIC_KEY_PREFIX = "-----BEGIN PUBLIC KEY-----\n";
   private static final String PUBLIC_KEY_SUFFIX = "-----END PUBLIC KEY-----\n";
-  private static final String PUBLIC_KEY_TRIMMED = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC1WMuX9fL"
-      + "lyMKII1IirzrkGrBcRQjpsTuEABNQ6GC8cl2vW4NxFgtGuKMlzo7FxY4O1rsw8/uoJopMIIv+FFK9VQ4syb1N4pekA"
-      + "VbNv8OzI9d2hxffro6J1POMjZCO6N00e+KQIXRm4wINiPboTHHE7prpcTQV97rWbXyp2mLltQIDAQAB";
+  private static final String PUBLIC_KEY_TRIMMED = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA54V"
+      + "WseT0hHhlu/JdNr+O7HPAs0OSAzW963W4P9/XoUykNZ8UltwGFdVLLyBkIm0GT7Jgqd3y0W2b90eUykbeaXsodiwkD"
+      + "knb6gqCY/Z5duxojO5os45hp/++gf7DTTXG48K/gNU63LdRxP+WxpLde9AKJsRhcQHYfJi+nVhQ/Iehaldcj87Vri/"
+      + "dQMYH+AERsRApUmG2QM+VwWK1tCtfZ5UCacMg07gkaj9QyHyYCE0A7ScqaHNWtIdSjX88bgGKaT208nRm2nE2nyjdf"
+      + "JM91pb/dVcWPNC0XXqjPnLjaywO7jtM3gcmMREJNKdqqd69wd4khK8oqWuHayL1S5LDXQIDAQAB";
   private static final String PUBLIC_KEY = PUBLIC_KEY_PREFIX + PUBLIC_KEY_TRIMMED
       + PUBLIC_KEY_SUFFIX;
+  private static final String PUBLIC_CERTIFICATE = "-----BEGIN CERTIFICATE-----\n"
+      + "MIIEQDCCAyigAwIBAgIVAKmVBTro/GCF6u842F9q7JdYVYguMA0GCSqGSIb3DQEB\n"
+      + "CwUAMGQxJjAkBgNVBAMMHUlzc3VpbmcgQ2VydGlmaWNhdGUgQXV0aG9yaXR5MS0w\n"
+      + "KwYDVQQKDCRTeW1waG9ueSBDb21tdW5pY2F0aW9uIFNlcnZpY2VzIExMQy4xCzAJ\n"
+      + "BgNVBAYTAlVTMB4XDTE3MDYyODE2MDMxMVoXDTM3MDYyODE2MDMxMVowZDEmMCQG\n"
+      + "A1UEAwwdSXNzdWluZyBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkxLTArBgNVBAoMJFN5\n"
+      + "bXBob255IENvbW11bmljYXRpb24gU2VydmljZXMgTExDLjELMAkGA1UEBhMCVVMw\n"
+      + "ggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDnhVax5PSEeGW78l02v47s\n"
+      + "c8CzQ5IDNb3rdbg/39ehTKQ1nxSW3AYV1UsvIGQibQZPsmCp3fLRbZv3R5TKRt5p\n"
+      + "eyh2LCQOSdvqCoJj9nl27GiM7mizjmGn/76B/sNNNcbjwr+A1Trct1HE/5bGkt17\n"
+      + "0AomxGFxAdh8mL6dWFD8h6FqV1yPztWuL91Axgf4ARGxEClSYbZAz5XBYrW0K19n\n"
+      + "lQJpwyDTuCRqP1DIfJgITQDtJypoc1a0h1KNfzxuAYppPbTydGbacTafKN18kz3W\n"
+      + "lv91VxY80LRdeqM+cuNrLA7uO0zeByYxEQk0p2qp3r3B3iSEryipa4drIvVLksNd\n"
+      + "AgMBAAGjgegwgeUwDgYDVR0PAQH/BAQDAgGGMA8GA1UdEwEB/wQFMAMBAf8wHQYD\n"
+      + "VR0OBBYEFESrA+Ak9Ut+Jfcc8W+mG3RfqFXCMIGiBgNVHSMEgZowgZeAFESrA+Ak\n"
+      + "9Ut+Jfcc8W+mG3RfqFXCoWikZjBkMSYwJAYDVQQDDB1Jc3N1aW5nIENlcnRpZmlj\n"
+      + "YXRlIEF1dGhvcml0eTEtMCsGA1UECgwkU3ltcGhvbnkgQ29tbXVuaWNhdGlvbiBT\n"
+      + "ZXJ2aWNlcyBMTEMuMQswCQYDVQQGEwJVU4IVAKmVBTro/GCF6u842F9q7JdYVYgu\n"
+      + "MA0GCSqGSIb3DQEBCwUAA4IBAQC6ic1eJFuvRiHUWU48N6gynDe8Wmmzyx5zpNcg\n"
+      + "nGXjCTqWCQymEcKVNBYEeBwFWn74ImRMxbw+n6Du3Ybbp4C1eDwbQ9xRLs4zFigs\n"
+      + "DRtb4Fr/XMR3IyrgLdZt5+nqXmf8rBMqT5dXsiujym9di2kwbYm1kYuEZaKzrmFT\n"
+      + "y4/SmH8irbKndNFyKR+9kU785qUXrH/ZIAQc4h5TeyyMPmrda9cftQ8GgbCO8Ejb\n"
+      + "26x03kZ47dkiLcro82SBnNFtoD0eh7AI5qjVdFlksSduflRptrFX9JtbGNliWVNO\n"
+      + "dZH6wQyZkOmElekcEhXdCUjyyxHjKdhIQe1HI4ObrRJsTWkf\n"
+      + "-----END CERTIFICATE-----";
+
 
   @Mock
   private LogMessageSource logMessage;
 
   @InjectMocks
   private RsaKeyUtils rsaKeyUtils;
-
-  @Test
-  public void testGetOAuthRsaSigner() {
-    PrivateKey privateKey = rsaKeyUtils.getPrivateKey(PRIVATE_KEY_TRIMMED);
-    OAuthRsaSigner oAuthRsaSigner = rsaKeyUtils.getOAuthRsaSigner(PRIVATE_KEY_TRIMMED);
-    assertNotNull(oAuthRsaSigner);
-    assertEquals(privateKey, oAuthRsaSigner.privateKey);
-  }
 
   @Test
   public void testTrimPrivateKey() {
@@ -74,7 +90,7 @@ public class RsaKeyUtilsTest {
 
   @Test(expected = UnexpectedAuthException.class)
   public void testInvalidPrivateKey() {
-    rsaKeyUtils.getOAuthRsaSigner("?");
+    rsaKeyUtils.getPrivateKey("?");
   }
 
   @Test
@@ -86,20 +102,19 @@ public class RsaKeyUtilsTest {
   @Test
   public void testGetPublicKey() throws Exception {
     PublicKey publicKey = rsaKeyUtils.getPublicKey(PUBLIC_KEY_TRIMMED);
-    String publicKeyAsString = parsePublicKey(publicKey);
+    String publicKeyAsString = rsaKeyUtils.parsePublicKey(publicKey);
     assertEquals(PUBLIC_KEY_TRIMMED, publicKeyAsString);
-  }
-
-  private String parsePublicKey(PublicKey publicKey)
-      throws NoSuchAlgorithmException, java.security.spec.InvalidKeySpecException {
-    KeyFactory kf = KeyFactory.getInstance("RSA");
-    X509EncodedKeySpec spec = kf.getKeySpec(publicKey, X509EncodedKeySpec.class);
-    BASE64Encoder encoder = new BASE64Encoder();
-    return encoder.encode(spec.getEncoded()).replace("\n", "");
   }
 
   @Test(expected = UnexpectedAuthException.class)
   public void testInvalidPublicKey() {
     rsaKeyUtils.getPublicKey("?");
+  }
+
+  @Test
+  public void testGetPublicKeyFromCertificate() {
+    PublicKey publicKey = rsaKeyUtils.getPublicKeyFromCertificate(PUBLIC_CERTIFICATE);
+    String publicKeyAsString = rsaKeyUtils.parsePublicKey(publicKey);
+    assertEquals(PUBLIC_KEY_TRIMMED, publicKeyAsString);
   }
 }

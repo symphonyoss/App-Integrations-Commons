@@ -57,7 +57,8 @@ public interface AppAuthenticationProxy {
 
   /**
    * Retrieve and return the POD public certificate in PEM format.
+   * @param appId Application identifier
    * @return The found certificate.
    */
-  PodCertificate getPodPublicCertificate();
+  PodCertificate getPodPublicCertificate(String appId);
 }

@@ -29,9 +29,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.symphonyoss.integration.authorization.oauth.OAuthRsaSignerFactory;
 import org.symphonyoss.integration.utils.RsaKeyUtils;
-import org.symphonyoss.integration.logging.LogMessageSource;
 
 import java.net.UnknownHostException;
 
@@ -42,11 +43,11 @@ import java.net.UnknownHostException;
 @RunWith(MockitoJUnitRunner.class)
 public class OAuth1GetAccessTokenTest {
 
-  @Mock
-  LogMessageSource logMessage;
+  @Spy
+  RsaKeyUtils rsaKeyUtils = new RsaKeyUtils();
 
   @InjectMocks
-  RsaKeyUtils rsaSignerFactory;
+  OAuthRsaSignerFactory rsaSignerFactory;
 
   @Test
   public void testConstructor() throws OAuth1Exception {

@@ -1,6 +1,5 @@
 package org.symphonyoss.integration.utils;
 
-import com.google.api.client.auth.oauth.OAuthRsaSigner;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,17 +44,6 @@ public class RsaKeyUtils {
 
   @Autowired
   private LogMessageSource logMessage;
-
-  /**
-   * Creates a RSA signer based on a given private key.
-   * @param privateKey private key in PKCS8 syntax.
-   * @return OAuthRsaSigner
-   */
-  public OAuthRsaSigner getOAuthRsaSigner(String privateKey) {
-    OAuthRsaSigner oAuthRsaSigner = new OAuthRsaSigner();
-    oAuthRsaSigner.privateKey = getPrivateKey(privateKey);
-    return oAuthRsaSigner;
-  }
 
   /**
    * Convert the passed String into a PrivateKey.
@@ -150,7 +138,7 @@ public class RsaKeyUtils {
     try {
       KeyFactory kf = KeyFactory.getInstance("RSA");
       X509EncodedKeySpec spec = kf.getKeySpec(publicKey, X509EncodedKeySpec.class);
-      return Base64.encodeBase64String(spec.getEncoded());
+      return Base64.encodeBase64String(spec.getEncoded()).replaceAll("[\n\r]", "");
     } catch (NoSuchAlgorithmException e) {
       throw new UnexpectedAuthException(logMessage.getMessage(RSA_NOT_FOUND), e,
           logMessage.getMessage(RSA_NOT_FOUND_SOLUTION));

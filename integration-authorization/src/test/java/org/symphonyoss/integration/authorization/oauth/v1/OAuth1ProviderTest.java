@@ -18,9 +18,11 @@ package org.symphonyoss.integration.authorization.oauth.v1;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
+import com.google.api.client.auth.oauth.OAuthRsaSigner;
 import com.google.api.client.http.HttpMethods;
 import com.google.api.client.http.HttpResponse;
 import org.apache.commons.lang3.StringUtils;
@@ -32,8 +34,9 @@ import org.mockito.Spy;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.symphonyoss.integration.utils.RsaKeyUtils;
+import org.symphonyoss.integration.authorization.oauth.OAuthRsaSignerFactory;
 import org.symphonyoss.integration.logging.LogMessageSource;
+import org.symphonyoss.integration.utils.RsaKeyUtils;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -74,8 +77,10 @@ public class OAuth1ProviderTest {
   @Mock
   private OAuth1GetAccessToken mockOAuth1GetAccessToken;
 
-  @Spy
-  RsaKeyUtils rsaSignerFactory = new RsaKeyUtils();
+  @Mock
+  private OAuthRsaSignerFactory rsaSignerFactory;
+
+  private OAuthRsaSigner mockOAuthRsaSigner = new OAuthRsaSigner();
 
   @InjectMocks
   private OAuth1Provider authProvider =
@@ -84,6 +89,8 @@ public class OAuth1ProviderTest {
 
   @Test
   public void testRequestTemporaryToken() throws Exception {
+    doReturn(mockOAuthRsaSigner).when(rsaSignerFactory).getOAuthRsaSigner(PRIVATE_KEY);
+
     PowerMockito.whenNew(OAuth1GetTemporaryToken.class)
         .withAnyArguments()
         .thenReturn(mockOAuth1GetTemporaryToken);
@@ -115,6 +122,8 @@ public class OAuth1ProviderTest {
 
   @Test(expected = OAuth1Exception.class)
   public void testMakeInvalidAuthorizedRequest() throws Exception {
+    doReturn(mockOAuthRsaSigner).when(rsaSignerFactory).getOAuthRsaSigner(PRIVATE_KEY);
+
     HttpResponse response = authProvider.makeAuthorizedRequest(
         TOKEN, BASE_URL, HttpMethods.GET, null);
 
