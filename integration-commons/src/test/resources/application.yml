@@ -25,6 +25,11 @@ signing_cert:
   caCertChainFile: caCertChainFileTest
 
 #
+# Time (in minutes) to persist in a local cache the public pod certificate
+#
+public_pod_certificate_cache_duration: 60
+
+#
 # Indicate the host and port for the Symphony POD the Apps are associated with.
 #
 pod:

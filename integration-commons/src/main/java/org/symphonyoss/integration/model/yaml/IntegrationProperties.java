@@ -61,6 +61,8 @@ public class IntegrationProperties {
 
   private Certificate signingCert;
 
+  private Integer publicPodCertificateCacheDuration;
+
   public AdminUser getAdminUser() {
     return adminUser;
   }
@@ -169,6 +171,14 @@ public class IntegrationProperties {
 
   public void setSigningCert(Certificate signingCert) {
     this.signingCert = signingCert;
+  }
+
+  public Integer getPublicPodCertificateCacheDuration() {
+    return publicPodCertificateCacheDuration;
+  }
+
+  public void setPublicPodCertificateCacheDuration(Integer publicPodCertificateCacheDuration) {
+    this.publicPodCertificateCacheDuration = publicPodCertificateCacheDuration;
   }
 
   /**

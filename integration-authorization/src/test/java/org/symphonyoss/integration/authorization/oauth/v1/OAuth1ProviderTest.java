@@ -16,14 +16,15 @@
 
 package org.symphonyoss.integration.authorization.oauth.v1;
 
+import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
 import com.google.api.client.auth.oauth.OAuthParameters;
+import com.google.api.client.auth.oauth.OAuthRsaSigner;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpMethods;
@@ -38,7 +39,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -90,6 +90,9 @@ public class OAuth1ProviderTest {
   private OAuth1GetAccessToken mockOAuth1GetAccessToken;
 
   @Mock
+  private OAuthRsaSignerFactory rsaSignerFactory;
+
+  @Mock
   private NetHttpTransport transport;
 
   @Mock
@@ -101,8 +104,7 @@ public class OAuth1ProviderTest {
   @Mock
   private HttpResponseException mockHttpResponseException;
 
-  @Spy
-  OAuthRsaSignerFactory rsaSignerFactory = new OAuthRsaSignerFactory();
+  private OAuthRsaSigner mockOAuthRsaSigner = new OAuthRsaSigner();
 
   @InjectMocks
   private OAuth1Provider authProvider =
@@ -111,6 +113,8 @@ public class OAuth1ProviderTest {
 
   @Test
   public void testRequestTemporaryToken() throws Exception {
+    doReturn(mockOAuthRsaSigner).when(rsaSignerFactory).getOAuthRsaSigner(PRIVATE_KEY);
+
     PowerMockito.whenNew(OAuth1GetTemporaryToken.class)
         .withAnyArguments()
         .thenReturn(mockOAuth1GetTemporaryToken);
@@ -142,8 +146,11 @@ public class OAuth1ProviderTest {
 
   @Test(expected = OAuth1Exception.class)
   public void testMakeInvalidAuthorizedRequest() throws Exception {
-    authProvider.makeAuthorizedRequest(TOKEN, BASE_URL, HttpMethods.GET, null);
+    doReturn(mockOAuthRsaSigner).when(rsaSignerFactory).getOAuthRsaSigner(PRIVATE_KEY);
 
+    HttpResponse response = authProvider.makeAuthorizedRequest(
+        TOKEN, BASE_URL, HttpMethods.GET, null);
+    authProvider.makeAuthorizedRequest(TOKEN, BASE_URL, HttpMethods.GET, null);
     fail("Should have thrown OAuth1Exception.");
   }
 

@@ -17,6 +17,7 @@
 package org.symphonyoss.integration.authentication.api;
 
 import org.symphonyoss.integration.authentication.api.model.AppToken;
+import org.symphonyoss.integration.authentication.api.model.PodCertificate;
 
 import java.security.KeyStore;
 
@@ -54,4 +55,10 @@ public interface AppAuthenticationProxy {
    */
   AppToken authenticate(String appId, String appToken);
 
+  /**
+   * Retrieve and return the POD public certificate in PEM format.
+   * @param appId Application identifier
+   * @return The found certificate.
+   */
+  PodCertificate getPodPublicCertificate(String appId);
 }
