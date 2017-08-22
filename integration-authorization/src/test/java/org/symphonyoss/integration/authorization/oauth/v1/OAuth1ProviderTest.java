@@ -18,22 +18,34 @@ package org.symphonyoss.integration.authorization.oauth.v1;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
+import com.google.api.client.auth.oauth.OAuthParameters;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpMethods;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
+import com.google.api.client.http.HttpResponseException;
+import com.google.api.client.http.javanet.NetHttpTransport;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.symphonyoss.integration.utils.RsaKeyUtils;
+import org.symphonyoss.integration.exception.ExceptionMessageFormatter;
 import org.symphonyoss.integration.logging.LogMessageSource;
+import org.symphonyoss.integration.utils.RsaKeyUtils;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -44,7 +56,10 @@ import java.net.URL;
  * Created by campidelli on 25-jul-17.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(OAuth1Provider.class)
+@PowerMockIgnore("javax.management.*")
+@PrepareForTest(
+    {OAuth1Provider.class, NetHttpTransport.class, HttpRequestFactory.class, HttpRequest.class,
+        HttpResponseException.class})
 public class OAuth1ProviderTest {
 
   static final URL BASE_URL = makeUrl("http://www.1nv4lidh0st.com");
@@ -73,6 +88,18 @@ public class OAuth1ProviderTest {
 
   @Mock
   private OAuth1GetAccessToken mockOAuth1GetAccessToken;
+
+  @Mock
+  private NetHttpTransport transport;
+
+  @Mock
+  private HttpRequestFactory requestFactory;
+
+  @Mock
+  private HttpRequest mockHttpRequest;
+
+  @Mock
+  private HttpResponseException mockHttpResponseException;
 
   @Spy
   RsaKeyUtils rsaSignerFactory = new RsaKeyUtils();
@@ -115,8 +142,7 @@ public class OAuth1ProviderTest {
 
   @Test(expected = OAuth1Exception.class)
   public void testMakeInvalidAuthorizedRequest() throws Exception {
-    HttpResponse response = authProvider.makeAuthorizedRequest(
-        TOKEN, BASE_URL, HttpMethods.GET, null);
+    authProvider.makeAuthorizedRequest(TOKEN, BASE_URL, HttpMethods.GET, null);
 
     fail("Should have thrown OAuth1Exception.");
   }
@@ -151,6 +177,28 @@ public class OAuth1ProviderTest {
     authProvider.requestAcessToken(StringUtils.EMPTY, StringUtils.EMPTY);
 
     fail("Should have thrown OAuth1Exception.");
+  }
+
+  @Test
+  public void testInvalidHttpRequest() throws Exception {
+    String message = "Invalid parameters";
+
+    PowerMockito.whenNew(NetHttpTransport.class).withAnyArguments().thenReturn(transport);
+    doReturn(requestFactory).when(transport).createRequestFactory(any(OAuthParameters.class));
+    doReturn(mockHttpRequest).when(requestFactory)
+        .buildRequest(anyString(), any(GenericUrl.class), any(HttpContent.class));
+    doThrow(mockHttpResponseException).when(mockHttpRequest).execute();
+
+    doReturn(HttpStatus.SC_BAD_REQUEST).when(mockHttpResponseException).getStatusCode();
+    doReturn(message).when(mockHttpResponseException).getStatusMessage();
+
+    try {
+      authProvider.makeAuthorizedRequest("", BASE_URL, HttpMethods.GET, null);
+      fail("Should have thrown OAuth1HttpRequestException");
+    } catch (OAuth1HttpRequestException e) {
+      assertEquals(HttpStatus.SC_BAD_REQUEST, e.getCode());
+      assertEquals(ExceptionMessageFormatter.format("Third-party integration", message), e.getMessage());
+    }
   }
 
   private static URL makeUrl(String urlString) {
