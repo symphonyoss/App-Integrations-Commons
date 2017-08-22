@@ -14,25 +14,29 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration.authorization;
+package org.symphonyoss.integration.authorization.oauth.v1;
 
 import org.symphonyoss.integration.exception.IntegrationException;
 
 /**
- * Class used to inform exceptions regarding authorization process.
+ * Checked exception to report HTTP error response during the API call to an external system using
+ * OAuth1 protocol.
  *
- * Created by campidelli on 7/25/17.
+ * Created by alexandre-silva-daitan on 14/08/17.
  */
-public class AuthorizationException extends IntegrationException {
+public class OAuth1HttpRequestException extends IntegrationException {
 
-  private static final String COMPONENT = "Third-party integration/app authorization.";
+  private static final String COMPONENT = "Third-party integration";
+  private int code;
 
-  public AuthorizationException(String message, Throwable cause, String... solutions) {
-    super(COMPONENT, message, cause, solutions);
+  public OAuth1HttpRequestException(String message, int code) {
+    super(COMPONENT, message);
+    this.code = code;
   }
 
-  public AuthorizationException(String message, String... solutions) {
-    super(COMPONENT, message, solutions);
+  public int getCode() {
+    return code;
   }
+
 }
 

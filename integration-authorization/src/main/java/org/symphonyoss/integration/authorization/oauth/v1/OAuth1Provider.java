@@ -1,3 +1,19 @@
+/**
+ * Copyright 2016-2017 Symphony Integrations - Symphony LLC
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.symphonyoss.integration.authorization.oauth.v1;
 
 import com.google.api.client.auth.oauth.OAuthAuthorizeTemporaryTokenUrl;
@@ -8,6 +24,7 @@ import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
+import com.google.api.client.http.HttpResponseException;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.symphonyoss.integration.authorization.oauth.OAuthRsaSignerFactory;
@@ -27,7 +44,8 @@ public abstract class OAuth1Provider {
 
   private static final String REQUEST_TEMP_TOKEN_SOLUTION = REQUEST_TEMP_TOKEN + ".solution";
 
-  private static final String REQUEST_ACCESS_TOKEN = "integration.authorization.request.accesstoken";
+  private static final String REQUEST_ACCESS_TOKEN =
+      "integration.authorization.request.accesstoken";
 
   private static final String REQUEST_ACCESS_TOKEN_SOLUTION = REQUEST_ACCESS_TOKEN + ".solution";
 
@@ -116,7 +134,7 @@ public abstract class OAuth1Provider {
    * @throws OAuth1Exception when there is a problem with this operation.
    */
   public HttpResponse makeAuthorizedRequest(String accessToken, URL resourceUrl, String httpMethod,
-      HttpContent httpContent) throws OAuth1Exception {
+      HttpContent httpContent) throws OAuth1Exception, OAuth1HttpRequestException {
     checkConfiguration();
 
     OAuthParameters parameters = new OAuthParameters();
@@ -130,6 +148,8 @@ public abstract class OAuth1Provider {
       HttpRequest request = requestFactory.buildRequest(httpMethod, new GenericUrl(resourceUrl),
           httpContent);
       return request.execute();
+    } catch (HttpResponseException e) {
+      throw new OAuth1HttpRequestException(e.getStatusMessage(), e.getStatusCode());
     } catch (IOException e) {
       throw new OAuth1Exception(logMessage.getMessage(INVALID_REQUEST), e,
           logMessage.getMessage(INVALID_REQUEST_SOLUTION));
@@ -138,7 +158,8 @@ public abstract class OAuth1Provider {
 
   private void checkConfiguration() throws OAuth1Exception {
     if (!isConfigured()) {
-      throw new OAuth1Exception(logMessage.getMessage(NOT_CONFIGURED), logMessage.getMessage(NOT_CONFIGURED_SOLUTION));
+      throw new OAuth1Exception(logMessage.getMessage(NOT_CONFIGURED),
+          logMessage.getMessage(NOT_CONFIGURED_SOLUTION));
     }
   }
 
