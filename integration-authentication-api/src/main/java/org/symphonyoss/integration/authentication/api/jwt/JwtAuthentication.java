@@ -66,4 +66,13 @@ public interface JwtAuthentication {
    * @return JwtPayload parsed;
    */
   JwtPayload parseJwtPayload(String configurationId, String jwt);
+
+  /**
+   * Check if the POD identifier received from parameter is the same configured on the YAML config file.
+   * @param configurationId Integration identifier
+   * @param podId POD identifier
+   * @return true if both POD identifiers are the same or false otherwise
+   */
+  boolean checkPodInfo(String configurationId, String podId);
+
 }
