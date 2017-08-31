@@ -66,4 +66,11 @@ public interface AuthorizedIntegration extends Integration {
    */
   String getAccessToken(String url, Long userId) throws AuthorizationException;
 
+  /**
+   * Return an URL to be called after the authorization callback is called, this can be useful
+   * to close the authorization popUp window, for example.
+   * @return A valid URL to redirect or null when no redirection must be performed.
+   * @throws AuthorizationException Thrown in any case of error.
+   */
+  String getAuthorizationRedirectUrl() throws AuthorizationException;
 }
