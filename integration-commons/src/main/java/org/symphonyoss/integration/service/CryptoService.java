@@ -21,8 +21,4 @@ public interface CryptoService {
    * @return Decrypted text.
    */
   String decrypt(String encryptedText, String key);
-
-  String encrypt(String configurationId, String plainText, boolean b);
-
-  String decrypt(String configurationId, String plainText, boolean b);
 }
