@@ -21,15 +21,15 @@ package org.symphonyoss.integration.exception;
  * a text.
  * Created by campidelli on 05-sep-17.
  */
-public class CryptoRuntimeException extends IntegrationRuntimeException {
+public class CryptoException extends IntegrationException {
 
   private static final String COMPONENT = "Cryptography service";
 
-  public CryptoRuntimeException(String message, String... solutions) {
+  public CryptoException(String message, String... solutions) {
     super(COMPONENT, message, solutions);
   }
 
-  public CryptoRuntimeException(String message, Throwable cause, String... solutions) {
+  public CryptoException(String message, Throwable cause, String... solutions) {
     super(COMPONENT, message, cause, solutions);
   }
 }
