@@ -17,6 +17,7 @@
 package org.symphonyoss.integration.service;
 
 import org.symphonyoss.integration.entity.model.User;
+import org.symphonyoss.integration.model.UserKeyManagerData;
 
 /**
  * Interface that defines methods to user services
@@ -54,4 +55,10 @@ public interface UserService {
    */
   User getUserByUserId(String integrationUser, Long userId);
 
+  /**
+   * Return the Key Manager data for the given configuration ID.
+   * @param configurationId The configuration ID.
+   * @return Key manager user data.
+   */
+  UserKeyManagerData getBotUserAccountKeyData(String configurationId);
 }
