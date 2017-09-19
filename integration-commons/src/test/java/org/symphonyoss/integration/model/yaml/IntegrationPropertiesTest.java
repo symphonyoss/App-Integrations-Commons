@@ -214,9 +214,9 @@ public class IntegrationPropertiesTest {
     assertEquals("jks", integrationProperties.getIntegrationBridge().getTruststoreType());
     assertEquals("changeit", integrationProperties.getIntegrationBridge().getTruststorePassword());
 
-    assertNull(integrationProperties.getIntegrationBridge().getPort());
+    assertEquals("8080", integrationProperties.getIntegrationBridge().getPort());
 
-    assertEquals("https://nexus.symphony.com:443/integration", integrationProperties.getIntegrationBridgeUrl());
+    assertEquals("https://nexus.symphony.com:8080/integration", integrationProperties.getIntegrationBridgeUrl());
 
     IntegrationBridge integrationBridge = integrationProperties.getIntegrationBridge();
 
@@ -235,7 +235,8 @@ public class IntegrationPropertiesTest {
     assertEquals("test", integrationProperties.getApplicationId("test"));
 
     assertNotNull(integrationProperties.getApplicationId("jira"));
-    assertEquals("https://nexus.symphony.com/apps/context", integrationProperties.getApplicationUrl("jira"));
+    assertEquals("https://nexus.symphony.com:8080/apps/context", integrationProperties
+        .getApplicationUrl("jira"));
     assertEquals(StringUtils.EMPTY, integrationProperties.getApplicationUrl("test"));
 
     Application application = integrationProperties.getApplication("jira");
@@ -257,7 +258,7 @@ public class IntegrationPropertiesTest {
     assertEquals("testapp", application.getAppKeystore().getPassword());
     assertEquals("PROVISIONED", application.getState().name());
     assertEquals("Symphony Integration for JIRA", application.getAuthorization().getApplicationName());
-    assertEquals("https://nexus.symphony.com:443/integration", application.getAuthorization().getApplicationURL());
+    assertEquals("https://nexus.symphony.com:8080/integration", application.getAuthorization().getApplicationURL());
 
     Map<String, Object> authProperties = application.getAuthorization().getProperties();
 
