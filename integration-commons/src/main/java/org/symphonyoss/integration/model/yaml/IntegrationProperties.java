@@ -290,7 +290,14 @@ public class IntegrationProperties {
       return StringUtils.EMPTY;
     }
 
-    return String.format("https://%s/%s/%s", getIntegrationBridge().getHost(), APPS_CONTEXT, application.getContext());
+    String port = integrationBridge.getPort();
+
+    if (StringUtils.isEmpty(port)) {
+      port = DEFAULT_HTTPS_PORT;
+    }
+
+    return String.format("https://%s:%s/%s/%s", getIntegrationBridge().getHost(), port,
+        APPS_CONTEXT, application.getContext());
   }
 
   public String getIntegrationBridgeUrl() {

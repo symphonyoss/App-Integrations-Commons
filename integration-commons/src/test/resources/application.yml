@@ -107,6 +107,7 @@ integration_bridge:
   truststore_password: changeit
   domain: .symphony.com
   host: nexus.symphony.com
+  port: 8080
   allowed_origins:
     - host: ec2-107-23-104-115.compute-1.amazonaws.com
       address: 107.23.104.115
