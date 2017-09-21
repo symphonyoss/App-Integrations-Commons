@@ -252,6 +252,7 @@
         <!-- test -->
         <symphonySkipUnitTests>false</symphonySkipUnitTests>
         <powermock.version>1.6.1</powermock.version>
+        <cobertura.totalLineRate>90</cobertura.totalLineRate>
 
         <!-- RPM properties -->
         <rpm.deployment.prefix>/opt/symphony</rpm.deployment.prefix>
@@ -876,7 +877,7 @@
                                 <format>xml</format>
                             </formats>
                             <check>
-                                <totalLineRate>90</totalLineRate>
+                                <totalLineRate>${cobertura.totalLineRate}</totalLineRate>
                             </check>
                         </configuration>
                         <executions>
