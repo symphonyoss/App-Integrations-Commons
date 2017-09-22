@@ -42,6 +42,8 @@ public class IntegrationPropertiesTest {
     validateKeyManagerAuth();
     validateNumberOfApplications();
     validateLoginURL();
+    validatePublicPodCertificateCacheDuration();
+    validateHealthCheckTimeouts();
 
     assertNotNull(integrationProperties.getGlobalWhiteList());
     assertEquals("IntegrationProperties{pod=ConnectionInfo{host='nexus.symphony.com', port='443'}, agent=ConnectionInfo{host='nexus.symphony.com', port='8444'}, sessionManager=ConnectionInfo{host='nexus.symphony.com', port='8444'}, keyManager=ConnectionInfo{host='nexus.symphony.com', port='443'}}", integrationProperties.toString());
@@ -273,4 +275,24 @@ public class IntegrationPropertiesTest {
     integrationProperties.setIntegrationBridge(integrationBridge);
   }
 
+  private void validatePublicPodCertificateCacheDuration() {
+    Integer value = 60;
+    assertEquals(value, integrationProperties.getPublicPodCertificateCacheDuration());
+  }
+
+  private void validateHealthCheckTimeouts() {
+    int connectTimeoutInMillis = 1000;
+    int readTimeoutInMillis = 5000;
+    int maxConnectTimeoutInMillis = 0;
+    int maxReadTimeoutInMillis = 0;
+
+    assertEquals(connectTimeoutInMillis,
+        integrationProperties.getHealthCheckTimeouts().getConnectTimeoutInMillis());
+    assertEquals(readTimeoutInMillis,
+        integrationProperties.getHealthCheckTimeouts().getReadTimeoutInMillis());
+    assertEquals(maxConnectTimeoutInMillis,
+        integrationProperties.getHealthCheckTimeouts().getMaxConnectTimeoutInMillis());
+    assertEquals(maxReadTimeoutInMillis,
+        integrationProperties.getHealthCheckTimeouts().getMaxReadTimeoutInMillis());
+  }
 }

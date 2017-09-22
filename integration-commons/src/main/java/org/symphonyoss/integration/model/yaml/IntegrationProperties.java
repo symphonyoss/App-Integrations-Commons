@@ -63,6 +63,8 @@ public class IntegrationProperties {
 
   private Integer publicPodCertificateCacheDuration;
 
+  private TimeoutConfig healthCheckTimeouts;
+
   public AdminUser getAdminUser() {
     return adminUser;
   }
@@ -179,6 +181,14 @@ public class IntegrationProperties {
 
   public void setPublicPodCertificateCacheDuration(Integer publicPodCertificateCacheDuration) {
     this.publicPodCertificateCacheDuration = publicPodCertificateCacheDuration;
+  }
+
+  public TimeoutConfig getHealthCheckTimeouts() {
+    return healthCheckTimeouts;
+  }
+
+  public void setHealthCheckTimeouts(TimeoutConfig healthCheckTimeouts) {
+    this.healthCheckTimeouts = healthCheckTimeouts;
   }
 
   /**
