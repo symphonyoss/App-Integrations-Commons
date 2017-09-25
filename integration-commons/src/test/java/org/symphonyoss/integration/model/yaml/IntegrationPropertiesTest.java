@@ -26,6 +26,10 @@ import java.util.Map;
 @ContextConfiguration(classes = {IntegrationProperties.class})
 public class IntegrationPropertiesTest {
 
+  private static final Integer PUB_POD_CERT_CACHE_DURATION = 60;
+  private static final Integer CONNECT_TIMEOUT = 2000;
+  private static final Integer READ_TIMEOUT = 5000;
+
   @Autowired
   private IntegrationProperties integrationProperties;
 
@@ -42,6 +46,8 @@ public class IntegrationPropertiesTest {
     validateKeyManagerAuth();
     validateNumberOfApplications();
     validateLoginURL();
+    validatePublicPodCertificateCacheDuration();
+    validateHttpClientTimeouts();
 
     assertNotNull(integrationProperties.getGlobalWhiteList());
     assertEquals("IntegrationProperties{pod=ConnectionInfo{host='nexus.symphony.com', port='443'}, agent=ConnectionInfo{host='nexus.symphony.com', port='8444'}, sessionManager=ConnectionInfo{host='nexus.symphony.com', port='8444'}, keyManager=ConnectionInfo{host='nexus.symphony.com', port='443'}}", integrationProperties.toString());
@@ -273,4 +279,13 @@ public class IntegrationPropertiesTest {
     integrationProperties.setIntegrationBridge(integrationBridge);
   }
 
+  private void validatePublicPodCertificateCacheDuration() {
+    assertEquals(PUB_POD_CERT_CACHE_DURATION,
+        integrationProperties.getPublicPodCertificateCacheDuration());
+  }
+
+  private void validateHttpClientTimeouts() {
+    assertEquals(CONNECT_TIMEOUT, integrationProperties.getHttpClientConfig().getConnectTimeout());
+    assertEquals(READ_TIMEOUT, integrationProperties.getHttpClientConfig().getReadTimeout());
+  }
 }

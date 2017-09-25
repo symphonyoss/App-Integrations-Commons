@@ -21,7 +21,7 @@ package org.symphonyoss.integration.model.yaml;
  * Manager.
  * Created by Evandro Carrenho on 24/04/17.
  */
-public class ApiClientConfig {
+public class HttpClientConfig {
 
   /**
    * Default timeout for socket read.
@@ -125,7 +125,7 @@ public class ApiClientConfig {
 
   @Override
   public String toString() {
-    return "ApiClientConfig{" +
+    return "HttpClientConfig{" +
         "connectTimeout='" + getConnectTimeout() + '\'' +
         ", readTimeout='" + getReadTimeout() + '\'' +
         ", maxConnections='" + getMaxConnections() + '\'' +
