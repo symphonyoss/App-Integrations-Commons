@@ -53,7 +53,7 @@ public class IntegrationProperties {
 
   private ConnectionInfo keyManagerAuth;
 
-  private ApiClientConfig apiClientConfig;
+  private HttpClientConfig httpClientConfig;
 
   private Map<String, Application> applications = new HashMap<>();
 
@@ -62,8 +62,6 @@ public class IntegrationProperties {
   private Certificate signingCert;
 
   private Integer publicPodCertificateCacheDuration;
-
-  private TimeoutConfig healthCheckTimeouts;
 
   public AdminUser getAdminUser() {
     return adminUser;
@@ -114,12 +112,12 @@ public class IntegrationProperties {
   }
 
 
-  public ApiClientConfig getApiClientConfig() {
-    return apiClientConfig;
+  public HttpClientConfig getHttpClientConfig() {
+    return httpClientConfig;
   }
 
-  public void setApiClientConfig(ApiClientConfig apiClientConfig) {
-    this.apiClientConfig = apiClientConfig;
+  public void setHttpClientConfig(HttpClientConfig httpClientConfig) {
+    this.httpClientConfig = httpClientConfig;
   }
 
   public Map<String, Application> getApplications() {
@@ -181,14 +179,6 @@ public class IntegrationProperties {
 
   public void setPublicPodCertificateCacheDuration(Integer publicPodCertificateCacheDuration) {
     this.publicPodCertificateCacheDuration = publicPodCertificateCacheDuration;
-  }
-
-  public TimeoutConfig getHealthCheckTimeouts() {
-    return healthCheckTimeouts;
-  }
-
-  public void setHealthCheckTimeouts(TimeoutConfig healthCheckTimeouts) {
-    this.healthCheckTimeouts = healthCheckTimeouts;
   }
 
   /**

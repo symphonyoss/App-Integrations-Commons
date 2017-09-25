@@ -26,6 +26,10 @@ import java.util.Map;
 @ContextConfiguration(classes = {IntegrationProperties.class})
 public class IntegrationPropertiesTest {
 
+  private static final Integer PUB_POD_CERT_CACHE_DURATION = 60;
+  private static final Integer CONNECT_TIMEOUT = 2000;
+  private static final Integer READ_TIMEOUT = 5000;
+
   @Autowired
   private IntegrationProperties integrationProperties;
 
@@ -43,7 +47,7 @@ public class IntegrationPropertiesTest {
     validateNumberOfApplications();
     validateLoginURL();
     validatePublicPodCertificateCacheDuration();
-    validateHealthCheckTimeouts();
+    validateHttpClientTimeouts();
 
     assertNotNull(integrationProperties.getGlobalWhiteList());
     assertEquals("IntegrationProperties{pod=ConnectionInfo{host='nexus.symphony.com', port='443'}, agent=ConnectionInfo{host='nexus.symphony.com', port='8444'}, sessionManager=ConnectionInfo{host='nexus.symphony.com', port='8444'}, keyManager=ConnectionInfo{host='nexus.symphony.com', port='443'}}", integrationProperties.toString());
@@ -276,23 +280,12 @@ public class IntegrationPropertiesTest {
   }
 
   private void validatePublicPodCertificateCacheDuration() {
-    Integer value = 60;
-    assertEquals(value, integrationProperties.getPublicPodCertificateCacheDuration());
+    assertEquals(PUB_POD_CERT_CACHE_DURATION,
+        integrationProperties.getPublicPodCertificateCacheDuration());
   }
 
-  private void validateHealthCheckTimeouts() {
-    int connectTimeoutInMillis = 1000;
-    int readTimeoutInMillis = 5000;
-    int maxConnectTimeoutInMillis = 0;
-    int maxReadTimeoutInMillis = 0;
-
-    assertEquals(connectTimeoutInMillis,
-        integrationProperties.getHealthCheckTimeouts().getConnectTimeoutInMillis());
-    assertEquals(readTimeoutInMillis,
-        integrationProperties.getHealthCheckTimeouts().getReadTimeoutInMillis());
-    assertEquals(maxConnectTimeoutInMillis,
-        integrationProperties.getHealthCheckTimeouts().getMaxConnectTimeoutInMillis());
-    assertEquals(maxReadTimeoutInMillis,
-        integrationProperties.getHealthCheckTimeouts().getMaxReadTimeoutInMillis());
+  private void validateHttpClientTimeouts() {
+    assertEquals(CONNECT_TIMEOUT, integrationProperties.getHttpClientConfig().getConnectTimeout());
+    assertEquals(READ_TIMEOUT, integrationProperties.getHttpClientConfig().getReadTimeout());
   }
 }
