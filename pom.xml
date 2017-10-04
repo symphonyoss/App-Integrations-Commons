@@ -34,6 +34,21 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>symphony</id>
+            <name>symphony releases</name>
+            <url>https://repo.symphony.com/artifactory/libs-release</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>snapshots</id>
+            <url>https://repo.symphony.com/artifactory/libs-snapshot</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
     </repositories>
 
     <dependencyManagement>
@@ -158,6 +173,12 @@
                 <version>${google.oauth.client.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.symphony</groupId>
+                <artifactId>crypto</artifactId>
+                <version>${symphony.crypto.version}</version>
+            </dependency>
+
             <!-- test -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -248,6 +269,7 @@
         <metrics.version>3.1.2</metrics.version>
         <spring.boot.version>1.5.1.RELEASE</spring.boot.version>
         <symphony.sbe.version>1.44.3</symphony.sbe.version>
+        <symphony.crypto.version>1.48.2.1</symphony.crypto.version>
 
         <!-- test -->
         <symphonySkipUnitTests>false</symphonySkipUnitTests>
@@ -575,7 +597,8 @@
 
     <scm>
         <connection>scm:git:git@github.com:symphonyoss/App-Integrations-Commons.git</connection>
-        <developerConnection>scm:git:git@github.com:symphonyoss/App-Integrations-Commons.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:symphonyoss/App-Integrations-Commons.git
+        </developerConnection>
         <url>https://github.com/symphonyoss/App-Integrations-Commons</url>
     </scm>
 
@@ -776,7 +799,9 @@
                                     <goal>copy-resources</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>${project.build.outputDirectory}/static/${webapp.directory}</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.build.outputDirectory}/static/${webapp.directory}
+                                    </outputDirectory>
                                     <resources>
                                         <resource>
                                             <directory>${project.build.directory}/static</directory>
@@ -797,29 +822,32 @@
                 <finalName>integration</finalName>
                 <plugins>
                     <plugin>
-                      <groupId>org.apache.maven.plugins</groupId>
-                      <artifactId>maven-shade-plugin</artifactId>
-                      <version>3.0.0</version>
-                      <configuration>
-                          <createDependencyReducedPom>false</createDependencyReducedPom>
-                          <artifactSet>
-                              <includes>
-                                  <include>org.symphonyoss.symphony.integrations:integration-web</include>
-                              </includes>
-                              <excludes>
-                                  <exclude>org.springframework.boot:*</exclude>
-                                  <exclude>org.symphonyoss.symphony.integrations:integration-webhook</exclude>
-                              </excludes>
-                          </artifactSet>
-                      </configuration>
-                      <executions>
-                        <execution>
-                          <phase>package</phase>
-                          <goals>
-                            <goal>shade</goal>
-                          </goals>
-                        </execution>
-                      </executions>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.symphonyoss.symphony.integrations:integration-web
+                                    </include>
+                                </includes>
+                                <excludes>
+                                    <exclude>org.springframework.boot:*</exclude>
+                                    <exclude>
+                                        org.symphonyoss.symphony.integrations:integration-webhook
+                                    </exclude>
+                                </excludes>
+                            </artifactSet>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
 
                     <plugin>
@@ -828,7 +856,9 @@
                         <version>${spring.boot.version}</version>
                         <configuration>
                             <layout>ZIP</layout>
-                            <mainClass>org.symphonyoss.integration.web.IntegrationBridgeApplication</mainClass>
+                            <mainClass>
+                                org.symphonyoss.integration.web.IntegrationBridgeApplication
+                            </mainClass>
                             <excludes>
                                 <exclude>
                                     <groupId>org.symphonyoss.symphony.integrations</groupId>
