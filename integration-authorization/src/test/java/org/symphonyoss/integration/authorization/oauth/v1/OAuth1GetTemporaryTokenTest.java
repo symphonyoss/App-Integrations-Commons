@@ -28,13 +28,12 @@ import com.google.api.client.auth.oauth.OAuthRsaSigner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.symphonyoss.integration.authorization.oauth.OAuthRsaSignerFactory;
 import org.symphonyoss.integration.utils.RsaKeyUtils;
 
-import java.net.UnknownHostException;
+import java.io.IOException;
 
 /**
  * Unit tests for {@link OAuth1GetTemporaryToken}.
@@ -60,7 +59,7 @@ public class OAuth1GetTemporaryTokenTest {
     assertEquals(AUTHORIZATION_CALLBACK_URL.toString(), token.callback);
   }
 
-  @Test(expected = UnknownHostException.class)
+  @Test(expected = IOException.class)
   public void testInvalidExecution() throws Exception {
     OAuthRsaSigner rsaSigner = rsaSignerFactory.getOAuthRsaSigner(PRIVATE_KEY);
     OAuth1GetTemporaryToken token = new OAuth1GetTemporaryToken(

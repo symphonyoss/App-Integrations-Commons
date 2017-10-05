@@ -28,13 +28,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.symphonyoss.integration.authorization.oauth.OAuthRsaSignerFactory;
 import org.symphonyoss.integration.utils.RsaKeyUtils;
 
-import java.net.UnknownHostException;
+import java.io.IOException;
 
 /**
  * Unit tests for {@link OAuth1GetAccessToken}.
@@ -61,7 +60,7 @@ public class OAuth1GetAccessTokenTest {
     assertEquals(StringUtils.EMPTY, token.verifier);
   }
 
-  @Test(expected = UnknownHostException.class)
+  @Test(expected = IOException.class)
   public void testInvalidExecution() throws Exception {
     OAuthRsaSigner rsaSigner = rsaSignerFactory.getOAuthRsaSigner(PRIVATE_KEY);
     OAuth1GetAccessToken token = new OAuth1GetAccessToken(
