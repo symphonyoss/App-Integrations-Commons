@@ -575,7 +575,8 @@
 
     <scm>
         <connection>scm:git:git@github.com:symphonyoss/App-Integrations-Commons.git</connection>
-        <developerConnection>scm:git:git@github.com:symphonyoss/App-Integrations-Commons.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:symphonyoss/App-Integrations-Commons.git
+        </developerConnection>
         <url>https://github.com/symphonyoss/App-Integrations-Commons</url>
     </scm>
 
@@ -776,7 +777,9 @@
                                     <goal>copy-resources</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>${project.build.outputDirectory}/static/${webapp.directory}</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.build.outputDirectory}/static/${webapp.directory}
+                                    </outputDirectory>
                                     <resources>
                                         <resource>
                                             <directory>${project.build.directory}/static</directory>
@@ -797,29 +800,32 @@
                 <finalName>integration</finalName>
                 <plugins>
                     <plugin>
-                      <groupId>org.apache.maven.plugins</groupId>
-                      <artifactId>maven-shade-plugin</artifactId>
-                      <version>3.0.0</version>
-                      <configuration>
-                          <createDependencyReducedPom>false</createDependencyReducedPom>
-                          <artifactSet>
-                              <includes>
-                                  <include>org.symphonyoss.symphony.integrations:integration-web</include>
-                              </includes>
-                              <excludes>
-                                  <exclude>org.springframework.boot:*</exclude>
-                                  <exclude>org.symphonyoss.symphony.integrations:integration-webhook</exclude>
-                              </excludes>
-                          </artifactSet>
-                      </configuration>
-                      <executions>
-                        <execution>
-                          <phase>package</phase>
-                          <goals>
-                            <goal>shade</goal>
-                          </goals>
-                        </execution>
-                      </executions>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.symphonyoss.symphony.integrations:integration-web
+                                    </include>
+                                </includes>
+                                <excludes>
+                                    <exclude>org.springframework.boot:*</exclude>
+                                    <exclude>
+                                        org.symphonyoss.symphony.integrations:integration-webhook
+                                    </exclude>
+                                </excludes>
+                            </artifactSet>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
 
                     <plugin>
@@ -828,7 +834,9 @@
                         <version>${spring.boot.version}</version>
                         <configuration>
                             <layout>ZIP</layout>
-                            <mainClass>org.symphonyoss.integration.web.IntegrationBridgeApplication</mainClass>
+                            <mainClass>
+                                org.symphonyoss.integration.web.IntegrationBridgeApplication
+                            </mainClass>
                             <excludes>
                                 <exclude>
                                     <groupId>org.symphonyoss.symphony.integrations</groupId>
