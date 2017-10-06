@@ -34,21 +34,6 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
-        <repository>
-            <id>symphony</id>
-            <name>symphony releases</name>
-            <url>https://repo.symphony.com/artifactory/libs-release</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>snapshots</id>
-            <url>https://repo.symphony.com/artifactory/libs-snapshot</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
     </repositories>
 
     <dependencyManagement>
@@ -173,12 +158,6 @@
                 <version>${google.oauth.client.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>com.symphony</groupId>
-                <artifactId>crypto</artifactId>
-                <version>${symphony.crypto.version}</version>
-            </dependency>
-
             <!-- test -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -269,7 +248,6 @@
         <metrics.version>3.1.2</metrics.version>
         <spring.boot.version>1.5.1.RELEASE</spring.boot.version>
         <symphony.sbe.version>1.44.3</symphony.sbe.version>
-        <symphony.crypto.version>1.48.2.1</symphony.crypto.version>
 
         <!-- test -->
         <symphonySkipUnitTests>false</symphonySkipUnitTests>
