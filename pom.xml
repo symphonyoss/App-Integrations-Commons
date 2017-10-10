@@ -879,6 +879,11 @@
                             <check>
                                 <totalLineRate>${cobertura.totalLineRate}</totalLineRate>
                             </check>
+                            <instrumentation>
+                                <excludes>
+                                    <exclude>com/**/*.class</exclude>
+                                </excludes>
+                            </instrumentation>
                         </configuration>
                         <executions>
                             <execution>
