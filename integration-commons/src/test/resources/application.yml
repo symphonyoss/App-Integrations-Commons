@@ -25,6 +25,12 @@ signing_cert:
   caCertChainFile: caCertChainFileTest
 
 #
+# Default timeouts (in millis)
+#
+http_client_config:
+  connect_timeout: 2000
+  read_timeout: 5000
+#
 # Indicate the host and port for the Symphony POD the Apps are associated with.
 #
 pod:

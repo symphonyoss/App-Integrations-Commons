@@ -51,7 +51,7 @@ public class IntegrationProperties {
 
   private ConnectionInfo keyManagerAuth;
 
-  private ApiClientConfig apiClientConfig;
+  private HttpClientConfig httpClientConfig;
 
   private Map<String, Application> applications = new HashMap<>();
 
@@ -108,12 +108,12 @@ public class IntegrationProperties {
   }
 
 
-  public ApiClientConfig getApiClientConfig() {
-    return apiClientConfig;
+  public HttpClientConfig getHttpClientConfig() {
+    return httpClientConfig;
   }
 
-  public void setApiClientConfig(ApiClientConfig apiClientConfig) {
-    this.apiClientConfig = apiClientConfig;
+  public void setHttpClientConfig(HttpClientConfig httpClientConfig) {
+    this.httpClientConfig = httpClientConfig;
   }
 
   public Map<String, Application> getApplications() {
