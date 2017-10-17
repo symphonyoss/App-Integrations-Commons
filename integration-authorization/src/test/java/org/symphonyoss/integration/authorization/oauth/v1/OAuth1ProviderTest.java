@@ -44,6 +44,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.symphonyoss.integration.authorization.oauth.OAuthRsaSignerFactory;
+import org.symphonyoss.integration.authorization.oauth.v1.exception.OAuth1Exception;
 import org.symphonyoss.integration.exception.ExceptionMessageFormatter;
 import org.symphonyoss.integration.logging.LogMessageSource;
 

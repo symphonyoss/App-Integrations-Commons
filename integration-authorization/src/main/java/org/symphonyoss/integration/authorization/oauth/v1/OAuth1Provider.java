@@ -28,6 +28,7 @@ import com.google.api.client.http.HttpResponseException;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.symphonyoss.integration.authorization.oauth.OAuthRsaSignerFactory;
+import org.symphonyoss.integration.authorization.oauth.v1.exception.OAuth1Exception;
 import org.symphonyoss.integration.logging.LogMessageSource;
 
 import java.io.IOException;
