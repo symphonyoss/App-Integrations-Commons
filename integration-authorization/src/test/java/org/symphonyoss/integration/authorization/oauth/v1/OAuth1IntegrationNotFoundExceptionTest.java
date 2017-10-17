@@ -3,7 +3,6 @@ package org.symphonyoss.integration.authorization.oauth.v1;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.symphonyoss.integration.authorization.oauth.v1.exception.OAuth1IntegrationNotFoundException;
 import org.symphonyoss.integration.exception.ExpectedMessageBuilder;
 
 /**

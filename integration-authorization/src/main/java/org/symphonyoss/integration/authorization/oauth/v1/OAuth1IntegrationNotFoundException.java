@@ -1,4 +1,4 @@
-package org.symphonyoss.integration.authorization.oauth.v1.exception;
+package org.symphonyoss.integration.authorization.oauth.v1;
 
 /**
  * Exception used to inform that the informed integration wasn't found on the OAuth1 process

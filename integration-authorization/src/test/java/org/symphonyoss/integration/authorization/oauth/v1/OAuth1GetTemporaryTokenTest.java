@@ -31,7 +31,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.symphonyoss.integration.authorization.oauth.OAuthRsaSignerFactory;
-import org.symphonyoss.integration.authorization.oauth.v1.exception.OAuth1Exception;
 import org.symphonyoss.integration.utils.RsaKeyUtils;
 
 import java.net.UnknownHostException;

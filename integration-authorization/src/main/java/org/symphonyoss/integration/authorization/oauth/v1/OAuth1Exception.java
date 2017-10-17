@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.symphonyoss.integration.authorization.oauth.v1.exception;
+package org.symphonyoss.integration.authorization.oauth.v1;
 
 import org.symphonyoss.integration.authorization.AuthorizationException;
 

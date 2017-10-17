@@ -1,4 +1,4 @@
-package org.symphonyoss.integration.authorization.oauth.v1.exception;
+package org.symphonyoss.integration.authorization.oauth.v1;
 
 /**
  * Exception used to inform missing parameters on the OAuth1 process
