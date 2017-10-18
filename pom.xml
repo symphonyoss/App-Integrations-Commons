@@ -12,7 +12,7 @@
 
     <groupId>org.symphonyoss.symphony.integrations</groupId>
     <artifactId>integration-parent</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>1.5.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <description>Common components for Symphony App Integrations</description>
@@ -879,6 +879,11 @@
                             <check>
                                 <totalLineRate>${cobertura.totalLineRate}</totalLineRate>
                             </check>
+                            <instrumentation>
+                                <excludes>
+                                    <exclude>com/**/*.class</exclude>
+                                </excludes>
+                            </instrumentation>
                         </configuration>
                         <executions>
                             <execution>
