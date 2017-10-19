@@ -227,17 +227,17 @@ public class SimpleHttpApiClient implements HttpApiClient {
         return deserialize(response, returnType);
       }
     } else {
-      String message = "Failed to call API";
 
       if (response.hasEntity()) {
         try {
           String respBody = String.valueOf(response.readEntity(String.class));
-          message = respBody;
+          throw new RemoteApiException(response.getStatus(), respBody);
         } catch (RuntimeException e) {
           LOGGER.debug("Couldn't parse the response entity.", e);
         }
       }
 
+      String message = "Failed to call API";
       throw new RemoteApiException(response.getStatus(), message);
     }
   }
