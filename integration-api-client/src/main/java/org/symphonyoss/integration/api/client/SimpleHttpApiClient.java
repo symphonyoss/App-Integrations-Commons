@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.symphonyoss.integration.api.client.json.JsonUtils;
 import org.symphonyoss.integration.exception.RemoteApiException;
+import org.symphonyoss.integration.logging.MessageUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -47,6 +48,16 @@ public class SimpleHttpApiClient implements HttpApiClient {
   private static final String DEFAULT_MIME_VERSION_HEADER = "1.0";
 
   private static final String MIME_VERSION_HEADER = "MIME-Version";
+
+  public static final String BUNDLE_FILENAME = "integration-api-log-messages";
+
+  private static final MessageUtils MSG = new MessageUtils(BUNDLE_FILENAME);
+
+  private static final String UNSUPPORTED_ENCODING = "integration.api.unsupported.encoding";
+
+  private static final String FAIL_PARSE_RESPONSE = "integration.api.fail.parse.response.entity";
+
+  private static final String FAIL_API_CALL = "integration.api.fail.api.call";
 
   /**
    * JSON helper class
@@ -76,8 +87,7 @@ public class SimpleHttpApiClient implements HttpApiClient {
     try {
       return URLEncoder.encode(str, "utf8").replaceAll("\\+", "%20");
     } catch (UnsupportedEncodingException e) {
-      LOGGER.debug(
-          String.format("Couldn't escape string parameter %s due to encoding issues.", str), e);
+      LOGGER.debug(MSG.getMessage(UNSUPPORTED_ENCODING, str));
       return str;
     }
   }
@@ -233,12 +243,11 @@ public class SimpleHttpApiClient implements HttpApiClient {
           String respBody = String.valueOf(response.readEntity(String.class));
           throw new RemoteApiException(response.getStatus(), respBody);
         } catch (RuntimeException e) {
-          LOGGER.debug("Couldn't parse the response entity.", e);
+          LOGGER.debug(MSG.getMessage(FAIL_PARSE_RESPONSE), e);
         }
       }
 
-      String message = "Failed to call API";
-      throw new RemoteApiException(response.getStatus(), message);
+      throw new RemoteApiException(response.getStatus(), MSG.getMessage(FAIL_API_CALL));
     }
   }
 
