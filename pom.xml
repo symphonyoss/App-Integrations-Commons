@@ -216,6 +216,10 @@
     </modules>
 
     <properties>
+        <!-- This is temporary; set to true as soon as the WhiteSource dashboard is clean -->
+        <whitesource.product>Integration Bridge</whitesource.product>
+        <whitesource.checkPolicies>false</whitesource.checkPolicies>
+
         <!-- plugins -->
         <build.number>0</build.number>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
