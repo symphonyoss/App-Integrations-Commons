@@ -18,6 +18,7 @@ package org.symphonyoss.integration.healthcheck;
 
 import static javax.ws.rs.core.MediaType.WILDCARD;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -291,7 +292,7 @@ public class IntegrationHealthManagerTest {
     IntegrationHealth integrationHealth = healthManager.updateFlags();
 
     assertEquals(IntegrationStatus.ACTIVE.name(), integrationHealth.getStatus());
-    assertEquals(IntegrationStatus.ACTIVE.toString(), integrationHealth.getStatus().toString());
+    assertNotEquals(IntegrationStatus.ACTIVE.toString(), integrationHealth.getStatus());
     assertEquals(SUCCESS, integrationHealth.getMessage());
   }
 
