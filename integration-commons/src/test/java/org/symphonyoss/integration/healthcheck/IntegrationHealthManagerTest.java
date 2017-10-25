@@ -291,6 +291,7 @@ public class IntegrationHealthManagerTest {
     IntegrationHealth integrationHealth = healthManager.updateFlags();
 
     assertEquals(IntegrationStatus.ACTIVE.name(), integrationHealth.getStatus());
+    assertEquals(IntegrationStatus.ACTIVE.toString(), integrationHealth.getStatus().toString());
     assertEquals(SUCCESS, integrationHealth.getMessage());
   }
 
