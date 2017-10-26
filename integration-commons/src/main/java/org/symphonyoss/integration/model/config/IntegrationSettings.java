@@ -16,6 +16,8 @@
 
 package org.symphonyoss.integration.model.config;
 
+import java.util.Map;
+
 /**
  * Settings for the integration.
  * Created by rsanchez on 15/02/17.
@@ -39,6 +41,8 @@ public class IntegrationSettings {
   private Boolean active;
 
   private String username;
+
+  private Map<String, Object> data;
 
   public String getConfigurationId() {
     return configurationId;
@@ -110,5 +114,13 @@ public class IntegrationSettings {
 
   public void setUsername(String username) {
     this.username = username;
+  }
+
+  public Map<String, Object> getData() {
+    return data;
+  }
+
+  public void setData(Map<String, Object> data) {
+    this.data = data;
   }
 }
