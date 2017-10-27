@@ -16,21 +16,18 @@
 
 package org.symphonyoss.integration.authorization.oauth.v1;
 
-import org.symphonyoss.integration.exception.IntegrationException;
-
 /**
  * Checked exception to report HTTP error response during the API call to an external system using
  * OAuth1 protocol.
  *
  * Created by alexandre-silva-daitan on 14/08/17.
  */
-public class OAuth1HttpRequestException extends IntegrationException {
+public class OAuth1HttpRequestException extends OAuth1Exception {
 
-  private static final String COMPONENT = "Third-party integration";
   private int code;
 
   public OAuth1HttpRequestException(String message, int code) {
-    super(COMPONENT, message);
+    super(message);
     this.code = code;
   }
 

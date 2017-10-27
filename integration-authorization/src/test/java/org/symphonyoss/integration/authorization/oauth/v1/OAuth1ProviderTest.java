@@ -204,7 +204,9 @@ public class OAuth1ProviderTest {
       fail("Should have thrown OAuth1HttpRequestException");
     } catch (OAuth1HttpRequestException e) {
       assertEquals(HttpStatus.SC_BAD_REQUEST, e.getCode());
-      assertEquals(ExceptionMessageFormatter.format("Third-party integration", message), e.getMessage());
+      assertEquals(
+          ExceptionMessageFormatter.format("Third-party integration/app authorization.", message),
+          e.getMessage());
     }
   }
 

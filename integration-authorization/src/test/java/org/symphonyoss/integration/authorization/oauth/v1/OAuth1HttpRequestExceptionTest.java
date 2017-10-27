@@ -28,7 +28,7 @@ import org.symphonyoss.integration.exception.ExpectedMessageBuilder;
 
 public class OAuth1HttpRequestExceptionTest {
 
-  private static final String COMPONENT = "Third-party integration";
+  private static final String COMPONENT = "Third-party integration/app authorization.";
 
   private static final String MESSAGE = "message";
 

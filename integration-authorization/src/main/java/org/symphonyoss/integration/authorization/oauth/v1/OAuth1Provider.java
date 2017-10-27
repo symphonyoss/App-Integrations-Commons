@@ -77,6 +77,8 @@ public abstract class OAuth1Provider {
         getAuthorizationCallbackUrl());
     try {
       return temporaryToken.getValue();
+    } catch (HttpResponseException e) {
+      throw new OAuth1HttpRequestException(e.getMessage(), e.getStatusCode());
     } catch (IOException e) {
       throw new OAuth1Exception(logMessage.getMessage(REQUEST_TEMP_TOKEN), e,
           logMessage.getMessage(REQUEST_TEMP_TOKEN_SOLUTION));
