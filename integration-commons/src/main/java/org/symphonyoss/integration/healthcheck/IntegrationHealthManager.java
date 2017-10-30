@@ -71,11 +71,9 @@ public class IntegrationHealthManager {
 
   private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'Z";
 
-  private static final String APPS_CONTEXT = "apps";
+  private static final String APP_CONTROLLER_PAGE = "/controller.html";
 
-  private static final String APP_CONTROLLER_PAGE = "controller.html";
-
-  private static final String APP_ICON_IMAGE = "img/appstore-logo.png";
+  private static final String APP_ICON_IMAGE = "/img/appstore-logo.png";
 
   private IntegrationHealth health = new IntegrationHealth();
 
@@ -181,8 +179,7 @@ public class IntegrationHealthManager {
         (StringUtils.isNotEmpty(bridge.getHost()))) {
       IntegrationConfigurator configurator = new IntegrationConfigurator();
 
-      String baseUrl = String.format("https://%s/%s/%s/", bridge.getHost(), APPS_CONTEXT,
-          application.getContext());
+      String baseUrl = properties.getApplicationUrl(application.getId());
 
       configurator.setLoadUrl(baseUrl.concat(APP_CONTROLLER_PAGE));
       configurator.setIconUrl(baseUrl.concat(APP_ICON_IMAGE));
