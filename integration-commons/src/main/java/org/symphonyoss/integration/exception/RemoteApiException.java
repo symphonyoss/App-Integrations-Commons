@@ -22,10 +22,14 @@ package org.symphonyoss.integration.exception;
 public class RemoteApiException extends IntegrationException {
 
   public static final String COMPONENT = "Commons";
+
   private int code;
+
+  private String responseMessage;
 
   public RemoteApiException(int code, String message) {
     super(COMPONENT, message);
+    this.responseMessage = message;
     this.code = code;
   }
 
@@ -41,16 +45,19 @@ public class RemoteApiException extends IntegrationException {
 
   public RemoteApiException(int code, String message, Exception e) {
     super(COMPONENT, message, e);
+    this.responseMessage = message;
     this.code = code;
   }
 
   public RemoteApiException(int code, String message, String... solutions) {
     super(COMPONENT, message, solutions);
+    this.responseMessage = message;
     this.code = code;
   }
 
   public RemoteApiException(int code, String message, Exception e, String... solutions) {
     super(COMPONENT, message, e, solutions);
+    this.responseMessage = message;
     this.code = code;
   }
 
@@ -58,4 +65,7 @@ public class RemoteApiException extends IntegrationException {
     return code;
   }
 
+  public String getResponseMessage() {
+    return responseMessage;
+  }
 }

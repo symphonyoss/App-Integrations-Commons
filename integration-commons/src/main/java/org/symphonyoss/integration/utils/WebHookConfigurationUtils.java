@@ -36,6 +36,8 @@ public class WebHookConfigurationUtils {
 
   public static final String STREAMS = "streams";
 
+  public static final String REMOVED_STREAMS = "removed_streams";
+
   public static final String OWNER = "owner";
 
   public static final String LAST_POSTED_DATE = "lastPostedDate";
@@ -74,6 +76,26 @@ public class WebHookConfigurationUtils {
     }
 
     optionalPropertiesNode.set(STREAMS, streamArray);
+    return optionalPropertiesNode;
+  }
+
+  /**
+   * Set the list of streams removed by the Integration Bridge
+   *
+   * @param optionalProperties JSON Object that contains the information configured by the user
+   * @param streams List of streams removed by the Integration Bridge
+   * @return JSON Object optional properties
+   */
+  public static ObjectNode setRemovedStreams(JsonNode optionalProperties, List<String> streams)
+      throws IOException {
+    ObjectNode optionalPropertiesNode = (ObjectNode) optionalProperties;
+    ArrayNode streamArray = mapper.createArrayNode();
+
+    for (String stream : streams) {
+      streamArray.add(stream);
+    }
+
+    optionalPropertiesNode.set(REMOVED_STREAMS, streamArray);
     return optionalPropertiesNode;
   }
 

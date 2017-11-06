@@ -17,18 +17,19 @@
 package org.symphonyoss.integration.utils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.Assert;
 import org.junit.Test;
 import org.symphonyoss.integration.json.JsonUtils;
-import org.symphonyoss.integration.model.config.IntegrationInstance;
 import org.symphonyoss.integration.model.stream.StreamType;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Unit tests for {@link WebHookConfigurationUtils}
@@ -71,7 +72,7 @@ public class WebHookConfigurationUtilsTest {
   public void testToJsonString() throws IOException {
     JsonNode jsonFile = JsonUtils.readTree(getClass().getClassLoader().getResourceAsStream("JSONUtils.json"));
 
-    Assert.assertEquals("{\"field1\":\"value1\",\"field2\":\"value2\"}", WebHookConfigurationUtils.toJsonString(jsonFile));
+    assertEquals("{\"field1\":\"value1\",\"field2\":\"value2\"}", WebHookConfigurationUtils.toJsonString(jsonFile));
   }
 
   @Test
@@ -81,7 +82,7 @@ public class WebHookConfigurationUtilsTest {
     String jsonTest = JsonUtils.writeValueAsString(jsonNode);
     ObjectNode objectNode = (ObjectNode) jsonNode;
 
-    Assert.assertEquals(objectNode, WebHookConfigurationUtils.fromJsonString(jsonTest));
+    assertEquals(objectNode, WebHookConfigurationUtils.fromJsonString(jsonTest));
   }
 
   @Test
@@ -90,6 +91,80 @@ public class WebHookConfigurationUtilsTest {
     expected.add("stream1");
     expected.add("stream2");
 
-    Assert.assertEquals(expected, WebHookConfigurationUtils.getStreams(OPTIONAL_PROPERTIES));
+    assertEquals(expected, WebHookConfigurationUtils.getStreams(OPTIONAL_PROPERTIES));
   }
+
+  @Test
+  public void testGetSupportedNotificationsNullOptionalProperties() throws IOException {
+    List<String> supportedNotifications = WebHookConfigurationUtils.getSupportedNotifications(null);
+    assertTrue(supportedNotifications.isEmpty());
+  }
+
+  @Test
+  public void testGetSupportedNotifications() throws IOException {
+    String optionalProperties = "{ \"notifications\": [ \"test1\", \"test2\" ] }";
+
+    List<String> supportedNotifications = WebHookConfigurationUtils.getSupportedNotifications(optionalProperties);
+    assertEquals(2, supportedNotifications.size());
+    assertEquals("test1", supportedNotifications.get(0));
+    assertEquals("test2", supportedNotifications.get(1));
+  }
+
+  @Test
+  public void testEmptyStreams() throws IOException {
+    ObjectNode optionalProperties = WebHookConfigurationUtils.setStreams(OPTIONAL_PROPERTIES,
+        Collections.<String>emptyList());
+
+    String expectedResult = "{\"lastPostedDate\": 1, \"owner\": \"owner\", \"streams\": [] }";
+    assertEquals(WebHookConfigurationUtils.fromJsonString(expectedResult), optionalProperties);
+  }
+
+  @Test
+  public void testStreams() throws IOException {
+    List<String> expectedStreams = new ArrayList<>();
+    expectedStreams.add("stream3");
+    expectedStreams.add("stream4");
+
+    ObjectNode optionalProperties = WebHookConfigurationUtils.setStreams(OPTIONAL_PROPERTIES, expectedStreams);
+
+    String expectedResult =
+        "{\"lastPostedDate\": 1, \"owner\": \"owner\", \"streams\": [ \"stream3\", \"stream4\"] }";
+    assertEquals(WebHookConfigurationUtils.fromJsonString(expectedResult), optionalProperties);
+  }
+
+  @Test
+  public void testEmptyRemovedStreams() throws IOException {
+    List<String> expectedStreams = new ArrayList<>();
+    expectedStreams.add("stream1");
+    expectedStreams.add("stream3");
+
+    ObjectNode optionalProperties = WebHookConfigurationUtils.setStreams(OPTIONAL_PROPERTIES, expectedStreams);
+    optionalProperties = WebHookConfigurationUtils.setRemovedStreams(optionalProperties, Collections.<String>emptyList());
+
+    String expectedResult =
+        "{\"lastPostedDate\": 1, \"owner\": \"owner\", \"streams\": [ \"stream1\", \"stream3\"], "
+            + " \"removed_streams\": [] }";
+    assertEquals(WebHookConfigurationUtils.fromJsonString(expectedResult), optionalProperties);
+  }
+
+  @Test
+  public void testRemovedStreams() throws IOException {
+    List<String> expectedStreams = new ArrayList<>();
+    expectedStreams.add("stream3");
+    expectedStreams.add("stream4");
+
+    List<String> expectedRemovedStreams = new ArrayList<>();
+    expectedRemovedStreams.add("stream1");
+    expectedRemovedStreams.add("stream2");
+
+    ObjectNode optionalProperties = WebHookConfigurationUtils.setStreams(OPTIONAL_PROPERTIES, expectedStreams);
+    optionalProperties = WebHookConfigurationUtils.setRemovedStreams(optionalProperties, expectedRemovedStreams);
+
+    String expectedResult =
+        "{\"lastPostedDate\": 1, \"owner\": \"owner\", \"streams\": [ \"stream3\", \"stream4\" ], "
+            + " \"removed_streams\": [ \"stream1\", \"stream2\" ] }";
+
+    assertEquals(WebHookConfigurationUtils.fromJsonString(expectedResult), optionalProperties);
+  }
+
 }
