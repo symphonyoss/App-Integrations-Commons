@@ -16,6 +16,8 @@
 
 package org.symphonyoss.integration.api.client;
 
+import org.symphonyoss.integration.model.yaml.ProxyConnectionInfo;
+
 /**
  * Mock for {@link SymphonyApiClient}
  *
@@ -34,4 +36,8 @@ public class MockSymphonyApiClient extends SymphonyApiClient {
     return BASE_PATH;
   }
 
+  @Override
+  protected ProxyConnectionInfo getProxy() {
+    return null;
+  }
 }

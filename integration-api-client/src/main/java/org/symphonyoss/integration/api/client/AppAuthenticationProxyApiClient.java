@@ -33,15 +33,20 @@ public class AppAuthenticationProxyApiClient extends SimpleHttpApiClient {
 
   private AppAuthenticationProxy proxy;
 
-  public AppAuthenticationProxyApiClient(EntitySerializer serializer, AppAuthenticationProxy proxy) {
+  private String serviceName;
+
+  public AppAuthenticationProxyApiClient(EntitySerializer serializer,
+      AppAuthenticationProxy proxy, String serviceName) {
     super(serializer);
+    this.serviceName = serviceName;
     this.proxy = proxy;
   }
 
   @Override
-  public Client getClientForContext(Map<String, String> queryParams, Map<String, String> headerParams) {
+  public Client getClientForContext(Map<String, String> queryParams,
+      Map<String, String> headerParams) {
     final String appId = headerParams.get(APP_ID_HEADER);
-    return proxy.httpClientForApplication(appId);
+    return proxy.httpClientForApplication(appId, serviceName);
   }
 
 }

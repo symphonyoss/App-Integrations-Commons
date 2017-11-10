@@ -44,7 +44,7 @@ public interface AppAuthenticationProxy {
    *
    * @param applicationId Application identifier
    */
-  Client httpClientForApplication(String applicationId);
+  Client httpClientForApplication(String applicationId, String serviceName);
 
   /**
    * Authenticates application on the POD.
