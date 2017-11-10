@@ -20,8 +20,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,6 +43,16 @@ public class IntegrationProperties {
 
   private static final String INTEGRATION_CONTEXT = "integration";
 
+  private static final String POD = "POD";
+
+  private static final String AGENT = "Agent";
+
+  private static final String POD_SESSION_MANAGER = "POD Session Manager";
+
+  private static final String KEY_MANAGER = "Key Manager";
+
+  private static final String KEY_MANAGER_AUTH = "Key Manager Auth";
+
   private AdminUser adminUser;
 
   private ConnectionInfo pod;
@@ -56,6 +68,8 @@ public class IntegrationProperties {
   private HttpClientConfig httpClientConfig;
 
   private Map<String, Application> applications = new HashMap<>();
+
+  private Map<String, ConnectionInfo> services = new HashMap<>();
 
   private IntegrationBridge integrationBridge;
 
@@ -77,6 +91,7 @@ public class IntegrationProperties {
 
   public void setPod(ConnectionInfo pod) {
     this.pod = pod;
+    services.put(POD, pod);
   }
 
   public ConnectionInfo getAgent() {
@@ -85,6 +100,7 @@ public class IntegrationProperties {
 
   public void setAgent(ConnectionInfo agent) {
     this.agent = agent;
+    services.put(AGENT, agent);
   }
 
   public ConnectionInfo getKeyManager() {
@@ -93,6 +109,7 @@ public class IntegrationProperties {
 
   public void setKeyManager(ConnectionInfo keyManager) {
     this.keyManager = keyManager;
+    services.put(KEY_MANAGER, pod);
   }
 
   public ConnectionInfo getPodSessionManager() {
@@ -101,6 +118,7 @@ public class IntegrationProperties {
 
   public void setPodSessionManager(ConnectionInfo podSessionManager) {
     this.podSessionManager = podSessionManager;
+    services.put(POD_SESSION_MANAGER, podSessionManager);
   }
 
   public ConnectionInfo getKeyManagerAuth() {
@@ -109,6 +127,7 @@ public class IntegrationProperties {
 
   public void setKeyManagerAuth(ConnectionInfo keyManagerAuth) {
     this.keyManagerAuth = keyManagerAuth;
+    services.put(KEY_MANAGER_AUTH, keyManagerAuth);
   }
 
 
@@ -313,6 +332,10 @@ public class IntegrationProperties {
 
     return String.format("https://%s:%s/%s", integrationBridge.getHost(), port, INTEGRATION_CONTEXT);
   }
+
+  public Map<String, ConnectionInfo> getServices() { return services;  }
+
+  public void setServices(Map<String, ConnectionInfo> services) { this.services = services; }
 
   @Override
   public String toString() {

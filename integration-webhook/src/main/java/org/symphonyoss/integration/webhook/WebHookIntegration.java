@@ -160,7 +160,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
 
     try {
       authenticate(integrationUser);
-      updateConfiguration(integrationUser);
+        updateConfiguration(integrationUser);
 
       healthManager.success(settings);
     } catch (ConnectivityException | RetryLifecycleException e) {

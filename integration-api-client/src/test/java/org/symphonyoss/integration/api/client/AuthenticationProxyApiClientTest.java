@@ -47,6 +47,8 @@ public class AuthenticationProxyApiClientTest {
 
   private static final String MOCK_USERNAME = "jiraWebHookIntegration";
 
+  private static final String SERVICE_NAME = "service";
+
   @Mock
   private AuthenticationProxy proxy;
 
@@ -63,9 +65,9 @@ public class AuthenticationProxyApiClientTest {
 
   @Before
   public void init() {
-    this.proxyApiClient = new AuthenticationProxyApiClient(serializer, proxy);
-    doReturn(userClient).when(proxy).httpClientForUser(MOCK_USERNAME);
-    doReturn(sessionClient).when(proxy).httpClientForSessionToken(MOCK_SESSION_TOKEN);
+    this.proxyApiClient = new AuthenticationProxyApiClient(serializer, proxy, SERVICE_NAME);
+    doReturn(userClient).when(proxy).httpClientForUser(MOCK_USERNAME,SERVICE_NAME);
+    doReturn(sessionClient).when(proxy).httpClientForSessionToken(MOCK_SESSION_TOKEN, SERVICE_NAME);
   }
 
   @Test

@@ -29,6 +29,8 @@ public class ConnectionInfo {
 
   private String minVersion;
 
+  private ProxyConnectionInfo proxy = new ProxyConnectionInfo();
+
   public String getHost() {
     return host;
   }
@@ -53,11 +55,20 @@ public class ConnectionInfo {
     this.minVersion = minVersion;
   }
 
+  public void setProxyUser(String proxyUser) { this.proxy.setUser(proxyUser); }
+
+  public void setProxyPassword(String proxyPassword) { this.proxy.setUser(proxyPassword); }
+
+  public void setProxyUri(String proxyUri) { this.proxy.setUser(proxyUri); }
+
+  public ProxyConnectionInfo getProxy() { return proxy; }
+
   @Override
   public String toString() {
     return "ConnectionInfo{" +
         "host='" + host + '\'' +
         ", port='" + port + '\'' +
+        ", proxy='" + proxy +
         '}';
   }
 }

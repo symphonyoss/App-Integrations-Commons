@@ -56,12 +56,12 @@ public class AppAuthenticationProxyApiClientTest {
 
   @Before
   public void init() {
-    this.apiClient = new AppAuthenticationProxyApiClient(serializer, proxy);
+    this.apiClient = new AppAuthenticationProxyApiClient(serializer, proxy, null);
   }
 
   @Test
   public void testGetClientForContext() {
-    doReturn(client).when(proxy).httpClientForApplication(APP_ID);
+    doReturn(client).when(proxy).httpClientForApplication(APP_ID, null);
 
     Map<String, String> headers = Collections.singletonMap(APP_ID_HEADER, APP_ID);
 

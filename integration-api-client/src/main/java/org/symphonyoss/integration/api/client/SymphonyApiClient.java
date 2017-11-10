@@ -1,5 +1,6 @@
 package org.symphonyoss.integration.api.client;
 
+import org.glassfish.jersey.client.ClientProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.symphonyoss.integration.api.client.json.JsonEntitySerializer;
 import org.symphonyoss.integration.api.client.metrics.ApiMetricsController;
@@ -7,6 +8,8 @@ import org.symphonyoss.integration.api.client.metrics.MetricsHttpApiClient;
 import org.symphonyoss.integration.api.client.trace.TraceLoggingApiClient;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
 import org.symphonyoss.integration.exception.RemoteApiException;
+import org.symphonyoss.integration.model.yaml.IntegrationProperties;
+import org.symphonyoss.integration.model.yaml.ProxyConnectionInfo;
 
 import java.util.Map;
 
@@ -20,10 +23,13 @@ import javax.ws.rs.client.Client;
 public abstract class SymphonyApiClient implements HttpApiClient {
 
   @Autowired
-  private AuthenticationProxy proxy;
+  private AuthenticationProxy authenticationProxy;
 
   @Autowired
   private ApiMetricsController metricsController;
+
+  @Autowired
+  protected IntegrationProperties properties;
 
   private HttpApiClient client;
 
@@ -46,6 +52,8 @@ public abstract class SymphonyApiClient implements HttpApiClient {
 
   protected abstract String getBasePath();
 
+  protected abstract ProxyConnectionInfo getProxy();
+
   /**
    * Builds the HTTP client and set the base path.
    * This HTTP client should implement connectivity exception handling, re-authentication, trace
@@ -53,14 +61,15 @@ public abstract class SymphonyApiClient implements HttpApiClient {
    * @param basePath Base path
    */
   protected HttpApiClient buildHttpClient(String basePath) {
-    AuthenticationProxyApiClient simpleClient = new AuthenticationProxyApiClient(serializer, proxy);
+    AuthenticationProxyApiClient simpleClient = new AuthenticationProxyApiClient(serializer,
+        authenticationProxy, serviceName);
     simpleClient.setBasePath(basePath);
 
     ConnectivityApiClientDecorator connectivityApiClient =
         new ConnectivityApiClientDecorator(serviceName, simpleClient);
 
     ReAuthenticationApiClient reAuthApiClient =
-        new ReAuthenticationApiClient(proxy, connectivityApiClient);
+        new ReAuthenticationApiClient(authenticationProxy, connectivityApiClient);
 
     TraceLoggingApiClient traceLoggingApiClient = new TraceLoggingApiClient(reAuthApiClient);
 
@@ -112,5 +121,7 @@ public abstract class SymphonyApiClient implements HttpApiClient {
     this.serializer = serializer;
     this.client.setEntitySerializer(serializer);
   }
+
+
 
 }
