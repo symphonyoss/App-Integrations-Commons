@@ -24,10 +24,11 @@ language: java
 
 install: true
 script:
-- "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ dev ]]; then mvn clean deploy -Pwhitesource -Pcobertura -DtransitiveDependencies=true --settings settings.xml; fi"
+- "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ dev ]]; then mvn clean deploy -Pcobertura -DtransitiveDependencies=true --settings settings.xml; fi"
 - "if [[ \"$TRAVIS_PULL_REQUEST\" != \"false\" ]]; then mvn clean install -Pcobertura; fi"
 
 after_success:
+- mvn whitesource:update -Pwhitesource
 - bash <(curl -s https://codecov.io/bash)
 
 jdk:
