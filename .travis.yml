@@ -28,7 +28,7 @@ script:
 - "if [[ \"$TRAVIS_PULL_REQUEST\" != \"false\" ]]; then mvn clean install -Pcobertura; fi"
 
 after_success:
-- mvn whitesource:update -Pwhitesource
+- "if [[ \"$TRAVIS_PULL_REQUEST\" = \"false\" && $TRAVIS_BRANCH =~ dev ]]; then mvn whitesource:update -Pwhitesource; fi"
 - bash <(curl -s https://codecov.io/bash)
 
 jdk:
