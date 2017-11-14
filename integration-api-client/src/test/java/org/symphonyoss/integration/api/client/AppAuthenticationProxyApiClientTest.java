@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.LoggerFactory;
 import org.symphonyoss.integration.authentication.api.AppAuthenticationProxy;
 
 import java.util.Collections;
@@ -43,6 +44,8 @@ public class AppAuthenticationProxyApiClientTest {
 
   private static final String APP_ID_HEADER = "appId";
 
+  private static final String SERVICE_NAME = "serviceName";
+
   @Mock
   private AppAuthenticationProxy proxy;
 
@@ -56,12 +59,12 @@ public class AppAuthenticationProxyApiClientTest {
 
   @Before
   public void init() {
-    this.apiClient = new AppAuthenticationProxyApiClient(serializer, proxy, null);
+    this.apiClient = new AppAuthenticationProxyApiClient(serializer, proxy, SERVICE_NAME);
   }
 
   @Test
   public void testGetClientForContext() {
-    doReturn(client).when(proxy).httpClientForApplication(APP_ID, null);
+    doReturn(client).when(proxy).httpClientForApplication(APP_ID, SERVICE_NAME);
 
     Map<String, String> headers = Collections.singletonMap(APP_ID_HEADER, APP_ID);
 

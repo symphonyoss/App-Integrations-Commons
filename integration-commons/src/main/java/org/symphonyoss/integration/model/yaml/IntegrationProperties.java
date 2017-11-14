@@ -109,7 +109,7 @@ public class IntegrationProperties {
 
   public void setKeyManager(ConnectionInfo keyManager) {
     this.keyManager = keyManager;
-    services.put(KEY_MANAGER, pod);
+    services.put(KEY_MANAGER, keyManager);
   }
 
   public ConnectionInfo getPodSessionManager() {
