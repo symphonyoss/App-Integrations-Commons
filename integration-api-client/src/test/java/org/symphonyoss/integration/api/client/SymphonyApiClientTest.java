@@ -88,7 +88,7 @@ public class SymphonyApiClientTest {
     apiClient = new MockSymphonyApiClient(SERVICE_NAME);
 
     ReflectionTestUtils.setField(apiClient, "metricsController", metricsController);
-    ReflectionTestUtils.setField(apiClient, "proxy", proxy);
+    ReflectionTestUtils.setField(apiClient, "authenticationProxy", proxy);
 
     doReturn(client).when(proxy).httpClientForSessionToken(MOCK_SESSION_TOKEN, SERVICE_NAME);
     doReturn(target).when(client).target(apiClient.getBasePath());

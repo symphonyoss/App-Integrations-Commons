@@ -50,7 +50,16 @@ public class IntegrationPropertiesTest {
     validateHttpClientTimeouts();
 
     assertNotNull(integrationProperties.getGlobalWhiteList());
-    assertEquals("IntegrationProperties{pod=ConnectionInfo{host='nexus.symphony.com', port='443'}, agent=ConnectionInfo{host='nexus.symphony.com', port='8444'}, sessionManager=ConnectionInfo{host='nexus.symphony.com', port='8444'}, keyManager=ConnectionInfo{host='nexus.symphony.com', port='443'}}", integrationProperties.toString());
+    assertEquals(
+        "IntegrationProperties{pod=ConnectionInfo{host='nexus.symphony.com', port='443', "
+            + "proxy='ProxyConnectionInfo{uri='null', user=null', password=null'}}, "
+            + "agent=ConnectionInfo{host='nexus.symphony.com', port='8444', "
+            + "proxy='ProxyConnectionInfo{uri='null', user=null', password=null'}}, "
+            + "sessionManager=ConnectionInfo{host='nexus.symphony.com', port='8444', "
+            + "proxy='ProxyConnectionInfo{uri='null', user=null', password=null'}}, "
+            + "keyManager=ConnectionInfo{host='nexus.symphony.com', port='443', "
+            + "proxy='ProxyConnectionInfo{uri='null', user=null', password=null'}}}",
+        integrationProperties.toString());
   }
 
   private void validateLoginURL() {
@@ -81,8 +90,15 @@ public class IntegrationPropertiesTest {
     assertEquals("nexus.symphony.com", integrationProperties.getKeyManagerAuth().getHost());
     assertEquals("8444", integrationProperties.getKeyManagerAuth().getPort());
     assertNull(integrationProperties.getKeyManagerAuth().getMinVersion());
-    assertEquals("https://nexus.symphony.com:8444/keyauth", integrationProperties.getKeyManagerAuthUrl());
-    assertEquals("ConnectionInfo{host='nexus.symphony.com', port='8444'}", integrationProperties.getKeyManagerAuth().toString());
+    assertEquals("https://nexus.symphony.com:8444/keyauth",
+        integrationProperties.getKeyManagerAuthUrl());
+    assertEquals(
+        "ConnectionInfo{host='nexus.symphony.com', port='8444', "
+            + "proxy='ProxyConnectionInfo{uri='null', user=null', password=null'}}",
+        integrationProperties.getKeyManagerAuth().toString());
+    assertNull(integrationProperties.getKeyManagerAuth().getProxy().getURI());
+    assertNull(integrationProperties.getKeyManagerAuth().getProxy().getPassword());
+    assertNull(integrationProperties.getKeyManagerAuth().getProxy().getUser());
 
     ConnectionInfo connectionInfo = integrationProperties.getKeyManagerAuth();
 
@@ -96,7 +112,8 @@ public class IntegrationPropertiesTest {
     mock.setHost(connectionInfo.getHost());
 
     integrationProperties.setKeyManagerAuth(mock);
-    assertEquals("https://nexus.symphony.com:443/keyauth", integrationProperties.getKeyManagerAuthUrl());
+    assertEquals("https://nexus.symphony.com:443/keyauth",
+        integrationProperties.getKeyManagerAuthUrl());
 
     integrationProperties.setKeyManagerAuth(connectionInfo);
   }
@@ -106,7 +123,12 @@ public class IntegrationPropertiesTest {
     assertEquals("443", integrationProperties.getKeyManager().getPort());
     assertNull(integrationProperties.getKeyManager().getMinVersion());
     assertEquals("https://nexus.symphony.com:443/relay", integrationProperties.getKeyManagerUrl());
-    assertEquals("ConnectionInfo{host='nexus.symphony.com', port='443'}", integrationProperties.getKeyManager().toString());
+    assertEquals("ConnectionInfo{host='nexus.symphony.com', port='443', "
+            + "proxy='ProxyConnectionInfo{uri='null', user=null', password=null'}}",
+        integrationProperties.getKeyManager().toString());
+    assertNull(integrationProperties.getKeyManager().getProxy().getURI());
+    assertNull(integrationProperties.getKeyManager().getProxy().getPassword());
+    assertNull(integrationProperties.getKeyManager().getProxy().getUser());
 
     ConnectionInfo connectionInfo = integrationProperties.getKeyManager();
 
@@ -129,8 +151,14 @@ public class IntegrationPropertiesTest {
     assertEquals("nexus.symphony.com", integrationProperties.getPodSessionManager().getHost());
     assertEquals("8444", integrationProperties.getPodSessionManager().getPort());
     assertNull(integrationProperties.getPodSessionManager().getMinVersion());
-    assertEquals("https://nexus.symphony.com:8444/sessionauth", integrationProperties.getSessionManagerAuthUrl());
-    assertEquals("ConnectionInfo{host='nexus.symphony.com', port='8444'}", integrationProperties.getPodSessionManager().toString());
+    assertEquals("https://nexus.symphony.com:8444/sessionauth",
+        integrationProperties.getSessionManagerAuthUrl());
+    assertEquals("ConnectionInfo{host='nexus.symphony.com', port='8444', "
+            + "proxy='ProxyConnectionInfo{uri='null', user=null', password=null'}}",
+        integrationProperties.getPodSessionManager().toString());
+    assertNull(integrationProperties.getPodSessionManager().getProxy().getURI());
+    assertNull(integrationProperties.getPodSessionManager().getProxy().getPassword());
+    assertNull(integrationProperties.getPodSessionManager().getProxy().getUser());
 
     ConnectionInfo connectionInfo = integrationProperties.getPodSessionManager();
 
@@ -155,8 +183,14 @@ public class IntegrationPropertiesTest {
     assertEquals("443", integrationProperties.getPod().getPort());
     assertNull(integrationProperties.getPod().getMinVersion());
     assertEquals("https://nexus.symphony.com:443/pod", integrationProperties.getPodUrl());
-    assertEquals("ConnectionInfo{host='nexus.symphony.com', port='443'}", integrationProperties.getPod().toString());
-    assertEquals("https://nexus.symphony.com:443", integrationProperties.getSymphonyUrl().toString());
+    assertEquals("ConnectionInfo{host='nexus.symphony.com', port='443', "
+            + "proxy='ProxyConnectionInfo{uri='null', user=null', password=null'}}",
+        integrationProperties.getPod().toString());
+    assertEquals("https://nexus.symphony.com:443",
+        integrationProperties.getSymphonyUrl().toString());
+    assertNull(integrationProperties.getPod().getProxy().getURI());
+    assertNull(integrationProperties.getPod().getProxy().getPassword());
+    assertNull(integrationProperties.getPod().getProxy().getUser());
 
     ConnectionInfo connectionInfo = integrationProperties.getPod();
 
@@ -207,8 +241,10 @@ public class IntegrationPropertiesTest {
   }
 
   private void validateSigningCert() {
-    assertEquals("caCertChainFileTest", integrationProperties.getSigningCert().getCaCertChainFile());
-    assertEquals("/home/centos/int-cert.pem", integrationProperties.getSigningCert().getCaCertFile());
+    assertEquals("caCertChainFileTest",
+        integrationProperties.getSigningCert().getCaCertChainFile());
+    assertEquals("/home/centos/int-cert.pem",
+        integrationProperties.getSigningCert().getCaCertFile());
     assertEquals("/home/centos/int-key.pem", integrationProperties.getSigningCert().getCaKeyFile());
     assertEquals("changeit", integrationProperties.getSigningCert().getCaKeyPassword());
   }
@@ -216,13 +252,15 @@ public class IntegrationPropertiesTest {
   private void validateIntegrationBridge() {
     assertEquals("nexus.symphony.com", integrationProperties.getIntegrationBridge().getHost());
     assertEquals(".symphony.com", integrationProperties.getIntegrationBridge().getDomain());
-    assertEquals("/data/symphony/ib/certs/custom.truststore", integrationProperties.getIntegrationBridge().getTruststoreFile());
+    assertEquals("/data/symphony/ib/certs/custom.truststore",
+        integrationProperties.getIntegrationBridge().getTruststoreFile());
     assertEquals("jks", integrationProperties.getIntegrationBridge().getTruststoreType());
     assertEquals("changeit", integrationProperties.getIntegrationBridge().getTruststorePassword());
 
     assertEquals("8080", integrationProperties.getIntegrationBridge().getPort());
 
-    assertEquals("https://nexus.symphony.com:8080/integration", integrationProperties.getIntegrationBridgeUrl());
+    assertEquals("https://nexus.symphony.com:8080/integration",
+        integrationProperties.getIntegrationBridgeUrl());
 
     IntegrationBridge integrationBridge = integrationProperties.getIntegrationBridge();
 
@@ -263,8 +301,10 @@ public class IntegrationPropertiesTest {
     assertEquals("pkcs12", application.getAppKeystore().getType());
     assertEquals("testapp", application.getAppKeystore().getPassword());
     assertEquals("PROVISIONED", application.getState().name());
-    assertEquals("Symphony Integration for JIRA", application.getAuthorization().getApplicationName());
-    assertEquals("https://nexus.symphony.com:8080/integration", application.getAuthorization().getApplicationURL());
+    assertEquals("Symphony Integration for JIRA",
+        application.getAuthorization().getApplicationName());
+    assertEquals("https://nexus.symphony.com:8080/integration",
+        application.getAuthorization().getApplicationURL());
 
     Map<String, Object> authProperties = application.getAuthorization().getProperties();
 
