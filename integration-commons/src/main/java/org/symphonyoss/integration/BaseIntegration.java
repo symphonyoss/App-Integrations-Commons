@@ -21,21 +21,22 @@ import static org.symphonyoss.integration.model.healthcheck.IntegrationFlags.Val
 import static org.symphonyoss.integration.model.yaml.Keystore.DEFAULT_KEYSTORE_APP_SUFFIX;
 import static org.symphonyoss.integration.model.yaml.Keystore.DEFAULT_KEYSTORE_TYPE_SUFFIX;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
 import org.symphonyoss.integration.authentication.api.AppAuthenticationProxy;
-import org.symphonyoss.integration.authorization.UserAuthorizationData;
 import org.symphonyoss.integration.exception.IntegrationRuntimeException;
 import org.symphonyoss.integration.exception.bootstrap.LoadKeyStoreException;
 import org.symphonyoss.integration.exception.bootstrap.UnexpectedBootstrapException;
 import org.symphonyoss.integration.healthcheck.IntegrationHealthManager;
-import org.symphonyoss.integration.model.yaml.AppAuthorizationModel;
 import org.symphonyoss.integration.model.yaml.Application;
 import org.symphonyoss.integration.model.yaml.IntegrationProperties;
 import org.symphonyoss.integration.model.yaml.Keystore;
 import org.symphonyoss.integration.utils.IntegrationUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -48,6 +49,14 @@ import java.security.KeyStore;
  * Created by rsanchez on 21/11/16.
  */
 public abstract class BaseIntegration implements Integration {
+
+  private static final String KEYSTORE_DATA_TEMPLATE = "apps.%s.keystore.data";
+
+  private static final String KEYSTORE_PASS_TEMPLATE = "apps.%s.keystore.password";
+
+  private static final String APP_KEYSTORE_DATA_TEMPLATE = "apps.%s.app_keystore.data";
+
+  private static final String APP_KEYSTORE_PASS_TEMPLATE = "apps.%s.app_keystore.password";
 
   @Autowired
   protected AuthenticationProxy authenticationProxy;
@@ -66,6 +75,9 @@ public abstract class BaseIntegration implements Integration {
 
   @Autowired
   protected IntegrationUtils utils;
+
+  @Autowired
+  private Environment environment;
 
   /**
    * Setup the health manager adding the application identifier and version.
@@ -149,14 +161,34 @@ public abstract class BaseIntegration implements Integration {
    * @return Keystore object
    */
   protected KeyStore loadUserKeyStore(String certsDir, Application application, String integrationUser) {
-    if ((application == null) || (application.getKeystore() == null) ||
-        (StringUtils.isEmpty(application.getKeystore().getPassword()))) {
-      String appId = application != null ? application.getId() : integrationUser;
+    if (application == null) {
       throw new LoadKeyStoreException(
-          "Fail to retrieve the user keystore password. Application: " + appId);
+          "Fail to retrieve the user keystore password. Application: " + integrationUser);
+    }
+
+    String dataEnv = String.format(KEYSTORE_DATA_TEMPLATE, application.getId());
+    String passEnv = String.format(KEYSTORE_PASS_TEMPLATE, application.getId());
+
+    String data = environment.getProperty(dataEnv);
+    String pass = environment.getProperty(passEnv);
+
+    if (application.getKeystore() == null) {
+      application.setKeystore(new Keystore());
     }
 
     Keystore keystoreConfig = application.getKeystore();
+
+    if (StringUtils.isNotEmpty(pass)) {
+      keystoreConfig.setPassword(pass);
+    } else if (StringUtils.isEmpty(keystoreConfig.getPassword())) {
+      throw new LoadKeyStoreException(
+          "Fail to retrieve the user keystore password. Application: " + application.getId());
+    }
+
+    if (StringUtils.isNotEmpty(data)) {
+      return loadDataKeystore(data, keystoreConfig.getType(), keystoreConfig.getPassword());
+    }
+
     String defaultFilename = application.getId() + DEFAULT_KEYSTORE_TYPE_SUFFIX;
 
     return loadKeyStore(certsDir, keystoreConfig, defaultFilename);
@@ -171,16 +203,35 @@ public abstract class BaseIntegration implements Integration {
    * @return Keystore object
    */
   protected KeyStore loadAppKeyStore(String certsDir, Application application, String integrationUser) {
-    if ((application == null) || (application.getAppKeystore() == null) ||
-        (StringUtils.isEmpty(application.getAppKeystore().getPassword()))) {
-      String appId = application != null ? application.getId() : integrationUser;
+    if (application == null) {
       throw new LoadKeyStoreException(
-          "Fail to retrieve the app keystore password. Application: " + appId);
+          "Fail to retrieve the app keystore password. Application: " + integrationUser);
+    }
+
+    String dataEnv = String.format(APP_KEYSTORE_DATA_TEMPLATE, application.getId());
+    String passEnv = String.format(APP_KEYSTORE_PASS_TEMPLATE, application.getId());
+
+    String data = environment.getProperty(dataEnv);
+    String pass = environment.getProperty(passEnv);
+
+    if (application.getAppKeystore() == null) {
+      application.setAppKeystore(new Keystore());
     }
 
     Keystore keystoreConfig = application.getAppKeystore();
-    String defaultFilename = application.getId() + DEFAULT_KEYSTORE_APP_SUFFIX + DEFAULT_KEYSTORE_TYPE_SUFFIX;
 
+    if (StringUtils.isNotEmpty(pass)) {
+      keystoreConfig.setPassword(pass);
+    } else if (StringUtils.isEmpty(keystoreConfig.getPassword())) {
+      throw new LoadKeyStoreException(
+          "Fail to retrieve the app keystore password. Application: " + application.getId());
+    }
+
+    if (StringUtils.isNotEmpty(data)) {
+      return loadDataKeystore(data, keystoreConfig.getType(), keystoreConfig.getPassword());
+    }
+
+    String defaultFilename = application.getId() + DEFAULT_KEYSTORE_APP_SUFFIX + DEFAULT_KEYSTORE_TYPE_SUFFIX;
     return loadKeyStore(certsDir, keystoreConfig, defaultFilename);
   }
 
@@ -200,10 +251,11 @@ public abstract class BaseIntegration implements Integration {
     }
 
     String storeLocation = certsDir + locationFile;
-    String password = keystoreSettings.getPassword();
-    String type = keystoreSettings.getType();
 
     try(FileInputStream inputStream = new FileInputStream(storeLocation)) {
+      String type = keystoreSettings.getType();
+      String password = keystoreSettings.getPassword();
+
       final KeyStore ks = KeyStore.getInstance(type);
       ks.load(inputStream, password.toCharArray());
 
@@ -211,6 +263,27 @@ public abstract class BaseIntegration implements Integration {
     } catch (GeneralSecurityException | IOException e) {
       throw new LoadKeyStoreException(
           String.format("Fail to load keystore file at %s", storeLocation), e);
+    }
+  }
+
+  /**
+   * Load the keystore from Base64 encoded string
+   *
+   * @param data Base64 encoded string
+   * @param type Keystore type
+   * @param password Keystore password
+   * @return Keystore object
+   */
+  private KeyStore loadDataKeystore(String data, String type, String password) {
+    byte[] keystoreBytes = Base64.decodeBase64(data.getBytes());
+
+    try (ByteArrayInputStream bis = new ByteArrayInputStream(keystoreBytes)) {
+      final KeyStore ks = KeyStore.getInstance(type);
+      ks.load(bis, password.toCharArray());
+
+      return ks;
+    } catch (GeneralSecurityException | IOException e) {
+      throw new LoadKeyStoreException(String.format("Fail to load keystore data"), e);
     }
   }
 
