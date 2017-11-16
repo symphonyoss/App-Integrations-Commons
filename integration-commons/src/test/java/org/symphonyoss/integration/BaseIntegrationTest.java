@@ -26,6 +26,8 @@ import static org.mockito.Mockito.doThrow;
 import static org.symphonyoss.integration.model.healthcheck.IntegrationFlags.ValueEnum.NOK;
 import static org.symphonyoss.integration.model.healthcheck.IntegrationFlags.ValueEnum.OK;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +35,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.core.env.Environment;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
 import org.symphonyoss.integration.authentication.api.AppAuthenticationProxy;
 import org.symphonyoss.integration.exception.ExceptionMessageFormatter;
@@ -47,6 +50,7 @@ import org.symphonyoss.integration.model.yaml.Keystore;
 import org.symphonyoss.integration.utils.IntegrationUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -68,7 +72,11 @@ public class BaseIntegrationTest extends MockKeystore {
 
   private static final String DEFAULT_KEYSTORE_PASSWORD = "changeit";
 
+  private static final String ANOTHER_KEYSTORE_PASSWORD = "test123";
+
   private static final String NOT_AVAILABLE = "N/A";
+
+  private static final String MOCK_KEYSTORE_FILE = "mock.p12";
 
   @Mock
   private AuthenticationProxy authenticationProxy;
@@ -92,6 +100,9 @@ public class BaseIntegrationTest extends MockKeystore {
       new MockIntegration(properties, utils, authenticationProxy, healthManager);
 
   private Application application;
+
+  @Mock
+  private Environment environment;
 
   @Before
   public void init() {
@@ -192,10 +203,58 @@ public class BaseIntegrationTest extends MockKeystore {
   }
 
   @Test
+  public void testRegisterUserEmptyPassword() {
+    Application application = properties.getApplication(APP_TYPE);
+    application.setKeystore(null);
+
+    try {
+      integration.registerUser(APP_TYPE);
+      fail();
+    } catch (LoadKeyStoreException e) {
+      String message = "Fail to retrieve the user keystore password. Application: " + APP_ID;
+      String formattedMessage =
+          ExceptionMessageFormatter.format("Integration Bootstrap", message, e.getCause());
+      assertEquals(formattedMessage, e.getMessage());
+      assertEquals(NOK, integration.getHealthStatus().getFlags().getUserCertificateInstalled());
+      assertEquals(IntegrationStatus.FAILED_BOOTSTRAP.name(), integration.getHealthStatus().getStatus());
+    }
+  }
+
+  @Test
+  public void testRegisterUserInvalidData() {
+    doReturn(ANOTHER_KEYSTORE_PASSWORD).when(environment).getProperty("apps.jira.keystore.password");
+    doReturn("test").when(environment).getProperty("apps.jira.keystore.data");
+
+    try {
+      integration.registerUser(APP_TYPE);
+      fail();
+    } catch (LoadKeyStoreException e) {
+      String message = "Fail to load keystore data";
+      String formattedMessage =
+          ExceptionMessageFormatter.format("Integration Bootstrap", message, e.getCause());
+      assertEquals(formattedMessage, e.getMessage());
+      assertEquals(NOK, integration.getHealthStatus().getFlags().getUserCertificateInstalled());
+      assertEquals(IntegrationStatus.FAILED_BOOTSTRAP.name(), integration.getHealthStatus().getStatus());
+    }
+  }
+
+  @Test
   public void testRegisterUser()
       throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
     String dir = mockKeyStore();
     doReturn(dir).when(utils).getCertsDirectory();
+
+    integration.registerUser(APP_TYPE);
+
+    assertEquals(OK, integration.getHealthStatus().getFlags().getUserCertificateInstalled());
+  }
+
+  @Test
+  public void testRegisterUserData() throws IOException {
+    String keystoreData = readKeystoreFile(MOCK_KEYSTORE_FILE);
+
+    doReturn(DEFAULT_KEYSTORE_PASSWORD).when(environment).getProperty("apps.jira.keystore.password");
+    doReturn(keystoreData).when(environment).getProperty("apps.jira.keystore.data");
 
     integration.registerUser(APP_TYPE);
 
@@ -278,6 +337,42 @@ public class BaseIntegrationTest extends MockKeystore {
   }
 
   @Test
+  public void testRegisterAppEmptyPassword() {
+    Application application = properties.getApplication(APP_TYPE);
+    application.setAppKeystore(null);
+
+    try {
+      integration.registerApp(APP_TYPE);
+      fail();
+    } catch (LoadKeyStoreException e) {
+      String message = "Fail to retrieve the app keystore password. Application: " + APP_ID;
+      String formattedMessage =
+          ExceptionMessageFormatter.format("Integration Bootstrap", message, e.getCause());
+      assertEquals(formattedMessage, e.getMessage());
+      assertEquals(NOK, integration.getHealthStatus().getFlags().getUserCertificateInstalled());
+      assertEquals(IntegrationStatus.FAILED_BOOTSTRAP.name(), integration.getHealthStatus().getStatus());
+    }
+  }
+
+  @Test
+  public void testRegisterAppInvalidData() {
+    doReturn(ANOTHER_KEYSTORE_PASSWORD).when(environment).getProperty("apps.jira.app_keystore.password");
+    doReturn("test").when(environment).getProperty("apps.jira.app_keystore.data");
+
+    try {
+      integration.registerApp(APP_TYPE);
+      fail();
+    } catch (LoadKeyStoreException e) {
+      String message = "Fail to load keystore data";
+      String formattedMessage =
+          ExceptionMessageFormatter.format("Integration Bootstrap", message, e.getCause());
+      assertEquals(formattedMessage, e.getMessage());
+      assertEquals(NOK, integration.getHealthStatus().getFlags().getUserCertificateInstalled());
+      assertEquals(IntegrationStatus.FAILED_BOOTSTRAP.name(), integration.getHealthStatus().getStatus());
+    }
+  }
+
+  @Test
   public void testRegisterApp()
       throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
     String dir = mockKeyStore("jira_app.p12");
@@ -287,4 +382,24 @@ public class BaseIntegrationTest extends MockKeystore {
 
     assertEquals(OK, integration.getHealthStatus().getFlags().getAppCertificateInstalled());
   }
+
+  @Test
+  public void testRegisterAppData() throws IOException {
+    String keystoreData = readKeystoreFile(MOCK_KEYSTORE_FILE);
+
+    doReturn(DEFAULT_KEYSTORE_PASSWORD).when(environment).getProperty("apps.jira.app_keystore.password");
+    doReturn(keystoreData).when(environment).getProperty("apps.jira.app_keystore.data");
+
+    integration.registerApp(APP_TYPE);
+
+    assertEquals(OK, integration.getHealthStatus().getFlags().getAppCertificateInstalled());
+  }
+
+  private String readKeystoreFile(String file) throws IOException {
+    InputStream fileStream = getClass().getClassLoader().getResourceAsStream(file);
+    byte[] bytes = IOUtils.toByteArray(fileStream);
+
+    return new String(Base64.encodeBase64(bytes));
+  }
+
 }
