@@ -77,7 +77,7 @@ public abstract class BaseIntegration implements Integration {
   protected IntegrationUtils utils;
 
   @Autowired
-  private Environment environment;
+  protected Environment environment;
 
   /**
    * Setup the health manager adding the application identifier and version.
