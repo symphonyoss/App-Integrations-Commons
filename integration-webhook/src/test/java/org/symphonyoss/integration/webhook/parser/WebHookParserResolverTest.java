@@ -56,7 +56,7 @@ public class WebHookParserResolverTest {
   @Test
   public void testInit() {
     resolver.init();
-    assertEquals(v1Factory, resolver.getFactory());
+    assertEquals(v2Factory, resolver.getFactory());
 
     resolver = new MockWebHookParserResolver(Collections.<WebHookParserFactory>emptyList());
     resolver.init();
