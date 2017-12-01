@@ -33,7 +33,7 @@ public class AppAuthenticationProxyApiClient extends SimpleHttpApiClient {
 
   private AppAuthenticationProxy proxy;
 
-  String serviceName;
+  private String serviceName;
 
   public AppAuthenticationProxyApiClient(EntitySerializer serializer,
       AppAuthenticationProxy proxy, String serviceName) {

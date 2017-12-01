@@ -1,6 +1,5 @@
 package org.symphonyoss.integration.api.client;
 
-import org.glassfish.jersey.client.ClientProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.symphonyoss.integration.api.client.json.JsonEntitySerializer;
 import org.symphonyoss.integration.api.client.metrics.ApiMetricsController;

@@ -20,10 +20,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -333,9 +331,9 @@ public class IntegrationProperties {
     return String.format("https://%s:%s/%s", integrationBridge.getHost(), port, INTEGRATION_CONTEXT);
   }
 
-  public Map<String, ConnectionInfo> getServices() { return services;  }
-
-  public void setServices(Map<String, ConnectionInfo> services) { this.services = services; }
+  public Map<String, ConnectionInfo> getServices() {
+    return services;
+  }
 
   @Override
   public String toString() {

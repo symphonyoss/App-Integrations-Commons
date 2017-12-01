@@ -1,9 +1,8 @@
 package org.symphonyoss.integration.model.yaml;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
-import java.net.URI;
+import org.junit.Test;
 
 /**
  * Unit test for {@link ConnectionInfo}
@@ -26,21 +25,20 @@ public class ConnectionInfoTest {
     connectionInfo.setHost(HOST);
     connectionInfo.setMinVersion(MIN_VERSION);
     connectionInfo.setPort(PORT);
-    connectionInfo.setProxyPassword(PROXY_PASSWORD);
-    connectionInfo.setProxyUser(PROXY_USER);
-    connectionInfo.setProxyUri(HOST);
 
     ProxyConnectionInfo expectedProxy = new ProxyConnectionInfo();
     expectedProxy.setUser(PROXY_USER);
     expectedProxy.setPassword(PROXY_PASSWORD);
     expectedProxy.setURI(HOST);
 
-    Assert.assertEquals(HOST, connectionInfo.getHost());
-    Assert.assertEquals(MIN_VERSION, connectionInfo.getMinVersion());
-    Assert.assertEquals(PORT, connectionInfo.getPort());
-    Assert.assertEquals(EXPECTED_CONNECTION_INFO, connectionInfo.toString());
-    Assert.assertEquals(expectedProxy.getUser(), connectionInfo.getProxy().getUser());
-    Assert.assertEquals(expectedProxy.getPassword(), connectionInfo.getProxy().getPassword());
-    Assert.assertEquals(expectedProxy.getURI(), connectionInfo.getProxy().getURI());
+    connectionInfo.setProxy(expectedProxy);
+
+    assertEquals(HOST, connectionInfo.getHost());
+    assertEquals(MIN_VERSION, connectionInfo.getMinVersion());
+    assertEquals(PORT, connectionInfo.getPort());
+    assertEquals(EXPECTED_CONNECTION_INFO, connectionInfo.toString());
+    assertEquals(expectedProxy.getUser(), connectionInfo.getProxy().getUser());
+    assertEquals(expectedProxy.getPassword(), connectionInfo.getProxy().getPassword());
+    assertEquals(expectedProxy.getURI(), connectionInfo.getProxy().getURI());
   }
 }

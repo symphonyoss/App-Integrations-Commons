@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.slf4j.LoggerFactory;
 import org.symphonyoss.integration.authentication.api.AppAuthenticationProxy;
 
 import java.util.Collections;

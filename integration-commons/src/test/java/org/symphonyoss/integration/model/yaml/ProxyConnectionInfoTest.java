@@ -1,6 +1,7 @@
 package org.symphonyoss.integration.model.yaml;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 /**
@@ -22,9 +23,9 @@ public class ProxyConnectionInfoTest {
     proxy.setPassword(PASSWORD);
     proxy.setURI(URI);
 
-    Assert.assertEquals(USER, proxy.getUser());
-    Assert.assertEquals(PASSWORD, proxy.getPassword());
-    Assert.assertEquals(URI, proxy.getURI());
-    Assert.assertEquals(EXPECTED_PROXY_CONNECTION_INFO, proxy.toString());
+    assertEquals(USER, proxy.getUser());
+    assertEquals(PASSWORD, proxy.getPassword());
+    assertEquals(URI, proxy.getURI());
+    assertEquals(EXPECTED_PROXY_CONNECTION_INFO, proxy.toString());
   }
 }

@@ -55,13 +55,13 @@ public class ConnectionInfo {
     this.minVersion = minVersion;
   }
 
-  public void setProxyUser(String proxyUser) { this.proxy.setUser(proxyUser); }
+  public ProxyConnectionInfo getProxy() {
+    return proxy;
+  }
 
-  public void setProxyPassword(String proxyPassword) { this.proxy.setPassword(proxyPassword); }
-
-  public void setProxyUri(String proxyUri) { this.proxy.setURI(proxyUri); }
-
-  public ProxyConnectionInfo getProxy() { return proxy; }
+  public void setProxy(ProxyConnectionInfo proxy) {
+    this.proxy = proxy;
+  }
 
   @Override
   public String toString() {
