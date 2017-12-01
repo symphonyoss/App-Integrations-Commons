@@ -43,6 +43,8 @@ public class AppAuthenticationProxyApiClientTest {
 
   private static final String APP_ID_HEADER = "appId";
 
+  private static final String SERVICE_NAME = "serviceName";
+
   @Mock
   private AppAuthenticationProxy proxy;
 
@@ -56,12 +58,12 @@ public class AppAuthenticationProxyApiClientTest {
 
   @Before
   public void init() {
-    this.apiClient = new AppAuthenticationProxyApiClient(serializer, proxy);
+    this.apiClient = new AppAuthenticationProxyApiClient(serializer, proxy, SERVICE_NAME);
   }
 
   @Test
   public void testGetClientForContext() {
-    doReturn(client).when(proxy).httpClientForApplication(APP_ID);
+    doReturn(client).when(proxy).httpClientForApplication(APP_ID, SERVICE_NAME);
 
     Map<String, String> headers = Collections.singletonMap(APP_ID_HEADER, APP_ID);
 

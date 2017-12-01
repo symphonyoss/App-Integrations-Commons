@@ -96,11 +96,11 @@ public interface AuthenticationProxy {
   /**
    * Retrieves a client build with the proper SSL context for the user.
    */
-  Client httpClientForUser(String userId);
+  Client httpClientForUser(String userId, String serviceName);
 
   /**
    * Retrieves a client build with the proper SSL context for the user.
    */
-  Client httpClientForSessionToken(String sessionToken);
+  Client httpClientForSessionToken(String sessionToken, String serviceName);
 
 }
