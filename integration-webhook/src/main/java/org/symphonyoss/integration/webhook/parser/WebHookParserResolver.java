@@ -37,7 +37,7 @@ public abstract class WebHookParserResolver {
    */
   @PostConstruct
   public void init() {
-    setupParserFactory(MessageMLVersion.V1);
+    setupParserFactory(MessageMLVersion.V2);
   }
 
   /**

@@ -234,7 +234,7 @@ public class IntegrationHealthManagerTest {
 
     testSuccess();
 
-    mockResponse("https://test.symphony.com/apps/jira/controller.html",
+    mockResponse("https://test.symphony.com:443/apps/jira/controller.html",
         Response.Status.BAD_GATEWAY.getStatusCode());
 
     IntegrationHealth integrationHealth = healthManager.updateFlags();
@@ -250,9 +250,9 @@ public class IntegrationHealthManagerTest {
 
     testSuccess();
 
-    mockResponse("https://test.symphony.com/apps/jira/controller.html",
+    mockResponse("https://test.symphony.com:443/apps/jira/controller.html",
         Response.Status.OK.getStatusCode());
-    mockResponse("https://test.symphony.com/apps/jira/img/appstore-logo.png",
+    mockResponse("https://test.symphony.com:443/apps/jira/img/appstore-logo.png",
         Response.Status.BAD_GATEWAY.getStatusCode());
 
     IntegrationHealth integrationHealth = healthManager.updateFlags();
@@ -270,9 +270,9 @@ public class IntegrationHealthManagerTest {
 
     testSuccess();
 
-    mockResponse("https://test.symphony.com/apps/jira/controller.html",
+    mockResponse("https://test.symphony.com:443/apps/jira/controller.html",
         Response.Status.OK.getStatusCode());
-    mockResponse("https://test.symphony.com/apps/jira/img/appstore-logo.png",
+    mockResponse("https://test.symphony.com:443/apps/jira/img/appstore-logo.png",
         Response.Status.OK.getStatusCode());
 
     doReturn(false).when(authenticationProxy).isAuthenticated(INTEGRATION_NAME);
