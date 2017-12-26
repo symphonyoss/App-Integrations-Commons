@@ -47,6 +47,14 @@ public class SafeStringUtilsTest {
       "this is &lt;b&gt;escaped bold&lt;/b&gt;\n"
           + "these are double escaped b&apos;s &amp;lt;b&amp;gt; &amp;lt;/b&amp;gt;";
 
+  private static final String MARKUP_TEXT3 =
+      "this is <b>escaped & bold</b>\n"
+          + "these are double escaped b's &lt;b&gt; &lt;/b&gt;";
+
+  private static final String ESCAPED_MARKUP_TEXT3 =
+      "this is <b>escaped &amp; bold</b>\n"
+          + "these are double escaped b's &lt;b&gt; &lt;/b&gt;";
+
   @Test
   public void testConcat() {
     SafeString s1 = new SafeString(MARKUP_TEXT1);
@@ -104,5 +112,11 @@ public class SafeStringUtilsTest {
     SafeString s1 = new SafeString(MARKUP_TEXT1);
     assertEquals(SafeStringUtils.stringValueOf(s1), ESCAPED_MARKUP_TEXT1);
     assertEquals(SafeStringUtils.stringValueOf(null), null);
+  }
+
+  @Test
+  public void testEscapeAmpersand() {
+    String result = SafeStringUtils.escapeAmpersand(MARKUP_TEXT3);
+    assertEquals(result, ESCAPED_MARKUP_TEXT3);
   }
 }

@@ -16,6 +16,7 @@
 
 package org.symphonyoss.integration.parser;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -23,6 +24,15 @@ import org.apache.commons.lang3.StringUtils;
  * Created by ecarrenho on 9/30/16.
  */
 public class SafeStringUtils {
+
+  /**
+   * Escape the & found but skip HTML codes such as &quot;
+   * @param string String to escaped.
+   * @return Escaped String.
+   */
+  public static String escapeAmpersand(String string) {
+    return string == null ? null : string.replaceAll("&(?!.{2,4};)", "&amp;");
+  }
 
   /**
    * An utility method to access the value of a safe string without checking for null pointer.
