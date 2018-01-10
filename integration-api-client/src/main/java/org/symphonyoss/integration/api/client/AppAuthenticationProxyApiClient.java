@@ -17,6 +17,7 @@
 package org.symphonyoss.integration.api.client;
 
 import org.symphonyoss.integration.authentication.api.AppAuthenticationProxy;
+import org.symphonyoss.integration.authentication.api.enums.ServiceName;
 
 import java.util.Map;
 
@@ -33,10 +34,10 @@ public class AppAuthenticationProxyApiClient extends SimpleHttpApiClient {
 
   private AppAuthenticationProxy proxy;
 
-  private String serviceName;
+  private ServiceName serviceName;
 
   public AppAuthenticationProxyApiClient(EntitySerializer serializer,
-      AppAuthenticationProxy proxy, String serviceName) {
+      AppAuthenticationProxy proxy, ServiceName serviceName) {
     super(serializer);
     this.serviceName = serviceName;
     this.proxy = proxy;

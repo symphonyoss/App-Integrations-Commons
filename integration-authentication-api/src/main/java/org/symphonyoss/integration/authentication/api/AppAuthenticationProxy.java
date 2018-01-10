@@ -16,6 +16,7 @@
 
 package org.symphonyoss.integration.authentication.api;
 
+import org.symphonyoss.integration.authentication.api.enums.ServiceName;
 import org.symphonyoss.integration.authentication.api.model.AppToken;
 import org.symphonyoss.integration.authentication.api.model.PodCertificate;
 
@@ -44,7 +45,7 @@ public interface AppAuthenticationProxy {
    *
    * @param applicationId Application identifier
    */
-  Client httpClientForApplication(String applicationId, String serviceName);
+  Client httpClientForApplication(String applicationId, ServiceName serviceName);
 
   /**
    * Authenticates application on the POD.
