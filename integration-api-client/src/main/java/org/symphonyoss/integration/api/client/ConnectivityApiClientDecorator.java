@@ -16,6 +16,7 @@
 
 package org.symphonyoss.integration.api.client;
 
+import org.symphonyoss.integration.authentication.api.enums.ServiceName;
 import org.symphonyoss.integration.exception.RemoteApiException;
 import org.symphonyoss.integration.exception.authentication.ConnectivityException;
 
@@ -30,11 +31,11 @@ import javax.ws.rs.ProcessingException;
  */
 public class ConnectivityApiClientDecorator extends HttpApiClientDecorator {
 
-  private String serviceName;
+  private ServiceName serviceName;
 
   private static final String COMPONENT = "Connectivity Api Client";
 
-  public ConnectivityApiClientDecorator(String serviceName, HttpApiClient apiClient) {
+  public ConnectivityApiClientDecorator(ServiceName serviceName, HttpApiClient apiClient) {
     super(apiClient);
     this.serviceName = serviceName;
   }
@@ -101,7 +102,7 @@ public class ConnectivityApiClientDecorator extends HttpApiClientDecorator {
    * @return Specific connectivity exception
    */
   protected ConnectivityException getConnectivityException(ProcessingException e) {
-    return new ConnectivityException(COMPONENT, serviceName, e);
+    return new ConnectivityException(COMPONENT, serviceName.toString(), e);
   }
 
 }

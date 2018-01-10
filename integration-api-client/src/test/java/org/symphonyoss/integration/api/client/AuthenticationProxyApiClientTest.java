@@ -25,6 +25,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
+import org.symphonyoss.integration.authentication.api.enums.ServiceName;
+
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,7 +49,7 @@ public class AuthenticationProxyApiClientTest {
 
   private static final String MOCK_USERNAME = "jiraWebHookIntegration";
 
-  private static final String SERVICE_NAME = "service";
+  private static final ServiceName SERVICE_NAME = ServiceName.POD;
 
   @Mock
   private AuthenticationProxy proxy;

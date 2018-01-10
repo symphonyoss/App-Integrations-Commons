@@ -16,10 +16,10 @@
 
 package org.symphonyoss.integration.authentication;
 
+import org.symphonyoss.integration.authentication.api.enums.ServiceName;
 import org.symphonyoss.integration.exception.RemoteApiException;
 import org.symphonyoss.integration.exception.authentication.AuthenticationException;
 
-import java.rmi.Remote;
 import java.security.KeyStore;
 
 import javax.ws.rs.client.Client;
@@ -96,11 +96,11 @@ public interface AuthenticationProxy {
   /**
    * Retrieves a client build with the proper SSL context for the user.
    */
-  Client httpClientForUser(String userId, String serviceName);
+  Client httpClientForUser(String userId, ServiceName serviceName);
 
   /**
    * Retrieves a client build with the proper SSL context for the user.
    */
-  Client httpClientForSessionToken(String sessionToken, String serviceName);
+  Client httpClientForSessionToken(String sessionToken, ServiceName serviceName);
 
 }

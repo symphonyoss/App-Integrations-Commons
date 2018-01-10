@@ -26,6 +26,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.symphonyoss.integration.exception.RemoteApiException;
 import org.symphonyoss.integration.exception.authentication.ConnectivityException;
 import org.symphonyoss.integration.model.config.IntegrationSettings;
+import org.symphonyoss.integration.authentication.api.enums.ServiceName;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -41,7 +42,7 @@ public class ConnectivityApiClientDecoratorTest {
 
   private static final String MOCK_PATH = "/v1/configuration/create";
 
-  private static final String MOCK_SERVICE = "Mock Service";
+  private static final ServiceName MOCK_SERVICE = ServiceName.POD;
 
   @Mock
   private HttpApiClient apiClient;

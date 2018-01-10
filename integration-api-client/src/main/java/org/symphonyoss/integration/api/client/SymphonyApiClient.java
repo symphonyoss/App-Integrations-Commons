@@ -6,6 +6,7 @@ import org.symphonyoss.integration.api.client.metrics.ApiMetricsController;
 import org.symphonyoss.integration.api.client.metrics.MetricsHttpApiClient;
 import org.symphonyoss.integration.api.client.trace.TraceLoggingApiClient;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
+import org.symphonyoss.integration.authentication.api.enums.ServiceName;
 import org.symphonyoss.integration.exception.RemoteApiException;
 import org.symphonyoss.integration.model.yaml.IntegrationProperties;
 import org.symphonyoss.integration.model.yaml.ProxyConnectionInfo;
@@ -32,11 +33,11 @@ public abstract class SymphonyApiClient implements HttpApiClient {
 
   private HttpApiClient client;
 
-  private String serviceName;
+  private ServiceName serviceName;
 
   private EntitySerializer serializer;
 
-  public SymphonyApiClient(String serviceName) {
+  public SymphonyApiClient(ServiceName serviceName) {
     this.serviceName = serviceName;
 
     // Default serializer

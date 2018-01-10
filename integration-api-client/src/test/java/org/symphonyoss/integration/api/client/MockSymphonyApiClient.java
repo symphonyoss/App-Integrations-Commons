@@ -17,6 +17,8 @@
 package org.symphonyoss.integration.api.client;
 
 import org.symphonyoss.integration.model.yaml.ProxyConnectionInfo;
+import org.symphonyoss.integration.authentication.api.enums.ServiceName;
+
 
 /**
  * Mock for {@link SymphonyApiClient}
@@ -27,7 +29,7 @@ public class MockSymphonyApiClient extends SymphonyApiClient {
 
   private static final String BASE_PATH = "http://www.mocking-symphony.com";
 
-  public MockSymphonyApiClient(String serviceName) {
+  public MockSymphonyApiClient(ServiceName serviceName) {
     super(serviceName);
   }
 
