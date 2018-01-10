@@ -40,6 +40,7 @@ import org.symphonyoss.integration.model.healthcheck.IntegrationConfigurator;
 import org.symphonyoss.integration.model.healthcheck.IntegrationFlags;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
 import org.symphonyoss.integration.model.yaml.Application;
+import org.symphonyoss.integration.model.yaml.HttpClientConfig;
 import org.symphonyoss.integration.model.yaml.IntegrationBridge;
 import org.symphonyoss.integration.model.yaml.IntegrationProperties;
 
@@ -74,6 +75,7 @@ public class IntegrationHealthManager {
   private static final String APP_CONTROLLER_PAGE = "/controller.html";
 
   private static final String APP_ICON_IMAGE = "/img/appstore-logo.png";
+
 
   private IntegrationHealth health = new IntegrationHealth();
 
@@ -118,10 +120,18 @@ public class IntegrationHealthManager {
    * Initializes HTTP Client
    */
   private void initHttpClient() {
+    HttpClientConfig httpConfig;
+
+    if ((properties == null) || (properties.getHttpClientConfig() == null)) {
+      httpConfig = new HttpClientConfig();
+    } else {
+      httpConfig = properties.getHttpClientConfig();
+    }
+
     if (this.client == null) {
       final ClientConfig clientConfig = new ClientConfig();
-      clientConfig.property(ClientProperties.CONNECT_TIMEOUT, 1000);
-      clientConfig.property(ClientProperties.READ_TIMEOUT, 1000);
+      clientConfig.property(ClientProperties.CONNECT_TIMEOUT, httpConfig.getConnectTimeout());
+      clientConfig.property(ClientProperties.READ_TIMEOUT, httpConfig.getReadTimeout());
 
       this.client = ClientBuilder.newBuilder().withConfig(clientConfig).build();
     }
