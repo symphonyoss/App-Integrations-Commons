@@ -35,6 +35,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.symphonyoss.integration.api.client.json.JsonEntitySerializer;
 import org.symphonyoss.integration.api.client.metrics.ApiMetricsController;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
+import org.symphonyoss.integration.authentication.api.enums.ServiceName;
 import org.symphonyoss.integration.exception.RemoteApiException;
 import sun.net.www.http.HttpClient;
 
@@ -55,7 +56,7 @@ import javax.ws.rs.core.Response;
 @RunWith(MockitoJUnitRunner.class)
 public class SymphonyApiClientTest {
 
-  private static final String SERVICE_NAME = "serviceName";
+  private static ServiceName SERVICE_NAME = ServiceName.POD;
 
   private static final String MOCK_SESSION_TOKEN = "480d9f271e54d02ea835154fb57628290da817d1c";
 
