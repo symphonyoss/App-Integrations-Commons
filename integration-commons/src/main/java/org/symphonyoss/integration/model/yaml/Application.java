@@ -46,6 +46,8 @@ public class Application {
 
   private boolean visible;
 
+  private boolean autoInstall;
+
   private ApplicationState state;
 
   private List<AllowedOrigin> allowedOrigins;
@@ -197,6 +199,14 @@ public class Application {
 
   public void setUsername(String username) {
     this.username = username;
+  }
+
+  public boolean isAutoInstall() {
+    return autoInstall;
+  }
+
+  public void setAutoInstall(boolean autoInstall) {
+    this.autoInstall = autoInstall;
   }
 
   /**
