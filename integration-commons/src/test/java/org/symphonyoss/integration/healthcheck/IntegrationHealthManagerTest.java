@@ -100,7 +100,6 @@ public class IntegrationHealthManagerTest {
     assertEquals(IntegrationFlags.ValueEnum.OK, flags.getParserInstalled());
     assertEquals(IntegrationFlags.ValueEnum.NOK, flags.getUserCertificateInstalled());
     assertEquals(IntegrationFlags.ValueEnum.NOT_APPLICABLE, flags.getAppCertificateInstalled());
-    assertEquals(IntegrationFlags.ValueEnum.NOK, flags.getConfiguratorInstalled());
     assertEquals(IntegrationFlags.ValueEnum.NOK, flags.getUserAuthenticated());
   }
 
@@ -204,7 +203,6 @@ public class IntegrationHealthManagerTest {
     healthManager.parserInstalled(IntegrationFlags.ValueEnum.NOK);
     healthManager.userCertificateInstalled(IntegrationFlags.ValueEnum.OK);
     healthManager.appCertificateInstalled(IntegrationFlags.ValueEnum.OK);
-    healthManager.configuratorInstalled(IntegrationFlags.ValueEnum.OK);
     healthManager.userAuthenticated(IntegrationFlags.ValueEnum.OK);
 
     IntegrationHealth integrationHealth = healthManager.getHealth();
@@ -213,7 +211,6 @@ public class IntegrationHealthManagerTest {
     assertEquals(IntegrationFlags.ValueEnum.NOK, flags.getParserInstalled());
     assertEquals(IntegrationFlags.ValueEnum.OK, flags.getUserCertificateInstalled());
     assertEquals(IntegrationFlags.ValueEnum.OK, flags.getAppCertificateInstalled());
-    assertEquals(IntegrationFlags.ValueEnum.OK, flags.getConfiguratorInstalled());
     assertEquals(IntegrationFlags.ValueEnum.OK, flags.getUserAuthenticated());
   }
 

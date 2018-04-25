@@ -37,7 +37,6 @@ public class IntegrationFlagsTest {
     assertFalse(flags.isUp());
 
     flags.setParserInstalled(NOK);
-    flags.setConfiguratorInstalled(NOK);
     flags.setUserCertificateInstalled(NOK);
     flags.setUserAuthenticated(NOK);
     flags.setAppCertificateInstalled(NOT_APPLICABLE);
@@ -46,7 +45,6 @@ public class IntegrationFlagsTest {
     flags.setParserInstalled(OK);
     assertFalse(flags.isUp());
 
-    flags.setConfiguratorInstalled(OK);
     assertFalse(flags.isUp());
 
     flags.setUserCertificateInstalled(OK);
@@ -59,7 +57,6 @@ public class IntegrationFlagsTest {
     assertTrue(flags.isUp());
 
     assertEquals(OK, flags.getParserInstalled());
-    assertEquals(OK, flags.getConfiguratorInstalled());
     assertEquals(OK, flags.getUserCertificateInstalled());
     assertEquals(OK, flags.getUserAuthenticated());
     assertEquals(OK, flags.getAppCertificateInstalled());

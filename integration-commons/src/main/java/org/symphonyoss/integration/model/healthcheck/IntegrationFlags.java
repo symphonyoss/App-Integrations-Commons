@@ -32,7 +32,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class IntegrationFlags {
 
   private ValueEnum parserInstalled;
-  private ValueEnum configuratorInstalled;
   private ValueEnum userCertificateInstalled;
   private ValueEnum appCertificateInstalled;
   private ValueEnum userAuthenticated;
@@ -44,15 +43,6 @@ public class IntegrationFlags {
 
   public void setParserInstalled(ValueEnum parserInstalled) {
     this.parserInstalled = parserInstalled;
-  }
-
-  @JsonProperty("configurator_installed")
-  public ValueEnum getConfiguratorInstalled() {
-    return configuratorInstalled;
-  }
-
-  public void setConfiguratorInstalled(ValueEnum configuratorInstalled) {
-    this.configuratorInstalled = configuratorInstalled;
   }
 
   @JsonProperty("user_certificate_installed")
@@ -90,8 +80,9 @@ public class IntegrationFlags {
 
   @JsonIgnore
   public boolean isUp() {
-    return parserInstalled == ValueEnum.OK && configuratorInstalled == ValueEnum.OK
-        && userCertificateInstalled == ValueEnum.OK && userAuthenticated == ValueEnum.OK
-        && (appCertificateInstalled == ValueEnum.OK || appCertificateInstalled == ValueEnum.NOT_APPLICABLE);
+    return parserInstalled == ValueEnum.OK && userCertificateInstalled == ValueEnum.OK
+        && userAuthenticated == ValueEnum.OK
+        && (appCertificateInstalled == ValueEnum.OK
+        || appCertificateInstalled == ValueEnum.NOT_APPLICABLE);
   }
 }
