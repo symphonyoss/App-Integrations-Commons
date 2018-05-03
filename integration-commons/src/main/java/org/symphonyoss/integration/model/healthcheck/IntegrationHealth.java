@@ -40,6 +40,8 @@ public class IntegrationHealth {
 
   private String message;
 
+  private IntegrationConfigurator configurator;
+
   private IntegrationFlags flags;
 
   private String latestPostTimestamp;
@@ -96,4 +98,12 @@ public class IntegrationHealth {
     this.latestPostTimestamp = latestPostTimestamp;
   }
 
+  public IntegrationConfigurator getConfigurator() {
+    return configurator;
+  }
+
+  public void setConfigurator(
+      IntegrationConfigurator configurator) {
+    this.configurator = configurator;
+  }
 }
