@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component;
 import org.symphonyoss.integration.IntegrationStatus;
 import org.symphonyoss.integration.authentication.AuthenticationProxy;
 import org.symphonyoss.integration.model.config.IntegrationSettings;
+import org.symphonyoss.integration.model.healthcheck.IntegrationConfigurator;
 import org.symphonyoss.integration.model.healthcheck.IntegrationFlags;
 import org.symphonyoss.integration.model.healthcheck.IntegrationHealth;
 import org.symphonyoss.integration.model.yaml.Application;
@@ -60,11 +61,6 @@ public class IntegrationHealthManager {
   private static final String OUT_OF_SERVICE = "Integration Out of Service. Please, check the flags";
 
   private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'Z";
-
-  private static final String APP_CONTROLLER_PAGE = "/controller.html";
-
-  private static final String APP_ICON_IMAGE = "/img/appstore-logo.png";
-
 
   private IntegrationHealth health = new IntegrationHealth();
 
@@ -140,6 +136,20 @@ public class IntegrationHealthManager {
     if (expectedStatus.contains(health.getStatus())) {
       this.health.setStatus(IntegrationStatus.ACTIVE.name());
       this.health.setMessage(SUCCESS);
+    }
+
+    initConfigurator();
+  }
+
+  private void initConfigurator() {
+    Application application = properties.getApplication(settings.getType());
+    IntegrationBridge bridge = properties.getIntegrationBridge();
+
+    if (application != null && bridge != null && StringUtils.isNotEmpty(application.getContext())
+        && StringUtils.isNotEmpty(bridge.getHost())) {
+      IntegrationConfigurator configurator = new IntegrationConfigurator();
+
+      this.health.setConfigurator(configurator);
     }
   }
 
