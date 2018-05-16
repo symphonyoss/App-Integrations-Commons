@@ -527,7 +527,7 @@ public class WebHookIntegrationTest extends MockKeystore {
   @Test
   public void testWelcomeChatroomStreamType() throws IOException, RemoteApiException {
     User user = new User();
-    user.setDisplayName("Test user");
+    user.setDisplayName("Test user <a href=\"https://link.com\"/>");
 
     when(authenticationProxy.getSessionToken(anyString())).thenReturn("");
     when(userService.getUserByUserId(anyString(), eq(7890L))).thenReturn(user);
@@ -552,7 +552,7 @@ public class WebHookIntegrationTest extends MockKeystore {
 
     assertEquals(
         "<messageML>Hi there. This is the JIRA application. I'll let you know of any new events "
-            + "sent from the JIRA integration configured by Test user.</messageML>",
+            + "sent from the JIRA integration configured by Test user &lt;a href=&quot;https://link.com&quot;/&gt;.</messageML>",
         answer.getFormattedMessage());
     assertEquals(2, answer.getCount());
   }
