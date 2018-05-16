@@ -18,7 +18,6 @@ package org.symphonyoss.integration.webhook;
 
 import static org.symphonyoss.integration.messageml.MessageMLFormatConstants.MESSAGEML_END;
 import static org.symphonyoss.integration.messageml.MessageMLFormatConstants.MESSAGEML_START;
-import static org.symphonyoss.integration.model.healthcheck.IntegrationFlags.ValueEnum.NOK;
 import static org.symphonyoss.integration.utils.WebHookConfigurationUtils.LAST_POSTED_DATE;
 
 import com.codahale.metrics.Timer;
@@ -35,7 +34,6 @@ import org.symphonyoss.integration.exception.IntegrationRuntimeException;
 import org.symphonyoss.integration.exception.RemoteApiException;
 import org.symphonyoss.integration.exception.authentication.AuthenticationException;
 import org.symphonyoss.integration.exception.authentication.ConnectivityException;
-import org.symphonyoss.integration.exception.bootstrap.BootstrapException;
 import org.symphonyoss.integration.exception.bootstrap.RetryLifecycleException;
 import org.symphonyoss.integration.exception.bootstrap.UnexpectedBootstrapException;
 import org.symphonyoss.integration.exception.config.ForbiddenUserException;
@@ -48,6 +46,7 @@ import org.symphonyoss.integration.model.message.Message;
 import org.symphonyoss.integration.model.message.MessageMLVersion;
 import org.symphonyoss.integration.model.stream.StreamType;
 import org.symphonyoss.integration.model.yaml.Application;
+import org.symphonyoss.integration.parser.ParserUtils;
 import org.symphonyoss.integration.service.IntegrationBridge;
 import org.symphonyoss.integration.service.IntegrationService;
 import org.symphonyoss.integration.service.StreamService;
@@ -376,7 +375,7 @@ public abstract class WebHookIntegration extends BaseIntegration {
         return String.format(IM_WELCOME_MESSAGE, appName, appName);
       case CHATROOM:
         String user = getUserDisplayName(integrationUser, instance.getCreatorId());
-        String userDisplayName = StringUtils.isEmpty(user) ? UNKNOWN_USER : user;
+        String userDisplayName = StringUtils.isEmpty(user) ? UNKNOWN_USER : ParserUtils.escapeAndAddLineBreaks(user).toString();
         return String.format(CHAT_ROOM_WELCOME_MESSAGE, appName, appName, userDisplayName);
       case NONE:
       default:
