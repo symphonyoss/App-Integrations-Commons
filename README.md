@@ -63,6 +63,6 @@ To start from scratch, do the following:
 #### Creating a bundle
 
 In order to distribute and/or deploy an Integration, the Maven build provides a `-Pbundle` profile which creates a `target/bundle` folder containing:
-- an `integration.jar` artifact including all Java logic needed
-- an `application.yaml` file that configures the Spring Boot application; the file must be located in the project's root folder
-- a `run.sh` that is able to run the integration on different platforms (locally and remotely); the file must be located in the project's root folder
+- an `integration.jar` artifact including all Java logic needed.
+- an `application.yaml` file that configures the Spring Boot application; the file must be located in the project's root folder.
+- a `run.sh` that is able to run the integration on different platforms (locally and remotely); the file must be located in the project's root folder.
