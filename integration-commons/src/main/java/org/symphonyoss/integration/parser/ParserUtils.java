@@ -62,7 +62,7 @@ public final class ParserUtils {
    * Regular expression strings for markupLinks method.
    */
   private static final String URL_HEADER_REGEX = "((http|ftp|https)://|www\\.)";
-  private static final String URL_DOMAIN_REGEX = "([\\w_-]+(?:(?:\\.[\\w_-]+)+))";
+  private static final String URL_DOMAIN_REGEX = "([\\w_-]+(?:(?:\\.?[\\w_-]+)+))";
   private static final String URL_ADDRESS_REGEX = "[\\w.,@?^=!$%:/*~+#()_-]*(&amp;)*";
   private static final String URL_REGEX =
       URL_HEADER_REGEX + URL_DOMAIN_REGEX + "((/)*" + URL_ADDRESS_REGEX + ")*";

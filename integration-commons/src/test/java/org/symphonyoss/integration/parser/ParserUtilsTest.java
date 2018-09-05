@@ -20,18 +20,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.boot.test.context.TestComponent;
 import org.symphonyoss.integration.exception.URISyntaxRuntimeException;
 import org.symphonyoss.integration.parser.model.HashTag;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -39,6 +36,13 @@ import java.util.Map.Entry;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ParserUtilsTest {
+
+  private static final String ONE_HTTP_NOT_MARKED_WITHOUT_DOT = "See this http://corporate/test ... "
+      + "an http link";
+
+  private static final String ONE_HTTP_MARKED_WITHOUT_DOT = "See this "
+      + "<a href=\"http://corporate/test\">http://corporate/test</a> ... an "
+      + "http link";
 
   private static final String ONE_HTTP_NOT_MARKED = "See this http://corporate.symphony.com ... "
       + "an http link";
@@ -55,6 +59,13 @@ public class ParserUtilsTest {
       + "<a href=\"http://corporate.symphony.com\">http://corporate.symphony.com</a> and this "
       + "<a href=\"http://nexus.symphony.com\">http://nexus.symphony.com</a>";
 
+  private static final String ONE_HTTPS_NOT_MARKED_WITHOUT_DOT = "See this https://corporate/test ... "
+      + "an http link";
+
+  private static final String ONE_HTTPS_MARKED_WITHOUT_DOT = "See this "
+      + "<a href=\"https://corporate/test\">https://corporate/test</a> ... an "
+      + "http link";
+
   private static final String ONE_HTTPS_NOT_MARKED = "See this https://corporate.symphony.com ... "
       + "an http link";
 
@@ -69,6 +80,13 @@ public class ParserUtilsTest {
   private static final String ONE_HTTPS_MARKED_ONE_HTTPS_MARKED = "See this "
       + "<a href=\"https://corporate.symphony.com\">https://corporate.symphony.com</a> and this "
       + "<a href=\"https://nexus.symphony.com\">https://nexus.symphony.com</a>";
+
+  private static final String ONE_FTP_NOT_MARKED_WITHOUT_DOT = "See this ftp://corporate/test ... "
+      + "an http link";
+
+  private static final String ONE_FTP_MARKED_WITHOUT_DOT = "See this "
+      + "<a href=\"ftp://corporate/test\">ftp://corporate/test</a> ... an "
+      + "http link";
 
   private static final String ONE_FTP_NOT_MARKED = "See this ftp://corporate.symphony.com ... "
       + "an ftp link";
@@ -217,13 +235,14 @@ public class ParserUtilsTest {
   public void testMarkupLinksHttp() {
 
     // HTTP links
-    assertEquals(ParserUtils.markupLinks(ONE_HTTP_NOT_MARKED), ONE_HTTP_MARKED);
-    assertEquals(ParserUtils.markupLinks(ONE_HTTP_MARKED), ONE_HTTP_MARKED);
-
-    assertEquals(ParserUtils.markupLinks(ONE_HTTP_MARKED_ONE_HTTP_NOT_MARKED),
-        ONE_HTTP_MARKED_ONE_HTTP_MARKED);
-    assertEquals(ParserUtils.markupLinks(ONE_HTTP_MARKED_ONE_HTTP_MARKED),
-        ONE_HTTP_MARKED_ONE_HTTP_MARKED);
+    assertEquals(ONE_HTTP_MARKED, ParserUtils.markupLinks(ONE_HTTP_NOT_MARKED));
+    assertEquals(ONE_HTTP_MARKED, ParserUtils.markupLinks(ONE_HTTP_MARKED));
+    assertEquals(ONE_HTTP_MARKED_ONE_HTTP_MARKED,
+        ParserUtils.markupLinks(ONE_HTTP_MARKED_ONE_HTTP_NOT_MARKED));
+    assertEquals(ONE_HTTP_MARKED_ONE_HTTP_MARKED,
+        ParserUtils.markupLinks(ONE_HTTP_MARKED_ONE_HTTP_MARKED));
+    assertEquals(ONE_HTTP_MARKED_WITHOUT_DOT,
+        ParserUtils.markupLinks(ONE_HTTP_NOT_MARKED_WITHOUT_DOT));
   }
 
   @Test
@@ -236,18 +255,21 @@ public class ParserUtilsTest {
         (ONE_HTTPS_MARKED_ONE_HTTPS_NOT_MARKED));
     assertEquals(ONE_HTTPS_MARKED_ONE_HTTPS_MARKED, ParserUtils.markupLinks
         (ONE_HTTPS_MARKED_ONE_HTTPS_MARKED));
+    assertEquals(ONE_HTTPS_MARKED_WITHOUT_DOT,
+        ParserUtils.markupLinks(ONE_HTTPS_NOT_MARKED_WITHOUT_DOT));
   }
 
   @Test
   public void testMarkupLinksFtp() {
     // FTP links
-    assertEquals(ParserUtils.markupLinks(ONE_FTP_NOT_MARKED), ONE_FTP_MARKED);
-    assertEquals(ParserUtils.markupLinks(ONE_FTP_MARKED), ONE_FTP_MARKED);
-
-    assertEquals(ParserUtils.markupLinks(ONE_FTP_MARKED_ONE_FTP_NOT_MARKED),
-        ONE_FTP_MARKED_ONE_FTP_MARKED);
-    assertEquals(ParserUtils.markupLinks(ONE_FTP_MARKED_ONE_FTP_MARKED),
-        ONE_FTP_MARKED_ONE_FTP_MARKED);
+    assertEquals(ONE_FTP_MARKED, ParserUtils.markupLinks(ONE_FTP_NOT_MARKED));
+    assertEquals(ONE_FTP_MARKED, ParserUtils.markupLinks(ONE_FTP_MARKED));
+    assertEquals(ONE_FTP_MARKED_ONE_FTP_MARKED,
+        ParserUtils.markupLinks(ONE_FTP_MARKED_ONE_FTP_NOT_MARKED));
+    assertEquals(ONE_FTP_MARKED_ONE_FTP_MARKED,
+        ParserUtils.markupLinks(ONE_FTP_MARKED_ONE_FTP_MARKED));
+    assertEquals(ONE_FTP_MARKED_WITHOUT_DOT,
+        ParserUtils.markupLinks(ONE_FTP_NOT_MARKED_WITHOUT_DOT));
   }
 
   @Test
