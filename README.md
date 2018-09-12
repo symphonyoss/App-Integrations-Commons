@@ -3,6 +3,8 @@
 [![Dependencies](https://www.versioneye.com/user/projects/58efec768fa4273d16f6d1da/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/58efec768fa4273d16f6d1da)
 [![Validation Status](https://scan.coverity.com/projects/12821/badge.svg?flat=1)](https://scan.coverity.com/projects/symphonyoss-app-integrations-commons)
 [![codecov](https://codecov.io/gh/symphonyoss/App-Integrations-Commons/branch/dev/graph/badge.svg)](https://codecov.io/gh/symphonyoss/App-Integrations-Commons)
+[![Code Quality: Java](https://img.shields.io/lgtm/grade/java/g/symphonyoss/App-Integrations-Commons.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/symphonyoss/App-Integrations-Commons/context:java)
+[![Total Alerts](https://img.shields.io/lgtm/alerts/g/symphonyoss/App-Integrations-Commons.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/symphonyoss/App-Integrations-Commons/alerts)
 
 # Integrations Commons Documentation
 
