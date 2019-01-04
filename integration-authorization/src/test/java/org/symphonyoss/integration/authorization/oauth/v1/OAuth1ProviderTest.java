@@ -62,7 +62,7 @@ import java.net.URL;
         HttpResponseException.class})
 public class OAuth1ProviderTest {
 
-  static final URL BASE_URL = makeUrl("http://www.1nv4lidh0st.com");
+  static final URL BASE_URL = makeUrl("http://www.1nv4lidh0st.com/jira");
   static final URL REQUEST_TEMPORARY_TOKEN_URL = makeUrl(BASE_URL, "/reqTempToken");
   static final URL AUTHORIZATION_CALLBACK_URL = makeUrl(BASE_URL, "/myCallback");
   static final URL AUTHORIZE_TEMPORARY_TOKEN_URL = makeUrl(BASE_URL, "/authTempToken");
