@@ -94,7 +94,7 @@ public abstract class OAuth1Provider {
   public String requestAuthorizationUrl(String temporaryToken) throws OAuth1Exception {
     checkConfiguration();
 
-    String baseUrl = getAuthorizeTemporaryTokenUrl().toString();
+    String baseUrl = getAuthorizeTemporaryTokenUrl().toExternalForm();
 
     OAuthAuthorizeTemporaryTokenUrl authorizationURL = new OAuthAuthorizeTemporaryTokenUrl(baseUrl);
     authorizationURL.temporaryToken = temporaryToken;
