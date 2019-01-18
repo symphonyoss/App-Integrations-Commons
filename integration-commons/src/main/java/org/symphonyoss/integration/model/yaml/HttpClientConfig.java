@@ -26,22 +26,22 @@ public class HttpClientConfig {
   /**
    * Default timeout for socket read.
    */
-  public static final int DEFAULT_READ_TIMEOUT = 4000;
+  public static final int DEFAULT_READ_TIMEOUT = 2000;
 
   /**
    * Default timeout for socket connection.
    */
-  public static final int DEFAULT_CONNECT_TIMEOUT = 2000;
+  public static final int DEFAULT_CONNECT_TIMEOUT = 4000;
 
   /**
    * Max timeout for socket read.
    */
-  public static final int MAX_READ_TIMEOUT = 30000;
+  public static final int MAX_READ_TIMEOUT = 10000;
 
   /**
    * Max timeout for socket connection.
    */
-  public static final int MAX_CONNECT_TIMEOUT = 10000;
+  public static final int MAX_CONNECT_TIMEOUT = 20000;
 
   /**
    * Connection pool - default total connections.
@@ -91,6 +91,10 @@ public class HttpClientConfig {
   public void setReadTimeout(Integer readTimeout) {
     if (readTimeout == null || readTimeout <= 0) {
       readTimeout = DEFAULT_READ_TIMEOUT;
+    } else if (readTimeout > connectTimeout) {
+      // a read timeout greater then the connect timeout
+      // can generate problems like hanging threads
+      readTimeout = connectTimeout;
     } else if (readTimeout > MAX_READ_TIMEOUT) {
       readTimeout = MAX_READ_TIMEOUT;
     }
