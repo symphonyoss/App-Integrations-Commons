@@ -28,7 +28,7 @@ public class IntegrationPropertiesTest {
 
   private static final Integer PUB_POD_CERT_CACHE_DURATION = 60;
   private static final Integer CONNECT_TIMEOUT = 2000;
-  private static final Integer READ_TIMEOUT = 5000;
+  private static final Integer READ_TIMEOUT = 2000;
 
   @Autowired
   private IntegrationProperties integrationProperties;
