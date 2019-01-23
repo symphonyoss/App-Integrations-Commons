@@ -28,7 +28,7 @@ import org.junit.Test;
 public class HttpClientConfigTest {
 
   public static final String EXPECTED_DEFAULT_INITIAL_VALUES =
-      "HttpClientConfig{connectTimeout='2000', readTimeout='4000', maxConnections='60', "
+      "HttpClientConfig{connectTimeout='4000', readTimeout='2000', maxConnections='60', "
           + "maxConnectionsPerRoute='20'}";
 
   @Test
@@ -108,8 +108,8 @@ public class HttpClientConfigTest {
   @Test
   public void testMaxValues() {
     HttpClientConfig httpClientConfig = new HttpClientConfig();
-    httpClientConfig.setReadTimeout(HttpClientConfig.MAX_READ_TIMEOUT + 1);
     httpClientConfig.setConnectTimeout(HttpClientConfig.MAX_CONNECT_TIMEOUT + 1);
+    httpClientConfig.setReadTimeout(HttpClientConfig.MAX_READ_TIMEOUT + 1);
     httpClientConfig.setMaxConnections(HttpClientConfig.MAX_TOTAL_CONNECTIONS + 1);
     httpClientConfig.setMaxConnectionsPerRoute(HttpClientConfig.MAX_TOTAL_CONNECTIONS_PER_ROUTE + 1);
 
@@ -117,6 +117,14 @@ public class HttpClientConfigTest {
     assertEquals(httpClientConfig.getConnectTimeout(), (Integer) HttpClientConfig.MAX_CONNECT_TIMEOUT);
     assertEquals(httpClientConfig.getMaxConnections(), (Integer) HttpClientConfig.MAX_TOTAL_CONNECTIONS);
     assertEquals(httpClientConfig.getMaxConnectionsPerRoute(), (Integer) HttpClientConfig.MAX_TOTAL_CONNECTIONS_PER_ROUTE);
+  }
+
+  @Test
+  public void testReadTimeoutLessThanConnectTimeout() {
+    HttpClientConfig httpClientConfig = new HttpClientConfig();
+    httpClientConfig.setConnectTimeout(4000);
+    httpClientConfig.setReadTimeout(5000);
+    assertEquals(httpClientConfig.getReadTimeout(), (Integer) 4000);
   }
 
 }
