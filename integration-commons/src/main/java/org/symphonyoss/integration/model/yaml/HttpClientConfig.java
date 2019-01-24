@@ -26,12 +26,12 @@ public class HttpClientConfig {
   /**
    * Default timeout for socket read.
    */
-  public static final int DEFAULT_READ_TIMEOUT = 2000;
+  public static final int MIN_READ_TIMEOUT = 4000;
 
   /**
    * Default timeout for socket connection.
    */
-  public static final int DEFAULT_CONNECT_TIMEOUT = 4000;
+  public static final int MIN_CONNECT_TIMEOUT = 6000;
 
   /**
    * Max timeout for socket read.
@@ -63,9 +63,9 @@ public class HttpClientConfig {
    */
   public static final int MAX_TOTAL_CONNECTIONS_PER_ROUTE = 200;
 
-  private Integer connectTimeout = DEFAULT_CONNECT_TIMEOUT;
+  private Integer connectTimeout = MIN_CONNECT_TIMEOUT;
 
-  private Integer readTimeout = DEFAULT_READ_TIMEOUT;
+  private Integer readTimeout = MIN_READ_TIMEOUT;
 
   private Integer maxConnections = DEFAULT_TOTAL_CONNECTIONS;
 
@@ -76,8 +76,8 @@ public class HttpClientConfig {
   }
 
   public void setConnectTimeout(Integer connectTimeout) {
-    if (connectTimeout == null || connectTimeout <= 0) {
-      connectTimeout = DEFAULT_CONNECT_TIMEOUT;
+    if (connectTimeout == null || connectTimeout < MIN_CONNECT_TIMEOUT) {
+      connectTimeout = MIN_CONNECT_TIMEOUT;
     } else if (connectTimeout > MAX_CONNECT_TIMEOUT) {
       connectTimeout = MAX_CONNECT_TIMEOUT;
     }
@@ -89,8 +89,8 @@ public class HttpClientConfig {
   }
 
   public void setReadTimeout(Integer readTimeout) {
-    if (readTimeout == null || readTimeout <= 0) {
-      readTimeout = DEFAULT_READ_TIMEOUT;
+    if (readTimeout == null || readTimeout < MIN_READ_TIMEOUT) {
+      readTimeout = MIN_READ_TIMEOUT;
     } else if (readTimeout > connectTimeout) {
       // a read timeout greater then the connect timeout
       // can generate problems like hanging threads
