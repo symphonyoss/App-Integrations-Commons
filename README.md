@@ -1,4 +1,4 @@
-[![FINOS - Incubating](https://cdn.jsdelivr.net/gh/finos/contrib-toolbox@master/images/badge-incubating.svg)](https://finosfoundation.atlassian.net/wiki/display/FINOS/Incubating)
+[![FINOS - Active](https://cdn.jsdelivr.net/gh/finos/contrib-toolbox@master/images/badge-active.svg)](https://finosfoundation.atlassian.net/wiki/display/FINOS/Active)
 [![Build Status](https://travis-ci.org/symphonyoss/App-Integrations-Commons.svg?branch=dev)](https://travis-ci.org/symphonyoss/App-Integrations-Commons)
 [![Dependencies](https://www.versioneye.com/user/projects/58efec768fa4273d16f6d1da/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/58efec768fa4273d16f6d1da)
 [![Validation Status](https://scan.coverity.com/projects/12821/badge.svg?flat=1)](https://scan.coverity.com/projects/symphonyoss-app-integrations-commons)
